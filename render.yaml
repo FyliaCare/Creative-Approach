@@ -18,6 +18,12 @@ services:
       - path: /*
         name: Referrer-Policy
         value: strict-origin-when-cross-origin
+      - path: /sw.js
+        name: Service-Worker-Allowed
+        value: /
+      - path: /sw.js
+        name: Cache-Control
+        value: no-cache
     routes:
       - type: rewrite
         source: /*

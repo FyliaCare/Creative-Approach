@@ -2,7 +2,6 @@
   "name": "creative-approach",
   "version": "1.0.0",
   "description": "A modern, professional website for Creative Approach - Ghana's leading provider of drone-based geospatial and visual media solutions.",
-  "main": "sw.js",
   "type": "module",
   "engines": {
     "node": ">=18.0.0",
