@@ -1,0 +1,100 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 300" fill="none">
+  <defs>
+    <linearGradient id="droneGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#0ea5e9;stop-opacity:0.8" />
+      <stop offset="50%" style="stop-color:#14b8a6;stop-opacity:0.6" />
+      <stop offset="100%" style="stop-color:#8b5cf6;stop-opacity:0.4" />
+    </linearGradient>
+    <filter id="glow">
+      <feGaussianBlur stdDeviation="4" result="coloredBlur"/>
+      <feMerge>
+        <feMergeNode in="coloredBlur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+  </defs>
+  
+  <!-- Propeller 1 (Top Left) -->
+  <g transform="translate(80, 60)" filter="url(#glow)">
+    <circle cx="0" cy="0" r="35" stroke="url(#droneGrad)" stroke-width="3" fill="none" opacity="0.3">
+      <animateTransform attributeName="transform" type="rotate" from="0 0 0" to="360 0 0" dur="1s" repeatCount="indefinite"/>
+    </circle>
+    <circle cx="0" cy="0" r="28" stroke="url(#droneGrad)" stroke-width="2" fill="none" opacity="0.5">
+      <animateTransform attributeName="transform" type="rotate" from="360 0 0" to="0 0 0" dur="0.8s" repeatCount="indefinite"/>
+    </circle>
+    <ellipse cx="0" cy="0" rx="30" ry="8" fill="url(#droneGrad)" opacity="0.4">
+      <animateTransform attributeName="transform" type="rotate" from="0 0 0" to="360 0 0" dur="1s" repeatCount="indefinite"/>
+    </ellipse>
+    <circle cx="0" cy="0" r="8" fill="url(#droneGrad)"/>
+  </g>
+  
+  <!-- Propeller 2 (Top Right) -->
+  <g transform="translate(320, 60)" filter="url(#glow)">
+    <circle cx="0" cy="0" r="35" stroke="url(#droneGrad)" stroke-width="3" fill="none" opacity="0.3">
+      <animateTransform attributeName="transform" type="rotate" from="0 0 0" to="360 0 0" dur="1s" repeatCount="indefinite"/>
+    </circle>
+    <circle cx="0" cy="0" r="28" stroke="url(#droneGrad)" stroke-width="2" fill="none" opacity="0.5">
+      <animateTransform attributeName="transform" type="rotate" from="360 0 0" to="0 0 0" dur="0.8s" repeatCount="indefinite"/>
+    </circle>
+    <ellipse cx="0" cy="0" rx="30" ry="8" fill="url(#droneGrad)" opacity="0.4">
+      <animateTransform attributeName="transform" type="rotate" from="0 0 0" to="360 0 0" dur="1s" repeatCount="indefinite"/>
+    </ellipse>
+    <circle cx="0" cy="0" r="8" fill="url(#droneGrad)"/>
+  </g>
+  
+  <!-- Propeller 3 (Bottom Left) -->
+  <g transform="translate(80, 240)" filter="url(#glow)">
+    <circle cx="0" cy="0" r="35" stroke="url(#droneGrad)" stroke-width="3" fill="none" opacity="0.3">
+      <animateTransform attributeName="transform" type="rotate" from="360 0 0" to="0 0 0" dur="1s" repeatCount="indefinite"/>
+    </circle>
+    <circle cx="0" cy="0" r="28" stroke="url(#droneGrad)" stroke-width="2" fill="none" opacity="0.5">
+      <animateTransform attributeName="transform" type="rotate" from="0 0 0" to="360 0 0" dur="0.8s" repeatCount="indefinite"/>
+    </circle>
+    <ellipse cx="0" cy="0" rx="30" ry="8" fill="url(#droneGrad)" opacity="0.4">
+      <animateTransform attributeName="transform" type="rotate" from="360 0 0" to="0 0 0" dur="1s" repeatCount="indefinite"/>
+    </ellipse>
+    <circle cx="0" cy="0" r="8" fill="url(#droneGrad)"/>
+  </g>
+  
+  <!-- Propeller 4 (Bottom Right) -->
+  <g transform="translate(320, 240)" filter="url(#glow)">
+    <circle cx="0" cy="0" r="35" stroke="url(#droneGrad)" stroke-width="3" fill="none" opacity="0.3">
+      <animateTransform attributeName="transform" type="rotate" from="360 0 0" to="0 0 0" dur="1s" repeatCount="indefinite"/>
+    </circle>
+    <circle cx="0" cy="0" r="28" stroke="url(#droneGrad)" stroke-width="2" fill="none" opacity="0.5">
+      <animateTransform attributeName="transform" type="rotate" from="0 0 0" to="360 0 0" dur="0.8s" repeatCount="indefinite"/>
+    </circle>
+    <ellipse cx="0" cy="0" rx="30" ry="8" fill="url(#droneGrad)" opacity="0.4">
+      <animateTransform attributeName="transform" type="rotate" from="360 0 0" to="0 0 0" dur="1s" repeatCount="indefinite"/>
+    </ellipse>
+    <circle cx="0" cy="0" r="8" fill="url(#droneGrad)"/>
+  </g>
+  
+  <!-- Arms -->
+  <line x1="150" y1="140" x2="80" y2="60" stroke="url(#droneGrad)" stroke-width="6" stroke-linecap="round" opacity="0.7"/>
+  <line x1="250" y1="140" x2="320" y2="60" stroke="url(#droneGrad)" stroke-width="6" stroke-linecap="round" opacity="0.7"/>
+  <line x1="150" y1="160" x2="80" y2="240" stroke="url(#droneGrad)" stroke-width="6" stroke-linecap="round" opacity="0.7"/>
+  <line x1="250" y1="160" x2="320" y2="240" stroke="url(#droneGrad)" stroke-width="6" stroke-linecap="round" opacity="0.7"/>
+  
+  <!-- Body -->
+  <g filter="url(#glow)">
+    <rect x="160" y="130" width="80" height="40" rx="10" fill="url(#droneGrad)" opacity="0.9"/>
+    <rect x="165" y="135" width="70" height="30" rx="8" fill="rgba(255,255,255,0.2)"/>
+    
+    <!-- Camera -->
+    <circle cx="200" cy="170" r="12" fill="url(#droneGrad)"/>
+    <circle cx="200" cy="170" r="8" fill="rgba(255,255,255,0.3)"/>
+    <circle cx="200" cy="170" r="4" fill="#0ea5e9"/>
+    
+    <!-- LED Lights -->
+    <circle cx="175" cy="145" r="3" fill="#0ea5e9">
+      <animate attributeName="opacity" values="1;0.3;1" dur="2s" repeatCount="indefinite"/>
+    </circle>
+    <circle cx="225" cy="145" r="3" fill="#14b8a6">
+      <animate attributeName="opacity" values="0.3;1;0.3" dur="2s" repeatCount="indefinite"/>
+    </circle>
+  </g>
+  
+  <!-- Center stabilizer -->
+  <circle cx="200" cy="150" r="6" fill="url(#droneGrad)" opacity="0.8"/>
+</svg>

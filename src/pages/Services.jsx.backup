@@ -1,0 +1,257 @@
+import React from 'react';
+import { motion } from 'framer-motion';
+import { Link } from 'react-router-dom';
+
+export default function Services() {
+  const services = [
+    {
+      id: 1,
+      title: 'Aerial Photography & Videography',
+      description: 'High-resolution aerial imagery for commercial properties, real estate, infrastructure sites, corporate events, and documentary storytelling projects.',
+      icon: '📸',
+      features: [
+        '4K/8K high-resolution capture',
+        'Professional editing & color grading',
+        'Corporate event coverage from the air',
+        'Documentary drone footage integration'
+      ],
+      gradient: 'from-drone-500 to-sky-500',
+      price: 'Custom Quote'
+    },
+    {
+      id: 2,
+      title: 'Drone Inspection & Monitoring',
+      description: 'Infrastructure and construction site inspections for roofs, utilities, and heavy sites. Progress monitoring with periodic updates and agricultural crop health surveys.',
+      icon: '🔍',
+      features: [
+        'Construction site inspections',
+        'Multi-phase progress monitoring',
+        'Agricultural crop health surveys',
+        'Periodic site update reports'
+      ],
+      gradient: 'from-purple-600 to-pink-500',
+      price: 'Custom Quote'
+    },
+    {
+      id: 3,
+      title: 'Mapping, Surveying & 3D Modelling',
+      description: 'Orthomosaic maps for large land parcels, digital elevation models, contour mapping, 3D site models, volumetric calculations, and GIS analysis.',
+      icon: '🗺️',
+      features: [
+        'Orthomosaic maps & DEMs',
+        'Contour mapping',
+        '3D models & volumetric calculations',
+        'GIS analysis and data reporting'
+      ],
+      gradient: 'from-sky-600 to-teal-500',
+      price: 'Custom Quote'
+    },
+    {
+      id: 4,
+      title: 'Media Production: Documentary Films & Photography',
+      description: 'Professional photography and documentary film production from concept to post-production, capturing corporate, landscape, and project stories with integrated aerial footage.',
+      icon: '🎬',
+      features: [
+        'Professional photography services',
+        'Documentary film production',
+        'Corporate & landscape coverage',
+        'Aerial footage integration'
+      ],
+      gradient: 'from-orange-500 to-red-500',
+      price: 'Custom Quote'
+    },
+    {
+      id: 5,
+      title: 'Custom Data Services & Training',
+      description: 'Tailored data reporting with measurement and analysis, client training on drone data interpretation, basic drone awareness, and consultation on deployment and workflow.',
+      icon: '�',
+      features: [
+        'Tailored data reporting & analysis',
+        'Client training programs',
+        'Drone awareness for non-pilots',
+        'Workflow integration consultation'
+      ],
+      gradient: 'from-green-500 to-emerald-500',
+      price: 'Custom Quote'
+    }
+  ];
+
+  const processSteps = [
+    {
+      number: '01',
+      title: 'Consultation',
+      description: 'We discuss your project needs, objectives, and timeline to create a customized solution.'
+    },
+    {
+      number: '02',
+      title: 'Planning',
+      description: 'Our team develops a detailed flight plan, obtains necessary permits, and prepares equipment.'
+    },
+    {
+      number: '03',
+      title: 'Execution',
+      description: 'Professional pilots capture high-quality footage with precision and safety as top priorities.'
+    },
+    {
+      number: '04',
+      title: 'Delivery',
+      description: 'Receive edited, production-ready files with full documentation and support.'
+    }
+  ];
+
+  return (
+    <div className="min-h-screen pt-20">
+      {/* Hero Section */}
+      <section className="relative bg-gradient-to-br from-drone-900 via-sky-900 to-blue-950 text-white section-padding overflow-hidden">
+        <div className="absolute inset-0 opacity-20">
+          <motion.div
+            animate={{ rotate: 360, scale: [1, 1.2, 1] }}
+            transition={{ duration: 50, repeat: Infinity, ease: "linear" }}
+            className="absolute top-0 right-0 w-[500px] h-[500px] bg-drone-500 rounded-full blur-3xl"
+          />
+          <motion.div
+            animate={{ rotate: -360, scale: [1.2, 1, 1.2] }}
+            transition={{ duration: 40, repeat: Infinity, ease: "linear" }}
+            className="absolute bottom-0 left-0 w-[500px] h-[500px] bg-sky-500 rounded-full blur-3xl"
+          />
+        </div>
+        
+        <div className="container-custom relative z-10">
+          <motion.div
+            initial={{ opacity: 0, y: 30 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="text-center max-w-4xl mx-auto"
+          >
+            <motion.div
+              initial={{ opacity: 0, scale: 0.8 }}
+              animate={{ opacity: 1, scale: 1 }}
+              className="inline-flex items-center gap-2 px-6 py-3 bg-white/10 backdrop-blur-md border border-white/20 rounded-full mb-8"
+            >
+              <span className="text-3xl">🛠️</span>
+              <span className="text-sm font-semibold">Professional Solutions</span>
+            </motion.div>
+            <h1 className="text-5xl md:text-7xl font-bold mb-6">
+              Our <span className="bg-gradient-to-r from-drone-400 via-sky-400 to-purple-400 bg-clip-text text-transparent">Services</span>
+            </h1>
+            <p className="text-xl md:text-2xl text-gray-300">
+              Professional drone solutions tailored to your specific needs
+            </p>
+          </motion.div>
+        </div>
+      </section>
+
+      {/* Services Grid */}
+      <section className="section-padding bg-gray-50">
+        <div className="container-custom">
+          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+            {services.map((service, index) => (
+              <motion.div
+                key={service.id}
+                initial={{ opacity: 0, y: 30 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ delay: index * 0.1 }}
+                className="card group hover:shadow-2xl"
+              >
+                <div className={`w-20 h-20 rounded-2xl bg-gradient-to-br ${service.gradient} flex items-center justify-center text-4xl mb-6 group-hover:scale-110 transition-transform`}>
+                  {service.icon}
+                </div>
+                
+                <h3 className="text-2xl font-bold mb-3">{service.title}</h3>
+                <p className="text-gray-600 mb-6">{service.description}</p>
+                
+                <ul className="space-y-2 mb-6">
+                  {service.features.map((feature, idx) => (
+                    <li key={idx} className="flex items-center text-gray-700">
+                      <span className="text-green-600 mr-2">✓</span>
+                      {feature}
+                    </li>
+                  ))}
+                </ul>
+                
+                <div className="flex items-center justify-between pt-4 border-t">
+                  <span className="font-semibold text-lg text-blue-600">{service.price}</span>
+                  <Link to="/contact">
+                    <motion.button
+                      whileHover={{ scale: 1.05 }}
+                      whileTap={{ scale: 0.95 }}
+                      className="px-6 py-2 bg-gradient-to-r from-blue-600 to-purple-600 text-white rounded-full font-medium"
+                    >
+                      Get Quote
+                    </motion.button>
+                  </Link>
+                </div>
+              </motion.div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Process Section */}
+      <section className="section-padding">
+        <div className="container-custom">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            className="text-center mb-16"
+          >
+            <h2 className="text-4xl md:text-5xl font-bold mb-4">Our Process</h2>
+            <p className="text-xl text-gray-600">Simple, efficient, and professional</p>
+          </motion.div>
+
+          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
+            {processSteps.map((step, index) => (
+              <motion.div
+                key={step.number}
+                initial={{ opacity: 0, y: 30 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ delay: index * 0.1 }}
+                className="text-center"
+              >
+                <div className="w-20 h-20 rounded-full bg-gradient-to-br from-blue-600 to-purple-600 text-white text-3xl font-bold flex items-center justify-center mx-auto mb-6">
+                  {step.number}
+                </div>
+                <h3 className="text-2xl font-bold mb-3">{step.title}</h3>
+                <p className="text-gray-600">{step.description}</p>
+              </motion.div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* CTA Section */}
+      <section className="section-padding bg-gradient-to-br from-drone-600 via-sky-600 to-purple-600 text-white relative overflow-hidden">
+        <div className="absolute inset-0 opacity-10">
+          <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjAiIGhlaWdodD0iNjAiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PGRlZnM+PHBhdHRlcm4gaWQ9ImdyaWQiIHdpZHRoPSI2MCIgaGVpZ2h0PSI2MCIgcGF0dGVyblVuaXRzPSJ1c2VyU3BhY2VPblVzZSI+PHBhdGggZD0iTSA2MCAwIEwgMCAwIDAgNjAiIGZpbGw9Im5vbmUiIHN0cm9rZT0id2hpdGUiIHN0cm9rZS13aWR0aD0iMSIvPjwvcGF0dGVybj48L2RlZnM+PHJlY3Qgd2lkdGg9IjEwMCUiIGhlaWdodD0iMTAwJSIgZmlsbD0idXJsKCNncmlkKSIvPjwvc3ZnPg==')]"></div>
+        </div>
+        <div className="container-custom relative z-10">
+          <motion.div
+            initial={{ opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            className="text-center max-w-3xl mx-auto"
+          >
+            <h2 className="text-4xl md:text-5xl font-bold mb-6">
+              Ready to Start Your Project?
+            </h2>
+            <p className="text-xl mb-8 text-white/90">
+              Contact us today for a free consultation and custom quote
+            </p>
+            <Link to="/contact">
+              <motion.button
+                whileHover={{ scale: 1.05, y: -2 }}
+                whileTap={{ scale: 0.95 }}
+                className="bg-white text-drone-600 px-10 py-4 rounded-full font-semibold text-lg hover:shadow-2xl transition-all inline-flex items-center gap-2"
+              >
+                <span>Get Started Now</span>
+                <span className="text-2xl">→</span>
+              </motion.button>
+            </Link>
+          </motion.div>
+        </div>
+      </section>
+    </div>
+  );
+}
