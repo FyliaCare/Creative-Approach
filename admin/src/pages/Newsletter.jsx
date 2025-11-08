@@ -1160,7 +1160,7 @@ export const Newsletter = () => {
             <div className="p-8 space-y-6">
               {/* Recipients */}
               <div className="bg-gradient-to-r from-blue-50 to-purple-50 rounded-xl p-6 border-2 border-blue-200">
-                <label className="block text-lg font-bold text-gray-900 mb-4 flex items-center gap-2">
+                <label className="text-lg font-bold text-gray-900 mb-4 flex items-center gap-2">
                   <Target className="h-5 w-5 text-blue-600" />
                   Target Audience
                 </label>
@@ -1326,3 +1326,4 @@ export const Newsletter = () => {
     </div>
   );
 };
+
