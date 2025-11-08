@@ -33,109 +33,394 @@ import ReactQuill from 'react-quill';
 import 'react-quill/dist/quill.snow.css';
 import { motion } from 'framer-motion';
 
-// Email Templates
+// Advanced Email Templates with Professional Designs
 const EMAIL_TEMPLATES = [
   {
     id: 'blank',
     name: 'Blank Canvas',
     description: 'Start from scratch',
-    preview: '<p>Start writing your email...</p>',
+    preview: '<p style="font-size: 16px; color: #374151;">Start crafting your perfect email...</p>',
     icon: Sparkles,
     color: 'gray'
   },
   {
     id: 'newsletter',
-    name: 'Newsletter',
-    description: 'Monthly updates and news',
+    name: 'Modern Newsletter',
+    description: 'Stunning monthly updates',
     preview: `
-      <h2 style="color: #1e40af; margin-bottom: 20px;">📰 This Month's Highlights</h2>
-      <p style="font-size: 16px; line-height: 1.6; color: #374151;">Hi {name},</p>
-      <p style="font-size: 16px; line-height: 1.6; color: #374151;">We're excited to share our latest updates with you...</p>
-      <div style="background: #f3f4f6; padding: 20px; border-radius: 8px; margin: 20px 0;">
-        <h3 style="color: #1f2937; margin-bottom: 10px;">🎯 What's New</h3>
-        <ul style="color: #4b5563; line-height: 1.8;">
-          <li>Feature update 1</li>
-          <li>Feature update 2</li>
-          <li>Feature update 3</li>
-        </ul>
+      <div style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif; max-width: 600px; margin: 0 auto; background: #ffffff;">
+        <!-- Header with Gradient -->
+        <div style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); padding: 50px 30px; text-align: center; border-radius: 20px 20px 0 0;">
+          <h1 style="color: #ffffff; font-size: 38px; font-weight: 800; margin: 0 0 10px 0; text-shadow: 0 2px 4px rgba(0,0,0,0.2);">📰 Monthly Highlights</h1>
+          <p style="color: rgba(255,255,255,0.95); font-size: 18px; margin: 0; font-weight: 300;">Your dose of inspiration & updates</p>
+        </div>
+        
+        <!-- Greeting -->
+        <div style="padding: 40px 30px;">
+          <p style="font-size: 18px; line-height: 1.7; color: #1f2937; margin: 0 0 25px 0;">Hey {name}! 👋</p>
+          <p style="font-size: 16px; line-height: 1.8; color: #4b5563; margin: 0 0 30px 0;">We're absolutely thrilled to share this month's most exciting updates with you. Get ready for some amazing news!</p>
+          
+          <!-- Feature Cards -->
+          <div style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); border-radius: 16px; padding: 3px; margin: 30px 0;">
+            <div style="background: #ffffff; border-radius: 14px; padding: 30px;">
+              <h2 style="color: #667eea; font-size: 24px; font-weight: 700; margin: 0 0 20px 0; display: flex; align-items: center;">
+                <span style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); width: 40px; height: 40px; border-radius: 10px; display: inline-flex; align-items: center; justify-content: center; margin-right: 12px; font-size: 20px;">🎯</span>
+                What's New This Month
+              </h2>
+              
+              <!-- Feature Items -->
+              <div style="margin: 20px 0;">
+                <div style="display: flex; align-items: start; margin-bottom: 20px;">
+                  <span style="background: #f0f4ff; color: #667eea; width: 30px; height: 30px; border-radius: 50%; display: inline-flex; align-items: center; justify-content: center; margin-right: 15px; font-weight: 700; flex-shrink: 0;">1</span>
+                  <div>
+                    <h3 style="color: #1f2937; font-size: 17px; font-weight: 600; margin: 0 0 5px 0;">New Feature Launch</h3>
+                    <p style="color: #6b7280; font-size: 15px; line-height: 1.6; margin: 0;">Discover our latest innovation designed to make your life easier</p>
+                  </div>
+                </div>
+                
+                <div style="display: flex; align-items: start; margin-bottom: 20px;">
+                  <span style="background: #f0f4ff; color: #667eea; width: 30px; height: 30px; border-radius: 50%; display: inline-flex; align-items: center; justify-content: center; margin-right: 15px; font-weight: 700; flex-shrink: 0;">2</span>
+                  <div>
+                    <h3 style="color: #1f2937; font-size: 17px; font-weight: 600; margin: 0 0 5px 0;">Success Stories</h3>
+                    <p style="color: #6b7280; font-size: 15px; line-height: 1.6; margin: 0;">See how our community is achieving incredible results</p>
+                  </div>
+                </div>
+                
+                <div style="display: flex; align-items: start;">
+                  <span style="background: #f0f4ff; color: #667eea; width: 30px; height: 30px; border-radius: 50%; display: inline-flex; align-items: center; justify-content: center; margin-right: 15px; font-weight: 700; flex-shrink: 0;">3</span>
+                  <div>
+                    <h3 style="color: #1f2937; font-size: 17px; font-weight: 600; margin: 0 0 5px 0;">Upcoming Events</h3>
+                    <p style="color: #6b7280; font-size: 15px; line-height: 1.6; margin: 0;">Join us for exclusive webinars and workshops</p>
+                  </div>
+                </div>
+              </div>
+              
+              <!-- CTA Button -->
+              <div style="text-align: center; margin-top: 30px;">
+                <a href="#" style="display: inline-block; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: #ffffff; padding: 16px 40px; border-radius: 50px; text-decoration: none; font-weight: 700; font-size: 16px; box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4); transition: transform 0.2s;">
+                  Explore All Updates →
+                </a>
+              </div>
+            </div>
+          </div>
+          
+          <p style="font-size: 16px; line-height: 1.8; color: #4b5563; margin: 30px 0 0 0;">Stay amazing and keep soaring! 🚀</p>
+        </div>
       </div>
-      <p style="font-size: 16px; line-height: 1.6; color: #374151;">Thank you for being part of our community!</p>
     `,
     icon: Mail,
     color: 'blue'
   },
   {
     id: 'promotion',
-    name: 'Promotion',
-    description: 'Special offers and deals',
+    name: 'Premium Promo',
+    description: 'Eye-catching special offers',
     preview: `
-      <div style="text-align: center;">
-        <h1 style="color: #dc2626; font-size: 32px; margin-bottom: 10px;">🎉 Special Offer!</h1>
-        <p style="font-size: 20px; color: #991b1b; font-weight: 600;">Limited Time Only</p>
+      <div style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif; max-width: 600px; margin: 0 auto; background: #ffffff;">
+        <!-- Animated Header -->
+        <div style="background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%); padding: 60px 30px; text-align: center; position: relative; overflow: hidden; border-radius: 20px 20px 0 0;">
+          <div style="position: relative; z-index: 2;">
+            <div style="display: inline-block; background: rgba(255,255,255,0.2); backdrop-filter: blur(10px); border-radius: 50px; padding: 10px 25px; margin-bottom: 20px; border: 2px solid rgba(255,255,255,0.3);">
+              <p style="color: #ffffff; font-size: 14px; font-weight: 700; margin: 0; text-transform: uppercase; letter-spacing: 2px;">⚡ Limited Time Offer</p>
+            </div>
+            <h1 style="color: #ffffff; font-size: 56px; font-weight: 900; margin: 15px 0; line-height: 1; text-shadow: 0 4px 20px rgba(0,0,0,0.3);">50% OFF</h1>
+            <p style="color: rgba(255,255,255,0.95); font-size: 22px; font-weight: 600; margin: 10px 0 0 0; text-shadow: 0 2px 10px rgba(0,0,0,0.2);">All Premium Services</p>
+          </div>
+        </div>
+        
+        <!-- Content -->
+        <div style="padding: 45px 30px;">
+          <p style="font-size: 18px; line-height: 1.7; color: #1f2937; margin: 0 0 20px 0;">Hey {name}! 🎉</p>
+          <p style="font-size: 16px; line-height: 1.8; color: #4b5563; margin: 0 0 35px 0;">We've got something incredibly special just for you. For a limited time, unlock our premium features at an unbeatable price!</p>
+          
+          <!-- Offer Box -->
+          <div style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); border-radius: 20px; padding: 40px; text-align: center; box-shadow: 0 20px 60px rgba(102, 126, 234, 0.3); margin: 35px 0;">
+            <div style="background: rgba(255,255,255,0.15); backdrop-filter: blur(10px); border-radius: 15px; padding: 30px; border: 2px solid rgba(255,255,255,0.2);">
+              <h2 style="color: #ffffff; font-size: 32px; font-weight: 800; margin: 0 0 15px 0; text-shadow: 0 2px 10px rgba(0,0,0,0.2);">🎁 Exclusive Deal</h2>
+              <div style="display: inline-block; background: rgba(255,255,255,0.95); border-radius: 12px; padding: 25px 35px; margin: 20px 0;">
+                <p style="color: #f5576c; font-size: 48px; font-weight: 900; margin: 0; line-height: 1;">50%</p>
+                <p style="color: #4b5563; font-size: 16px; font-weight: 600; margin: 5px 0 0 0;">DISCOUNT</p>
+              </div>
+              <p style="color: rgba(255,255,255,0.95); font-size: 17px; margin: 20px 0 25px 0; line-height: 1.6;">Get access to all premium features, unlimited support, and exclusive content</p>
+              
+              <!-- CTA -->
+              <a href="#" style="display: inline-block; background: #ffffff; color: #f5576c; padding: 18px 50px; border-radius: 50px; text-decoration: none; font-weight: 800; font-size: 18px; box-shadow: 0 8px 25px rgba(0,0,0,0.2); transition: transform 0.2s;">
+                Claim Your Discount Now →
+              </a>
+            </div>
+          </div>
+          
+          <!-- Countdown -->
+          <div style="text-align: center; margin: 35px 0;">
+            <div style="display: inline-flex; gap: 15px; align-items: center; background: #fef3c7; border: 2px dashed #f59e0b; border-radius: 12px; padding: 20px 30px;">
+              <span style="font-size: 28px;">⏰</span>
+              <div>
+                <p style="color: #b45309; font-size: 14px; font-weight: 700; margin: 0 0 5px 0; text-transform: uppercase; letter-spacing: 1px;">Hurry! Offer expires in</p>
+                <p style="color: #92400e; font-size: 22px; font-weight: 900; margin: 0;">7 DAYS</p>
+              </div>
+            </div>
+          </div>
+          
+          <p style="font-size: 15px; line-height: 1.7; color: #6b7280; margin: 30px 0 0 0; text-align: center;">Don't miss out on this incredible opportunity. Join thousands of happy customers today!</p>
+        </div>
       </div>
-      <p style="font-size: 16px; line-height: 1.6; color: #374151; margin-top: 30px;">Hi {name},</p>
-      <p style="font-size: 16px; line-height: 1.6; color: #374151;">We have an exclusive offer just for you...</p>
-      <div style="background: linear-gradient(135deg, #dc2626 0%, #991b1b 100%); color: white; padding: 30px; border-radius: 12px; text-align: center; margin: 30px 0;">
-        <h2 style="font-size: 36px; margin: 0; color: white;">50% OFF</h2>
-        <p style="font-size: 18px; margin: 10px 0; color: white;">All Services This Month</p>
-        <a href="#" style="display: inline-block; background: white; color: #dc2626; padding: 12px 32px; border-radius: 8px; text-decoration: none; font-weight: 600; margin-top: 10px;">Claim Offer</a>
-      </div>
-      <p style="font-size: 14px; color: #6b7280; text-align: center;">Offer expires in 7 days</p>
     `,
     icon: Target,
     color: 'red'
   },
   {
     id: 'announcement',
-    name: 'Announcement',
-    description: 'Important company news',
+    name: 'Professional Announcement',
+    description: 'Corporate news & updates',
     preview: `
-      <div style="border-left: 4px solid #10b981; padding-left: 20px; margin-bottom: 30px;">
-        <h2 style="color: #059669; margin: 0;">📢 Important Announcement</h2>
+      <div style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif; max-width: 600px; margin: 0 auto; background: #ffffff;">
+        <!-- Header Banner -->
+        <div style="background: linear-gradient(135deg, #0ea5e9 0%, #06b6d4 100%); padding: 45px 30px; border-radius: 20px 20px 0 0;">
+          <div style="display: inline-block; background: rgba(255,255,255,0.2); backdrop-filter: blur(10px); border-radius: 50px; padding: 8px 20px; margin-bottom: 15px; border: 2px solid rgba(255,255,255,0.3);">
+            <p style="color: #ffffff; font-size: 13px; font-weight: 700; margin: 0; text-transform: uppercase; letter-spacing: 2px;">📢 Announcement</p>
+          </div>
+          <h1 style="color: #ffffff; font-size: 36px; font-weight: 800; margin: 10px 0 0 0; line-height: 1.3; text-shadow: 0 2px 10px rgba(0,0,0,0.15);">Important Company Update</h1>
+        </div>
+        
+        <!-- Content -->
+        <div style="padding: 45px 30px;">
+          <p style="font-size: 17px; line-height: 1.7; color: #1f2937; margin: 0 0 20px 0;">Dear {name},</p>
+          <p style="font-size: 16px; line-height: 1.8; color: #4b5563; margin: 0 0 35px 0;">We're excited to share some significant developments that will enhance your experience with us.</p>
+          
+          <!-- Main Announcement Box -->
+          <div style="background: linear-gradient(to right, #e0f2fe, #f0f9ff); border-left: 6px solid #0ea5e9; border-radius: 15px; padding: 35px; margin: 35px 0; box-shadow: 0 10px 30px rgba(14, 165, 233, 0.1);">
+            <h2 style="color: #0c4a6e; font-size: 26px; font-weight: 800; margin: 0 0 25px 0; display: flex; align-items: center;">
+              <span style="background: linear-gradient(135deg, #0ea5e9 0%, #06b6d4 100%); width: 50px; height: 50px; border-radius: 12px; display: inline-flex; align-items: center; justify-content: center; margin-right: 15px; font-size: 24px; box-shadow: 0 4px 15px rgba(14, 165, 233, 0.3);">🎯</span>
+              Key Highlights
+            </h2>
+            
+            <!-- Highlight Cards -->
+            <div style="display: grid; gap: 20px;">
+              <div style="background: #ffffff; border-radius: 12px; padding: 25px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); border: 2px solid #e0f2fe;">
+                <div style="display: flex; align-items: start;">
+                  <div style="background: linear-gradient(135deg, #0ea5e9 0%, #06b6d4 100%); width: 45px; height: 45px; border-radius: 10px; display: flex; align-items: center; justify-content: center; margin-right: 18px; flex-shrink: 0; box-shadow: 0 4px 12px rgba(14, 165, 233, 0.3);">
+                    <span style="color: #ffffff; font-size: 22px; font-weight: 800;">1</span>
+                  </div>
+                  <div>
+                    <h3 style="color: #0c4a6e; font-size: 19px; font-weight: 700; margin: 0 0 10px 0;">Enhanced Performance</h3>
+                    <p style="color: #475569; font-size: 15px; line-height: 1.7; margin: 0;">Our platform is now 50% faster with improved reliability and uptime across all services</p>
+                  </div>
+                </div>
+              </div>
+              
+              <div style="background: #ffffff; border-radius: 12px; padding: 25px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); border: 2px solid #e0f2fe;">
+                <div style="display: flex; align-items: start;">
+                  <div style="background: linear-gradient(135deg, #0ea5e9 0%, #06b6d4 100%); width: 45px; height: 45px; border-radius: 10px; display: flex; align-items: center; justify-content: center; margin-right: 18px; flex-shrink: 0; box-shadow: 0 4px 12px rgba(14, 165, 233, 0.3);">
+                    <span style="color: #ffffff; font-size: 22px; font-weight: 800;">2</span>
+                  </div>
+                  <div>
+                    <h3 style="color: #0c4a6e; font-size: 19px; font-weight: 700; margin: 0 0 10px 0;">New Features Released</h3>
+                    <p style="color: #475569; font-size: 15px; line-height: 1.7; margin: 0;">Introducing advanced analytics dashboard and real-time collaboration tools</p>
+                  </div>
+                </div>
+              </div>
+              
+              <div style="background: #ffffff; border-radius: 12px; padding: 25px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); border: 2px solid #e0f2fe;">
+                <div style="display: flex; align-items: start;">
+                  <div style="background: linear-gradient(135deg, #0ea5e9 0%, #06b6d4 100%); width: 45px; height: 45px; border-radius: 10px; display: flex; align-items: center; justify-content: center; margin-right: 18px; flex-shrink: 0; box-shadow: 0 4px 12px rgba(14, 165, 233, 0.3);">
+                    <span style="color: #ffffff; font-size: 22px; font-weight: 800;">3</span>
+                  </div>
+                  <div>
+                    <h3 style="color: #0c4a6e; font-size: 19px; font-weight: 700; margin: 0 0 10px 0;">24/7 Support Available</h3>
+                    <p style="color: #475569; font-size: 15px; line-height: 1.7; margin: 0;">Our dedicated support team is now available round-the-clock to assist you</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          
+          <!-- CTA -->
+          <div style="text-align: center; margin: 40px 0 30px 0;">
+            <a href="#" style="display: inline-block; background: linear-gradient(135deg, #0ea5e9 0%, #06b6d4 100%); color: #ffffff; padding: 16px 45px; border-radius: 50px; text-decoration: none; font-weight: 700; font-size: 17px; box-shadow: 0 6px 20px rgba(14, 165, 233, 0.4);">
+              Learn More About Updates →
+            </a>
+          </div>
+          
+          <p style="font-size: 16px; line-height: 1.8; color: #4b5563; margin: 30px 0 0 0;">We're committed to providing you with the best possible experience. Thank you for being part of our journey!</p>
+        </div>
       </div>
-      <p style="font-size: 16px; line-height: 1.6; color: #374151;">Dear {name},</p>
-      <p style="font-size: 16px; line-height: 1.6; color: #374151;">We're excited to announce...</p>
-      <div style="background: #ecfdf5; border: 2px solid #10b981; padding: 20px; border-radius: 8px; margin: 20px 0;">
-        <h3 style="color: #047857; margin-top: 0;">Key Highlights:</h3>
-        <ul style="color: #065f46; line-height: 1.8;">
-          <li>Point 1</li>
-          <li>Point 2</li>
-          <li>Point 3</li>
-        </ul>
-      </div>
-      <p style="font-size: 16px; line-height: 1.6; color: #374151;">We look forward to serving you better!</p>
     `,
     icon: Zap,
     color: 'green'
   },
   {
     id: 'welcome',
-    name: 'Welcome Email',
-    description: 'Greet new subscribers',
+    name: 'Premium Welcome',
+    description: 'Onboard new subscribers in style',
     preview: `
-      <div style="text-align: center; padding: 40px 0;">
-        <h1 style="color: #7c3aed; font-size: 36px; margin-bottom: 10px;">👋 Welcome Aboard!</h1>
-        <p style="font-size: 18px; color: #6d28d9;">We're thrilled to have you with us</p>
+      <div style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif; max-width: 600px; margin: 0 auto; background: #ffffff;">
+        <!-- Hero Section -->
+        <div style="background: linear-gradient(135deg, #8b5cf6 0%, #6d28d9 100%); padding: 60px 30px; text-align: center; position: relative; border-radius: 20px 20px 0 0;">
+          <div style="background: rgba(255,255,255,0.15); backdrop-filter: blur(10px); width: 100px; height: 100px; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 25px auto; border: 4px solid rgba(255,255,255,0.3); box-shadow: 0 10px 30px rgba(0,0,0,0.2);">
+            <span style="font-size: 50px;">👋</span>
+          </div>
+          <h1 style="color: #ffffff; font-size: 42px; font-weight: 900; margin: 0 0 12px 0; text-shadow: 0 4px 20px rgba(0,0,0,0.2);">Welcome Aboard!</h1>
+          <p style="color: rgba(255,255,255,0.95); font-size: 20px; font-weight: 300; margin: 0; text-shadow: 0 2px 10px rgba(0,0,0,0.15);">We're thrilled to have you with us</p>
+        </div>
+        
+        <!-- Content -->
+        <div style="padding: 45px 30px;">
+          <div style="text-align: center; margin-bottom: 40px;">
+            <h2 style="color: #1f2937; font-size: 28px; font-weight: 800; margin: 0 0 15px 0;">Hey {name}! 🎉</h2>
+            <p style="color: #6b7280; font-size: 17px; line-height: 1.7; margin: 0;">Thank you for subscribing! You've just unlocked a world of exclusive benefits.</p>
+          </div>
+          
+          <!-- Benefits Grid -->
+          <div style="display: grid; gap: 20px; margin: 40px 0;">
+            <!-- Benefit 1 -->
+            <div style="background: linear-gradient(135deg, #faf5ff 0%, #f3e8ff 100%); border-radius: 16px; padding: 30px; border: 2px solid #e9d5ff; position: relative; overflow: hidden;">
+              <div style="position: absolute; top: -10px; right: -10px; background: linear-gradient(135deg, #8b5cf6 0%, #6d28d9 100%); width: 60px; height: 60px; border-radius: 50%; opacity: 0.1;"></div>
+              <div style="position: relative; z-index: 2;">
+                <div style="background: linear-gradient(135deg, #8b5cf6 0%, #6d28d9 100%); width: 55px; height: 55px; border-radius: 14px; display: flex; align-items: center; justify-content: center; margin-bottom: 20px; box-shadow: 0 6px 20px rgba(139, 92, 246, 0.4);">
+                  <span style="font-size: 28px;">📧</span>
+                </div>
+                <h3 style="color: #6d28d9; font-size: 21px; font-weight: 800; margin: 0 0 12px 0;">Weekly Newsletters</h3>
+                <p style="color: #7c3aed; font-size: 15px; line-height: 1.7; margin: 0; font-weight: 500;">Get curated content, industry insights, and latest updates delivered to your inbox</p>
+              </div>
+            </div>
+            
+            <!-- Benefit 2 -->
+            <div style="background: linear-gradient(135deg, #faf5ff 0%, #f3e8ff 100%); border-radius: 16px; padding: 30px; border: 2px solid #e9d5ff; position: relative; overflow: hidden;">
+              <div style="position: absolute; top: -10px; right: -10px; background: linear-gradient(135deg, #8b5cf6 0%, #6d28d9 100%); width: 60px; height: 60px; border-radius: 50%; opacity: 0.1;"></div>
+              <div style="position: relative; z-index: 2;">
+                <div style="background: linear-gradient(135deg, #8b5cf6 0%, #6d28d9 100%); width: 55px; height: 55px; border-radius: 14px; display: flex; align-items: center; justify-content: center; margin-bottom: 20px; box-shadow: 0 6px 20px rgba(139, 92, 246, 0.4);">
+                  <span style="font-size: 28px;">🎁</span>
+                </div>
+                <h3 style="color: #6d28d9; font-size: 21px; font-weight: 800; margin: 0 0 12px 0;">Exclusive Offers</h3>
+                <p style="color: #7c3aed; font-size: 15px; line-height: 1.7; margin: 0; font-weight: 500;">Access subscriber-only deals, early-bird discounts, and special promotions</p>
+              </div>
+            </div>
+            
+            <!-- Benefit 3 -->
+            <div style="background: linear-gradient(135deg, #faf5ff 0%, #f3e8ff 100%); border-radius: 16px; padding: 30px; border: 2px solid #e9d5ff; position: relative; overflow: hidden;">
+              <div style="position: absolute; top: -10px; right: -10px; background: linear-gradient(135deg, #8b5cf6 0%, #6d28d9 100%); width: 60px; height: 60px; border-radius: 50%; opacity: 0.1;"></div>
+              <div style="position: relative; z-index: 2;">
+                <div style="background: linear-gradient(135deg, #8b5cf6 0%, #6d28d9 100%); width: 55px; height: 55px; border-radius: 14px; display: flex; align-items: center; justify-content: center; margin-bottom: 20px; box-shadow: 0 6px 20px rgba(139, 92, 246, 0.4);">
+                  <span style="font-size: 28px;">💡</span>
+                </div>
+                <h3 style="color: #6d28d9; font-size: 21px; font-weight: 800; margin: 0 0 12px 0;">Expert Resources</h3>
+                <p style="color: #7c3aed; font-size: 15px; line-height: 1.7; margin: 0; font-weight: 500;">Learn from industry professionals with guides, tutorials, and insider tips</p>
+              </div>
+            </div>
+          </div>
+          
+          <!-- CTA -->
+          <div style="background: linear-gradient(135deg, #8b5cf6 0%, #6d28d9 100%); border-radius: 18px; padding: 40px; text-align: center; margin: 40px 0; box-shadow: 0 15px 40px rgba(139, 92, 246, 0.3);">
+            <h3 style="color: #ffffff; font-size: 24px; font-weight: 800; margin: 0 0 15px 0; text-shadow: 0 2px 10px rgba(0,0,0,0.2);">Ready to Get Started?</h3>
+            <p style="color: rgba(255,255,255,0.95); font-size: 16px; margin: 0 0 25px 0; line-height: 1.6;">Explore our platform and discover everything we have to offer</p>
+            <a href="#" style="display: inline-block; background: #ffffff; color: #6d28d9; padding: 16px 45px; border-radius: 50px; text-decoration: none; font-weight: 800; font-size: 17px; box-shadow: 0 6px 20px rgba(0,0,0,0.2);">
+              Explore Now →
+            </a>
+          </div>
+          
+          <div style="text-align: center; margin-top: 35px;">
+            <p style="color: #6b7280; font-size: 16px; line-height: 1.8; margin: 0;">Questions? We're here to help! Feel free to reach out anytime.</p>
+            <p style="color: #4b5563; font-size: 17px; font-weight: 600; margin: 15px 0 0 0;">Welcome to the family! 🚀</p>
+          </div>
+        </div>
       </div>
-      <p style="font-size: 16px; line-height: 1.6; color: #374151;">Hi {name},</p>
-      <p style="font-size: 16px; line-height: 1.6; color: #374151;">Thank you for subscribing! Here's what you can expect from us:</p>
-      <div style="display: grid; gap: 15px; margin: 30px 0;">
-        <div style="background: #faf5ff; padding: 15px; border-radius: 8px; border-left: 4px solid #7c3aed;">
-          <strong style="color: #6d28d9;">📧 Regular Updates</strong>
-          <p style="margin: 5px 0 0 0; color: #6b7280;">Stay informed with our latest news</p>
-        </div>
-        <div style="background: #faf5ff; padding: 15px; border-radius: 8px; border-left: 4px solid #7c3aed;">
-          <strong style="color: #6d28d9;">🎁 Exclusive Offers</strong>
-          <p style="margin: 5px 0 0 0; color: #6b7280;">Special deals just for subscribers</p>
-        </div>
-        <div style="background: #faf5ff; padding: 15px; border-radius: 8px; border-left: 4px solid #7c3aed;">
-          <strong style="color: #6d28d9;">💡 Expert Tips</strong>
-          <p style="margin: 5px 0 0 0; color: #6b7280;">Learn from industry professionals</p>
-        </div>
-      </div>
-      <p style="font-size: 16px; line-height: 1.6; color: #374151;">Let's get started on this journey together!</p>
     `,
     icon: UserPlus,
+    color: 'purple'
+  },
+  {
+    id: 'event',
+    name: 'Event Invitation',
+    description: 'Exclusive webinars & workshops',
+    preview: `
+      <div style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif; max-width: 600px; margin: 0 auto; background: #ffffff;">
+        <!-- Ticket-style Header -->
+        <div style="background: linear-gradient(135deg, #ec4899 0%, #be185d 100%); padding: 50px 30px; position: relative; border-radius: 20px 20px 0 0; overflow: hidden;">
+          <div style="position: absolute; top: 0; left: 0; right: 0; bottom: 0; background-image: repeating-linear-gradient(45deg, transparent, transparent 10px, rgba(255,255,255,0.05) 10px, rgba(255,255,255,0.05) 20px);"></div>
+          <div style="position: relative; z-index: 2; text-align: center;">
+            <div style="display: inline-block; background: rgba(255,255,255,0.25); backdrop-filter: blur(10px); border-radius: 50px; padding: 10px 25px; margin-bottom: 20px; border: 2px solid rgba(255,255,255,0.4);">
+              <p style="color: #ffffff; font-size: 13px; font-weight: 700; margin: 0; text-transform: uppercase; letter-spacing: 2px;">🎟️ Exclusive Invitation</p>
+            </div>
+            <h1 style="color: #ffffff; font-size: 40px; font-weight: 900; margin: 15px 0; line-height: 1.2; text-shadow: 0 4px 20px rgba(0,0,0,0.3);">You're Invited!</h1>
+            <p style="color: rgba(255,255,255,0.95); font-size: 20px; font-weight: 300; margin: 0; text-shadow: 0 2px 10px rgba(0,0,0,0.2);">Join us for an exclusive event</p>
+          </div>
+        </div>
+        
+        <!-- Content -->
+        <div style="padding: 45px 30px;">
+          <p style="font-size: 18px; line-height: 1.7; color: #1f2937; margin: 0 0 20px 0;">Hi {name}! 🌟</p>
+          <p style="font-size: 16px; line-height: 1.8; color: #4b5563; margin: 0 0 35px 0;">We're excited to personally invite you to our upcoming exclusive event. This is a unique opportunity you won't want to miss!</p>
+          
+          <!-- Event Card -->
+          <div style="background: linear-gradient(135deg, #fdf2f8 0%, #fce7f3 100%); border-radius: 20px; padding: 3px; margin: 35px 0; box-shadow: 0 15px 40px rgba(236, 72, 153, 0.2);">
+            <div style="background: #ffffff; border-radius: 18px; padding: 40px;">
+              <div style="text-align: center; margin-bottom: 30px;">
+                <div style="background: linear-gradient(135deg, #ec4899 0%, #be185d 100%); width: 80px; height: 80px; border-radius: 20px; display: flex; align-items: center; justify-content: center; margin: 0 auto 20px auto; box-shadow: 0 8px 25px rgba(236, 72, 153, 0.4);">
+                  <span style="font-size: 40px;">🎯</span>
+                </div>
+                <h2 style="color: #831843; font-size: 28px; font-weight: 900; margin: 0 0 10px 0;">Mastering Digital Success</h2>
+                <p style="color: #9f1239; font-size: 17px; font-weight: 600; margin: 0;">Exclusive Workshop & Networking Event</p>
+              </div>
+              
+              <!-- Event Details Grid -->
+              <div style="display: grid; gap: 15px; margin: 30px 0;">
+                <div style="display: flex; align-items: center; background: #fdf2f8; padding: 20px; border-radius: 12px; border-left: 4px solid #ec4899;">
+                  <div style="background: linear-gradient(135deg, #ec4899 0%, #be185d 100%); width: 50px; height: 50px; border-radius: 10px; display: flex; align-items: center; justify-content: center; margin-right: 20px; flex-shrink: 0; box-shadow: 0 4px 15px rgba(236, 72, 153, 0.3);">
+                    <span style="font-size: 24px;">📅</span>
+                  </div>
+                  <div>
+                    <p style="color: #9f1239; font-size: 13px; font-weight: 700; margin: 0 0 5px 0; text-transform: uppercase; letter-spacing: 1px;">Date</p>
+                    <p style="color: #1f2937; font-size: 17px; font-weight: 700; margin: 0;">Friday, December 15, 2025</p>
+                  </div>
+                </div>
+                
+                <div style="display: flex; align-items: center; background: #fdf2f8; padding: 20px; border-radius: 12px; border-left: 4px solid #ec4899;">
+                  <div style="background: linear-gradient(135deg, #ec4899 0%, #be185d 100%); width: 50px; height: 50px; border-radius: 10px; display: flex; align-items: center; justify-content: center; margin-right: 20px; flex-shrink: 0; box-shadow: 0 4px 15px rgba(236, 72, 153, 0.3);">
+                    <span style="font-size: 24px;">⏰</span>
+                  </div>
+                  <div>
+                    <p style="color: #9f1239; font-size: 13px; font-weight: 700; margin: 0 0 5px 0; text-transform: uppercase; letter-spacing: 1px;">Time</p>
+                    <p style="color: #1f2937; font-size: 17px; font-weight: 700; margin: 0;">6:00 PM - 9:00 PM (GMT)</p>
+                  </div>
+                </div>
+                
+                <div style="display: flex; align-items: center; background: #fdf2f8; padding: 20px; border-radius: 12px; border-left: 4px solid #ec4899;">
+                  <div style="background: linear-gradient(135deg, #ec4899 0%, #be185d 100%); width: 50px; height: 50px; border-radius: 10px; display: flex; align-items: center; justify-content: center; margin-right: 20px; flex-shrink: 0; box-shadow: 0 4px 15px rgba(236, 72, 153, 0.3);">
+                    <span style="font-size: 24px;">📍</span>
+                  </div>
+                  <div>
+                    <p style="color: #9f1239; font-size: 13px; font-weight: 700; margin: 0 0 5px 0; text-transform: uppercase; letter-spacing: 1px;">Location</p>
+                    <p style="color: #1f2937; font-size: 17px; font-weight: 700; margin: 0;">Virtual Event (Zoom Link)</p>
+                  </div>
+                </div>
+              </div>
+              
+              <!-- What You'll Learn -->
+              <div style="background: linear-gradient(to right, #fdf2f8, #fce7f3); border-radius: 12px; padding: 25px; margin: 30px 0;">
+                <h3 style="color: #831843; font-size: 20px; font-weight: 800; margin: 0 0 20px 0;">✨ What You'll Learn</h3>
+                <ul style="color: #4b5563; font-size: 15px; line-height: 2; margin: 0; padding-left: 20px;">
+                  <li><strong>Advanced Strategies</strong> for scaling your business</li>
+                  <li><strong>Insider Tips</strong> from industry leaders</li>
+                  <li><strong>Networking</strong> with like-minded professionals</li>
+                  <li><strong>Q&A Session</strong> with expert panel</li>
+                </ul>
+              </div>
+              
+              <!-- CTA -->
+              <div style="text-align: center; margin-top: 35px;">
+                <a href="#" style="display: inline-block; background: linear-gradient(135deg, #ec4899 0%, #be185d 100%); color: #ffffff; padding: 18px 50px; border-radius: 50px; text-decoration: none; font-weight: 800; font-size: 18px; box-shadow: 0 8px 25px rgba(236, 72, 153, 0.4); text-transform: uppercase; letter-spacing: 1px;">
+                  Reserve Your Spot →
+                </a>
+                <p style="color: #9f1239; font-size: 14px; font-weight: 600; margin: 15px 0 0 0;">⚡ Limited seats available!</p>
+              </div>
+            </div>
+          </div>
+          
+          <p style="font-size: 16px; line-height: 1.8; color: #4b5563; margin: 30px 0 0 0; text-align: center;">Don't miss this incredible opportunity to learn, connect, and grow. See you there! 🚀</p>
+        </div>
+      </div>
+    `,
+    icon: Calendar,
     color: 'purple'
   }
 ];
