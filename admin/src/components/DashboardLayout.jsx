@@ -13,6 +13,7 @@ import {
   X,
   Bell,
   ChevronDown,
+  Briefcase,
 } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 
@@ -21,6 +22,7 @@ const navigation = [
   { name: 'Analytics', href: '/analytics', icon: BarChart3 },
   { name: 'Newsletter', href: '/newsletter', icon: Users },
   { name: 'Blog Posts', href: '/blog', icon: FileText },
+  { name: 'Portfolio', href: '/portfolio', icon: Briefcase },
   { name: 'Quotations', href: '/quotations', icon: ClipboardList },
   { name: 'Live Chat', href: '/chat', icon: MessageSquare },
   { name: 'Settings', href: '/settings', icon: Settings },

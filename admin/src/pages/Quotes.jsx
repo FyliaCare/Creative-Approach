@@ -4,7 +4,7 @@ import axios from 'axios';
 
 const API_URL = import.meta.env.VITE_API_URL;
 
-export const Quotations = () => {
+export default function Quotes() {
   const [quotes, setQuotes] = useState([]);
   const [loading, setLoading] = useState(true);
   const [filter, setFilter] = useState('all');
@@ -301,4 +301,4 @@ export const Quotations = () => {
       )}
     </div>
   );
-};
+}

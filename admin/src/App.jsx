@@ -11,6 +11,7 @@ import { Blog } from './pages/Blog';
 import { BlogEditor } from './pages/BlogEditor';
 import { Quotations } from './pages/Quotations';
 import { QuotationDetail } from './pages/QuotationDetail';
+import { Portfolio } from './pages/Portfolio';
 import { Chat } from './pages/Chat';
 import { Settings } from './pages/Settings';
 
@@ -99,6 +100,16 @@ function App() {
               <ProtectedRoute>
                 <DashboardLayout>
                   <QuotationDetail />
+                </DashboardLayout>
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/portfolio"
+            element={
+              <ProtectedRoute>
+                <DashboardLayout>
+                  <Portfolio />
                 </DashboardLayout>
               </ProtectedRoute>
             }
