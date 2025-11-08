@@ -27,12 +27,14 @@ export const Chat = () => {
 
     // Listen for active visitors
     newSocket.on('active_visitors', (data) => {
-      setVisitors(data);
+      setVisitors(Array.isArray(data) ? data : []);
     });
 
     // Listen for new visitor
     newSocket.on('visitor_connected', (visitor) => {
-      setVisitors(prev => [...prev, visitor]);
+      if (visitor) {
+        setVisitors(prev => [...prev, visitor]);
+      }
     });
 
     // Listen for visitor disconnect

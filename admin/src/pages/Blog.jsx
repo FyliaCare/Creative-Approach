@@ -22,11 +22,12 @@ export const Blog = () => {
       const response = await axios.get(`${API_URL}/api/blog`, {
         headers: { Authorization: `Bearer ${token}` }
       });
-      setPosts(response.data);
+      setPosts(Array.isArray(response.data) ? response.data : []);
       setLoading(false);
     } catch (error) {
       console.error('Error fetching posts:', error);
       toast.error('Failed to fetch blog posts');
+      setPosts([]);
       setLoading(false);
     }
   };

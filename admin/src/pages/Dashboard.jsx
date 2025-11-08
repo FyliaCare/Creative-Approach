@@ -28,23 +28,30 @@ export const Dashboard = () => {
   const fetchDashboardData = async () => {
     try {
       const [analytics, quotes, newsletter, blog] = await Promise.all([
-        analyticsAPI.getOverview('7d'),
-        quotationsAPI.getStats(),
-        newsletterAPI.getStats(),
-        blogAPI.getAllPosts({ limit: 5 }),
+        analyticsAPI.getOverview('7d').catch(() => ({ data: { data: {} } })),
+        quotationsAPI.getStats().catch(() => ({ data: { data: {} } })),
+        newsletterAPI.getStats().catch(() => ({ data: { data: {} } })),
+        blogAPI.getAllPosts({ limit: 5 }).catch(() => ({ data: { data: [] } })),
       ]);
 
       setStats({
-        analytics: analytics.data.data,
-        quotes: quotes.data.data,
-        newsletter: newsletter.data.data,
-        blog: blog.data.data,
+        analytics: analytics.data.data || {},
+        quotes: quotes.data.data || {},
+        newsletter: newsletter.data.data || {},
+        blog: blog.data.data || [],
       });
 
       await fetchRealtimeData();
     } catch (error) {
       console.error('Error fetching dashboard data:', error);
       toast.error('Failed to load dashboard data');
+      // Set default empty stats
+      setStats({
+        analytics: {},
+        quotes: {},
+        newsletter: {},
+        blog: [],
+      });
     } finally {
       setLoading(false);
     }

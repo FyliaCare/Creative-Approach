@@ -22,10 +22,12 @@ export const Quotations = () => {
       const response = await axios.get(`${API_URL}/api/quotations`, {
         headers: { Authorization: `Bearer ${token}` }
       });
-      setQuotes(response.data);
+      // Ensure we always set an array
+      setQuotes(Array.isArray(response.data) ? response.data : []);
       setLoading(false);
     } catch (error) {
       console.error('Error fetching quotes:', error);
+      setQuotes([]); // Set empty array on error
       setLoading(false);
     }
   };

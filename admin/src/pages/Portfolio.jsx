@@ -36,11 +36,12 @@ export const Portfolio = () => {
       const response = await axios.get(`${API_URL}/api/portfolio`, {
         headers: { Authorization: `Bearer ${token}` }
       });
-      setProjects(response.data);
+      setProjects(Array.isArray(response.data) ? response.data : []);
       setLoading(false);
     } catch (error) {
       console.error('Error fetching projects:', error);
       toast.error('Failed to fetch portfolio');
+      setProjects([]);
       setLoading(false);
     }
   };
