@@ -10,10 +10,14 @@ import {
   TrendingUp,
   Calendar,
   X,
+  Send,
+  Eye,
 } from 'lucide-react';
 import { newsletterAPI } from '../services/api';
 import toast from 'react-hot-toast';
 import { format } from 'date-fns';
+import ReactQuill from 'react-quill';
+import 'react-quill/dist/quill.snow.css';
 
 export const Newsletter = () => {
   const [subscribers, setSubscribers] = useState([]);
@@ -23,6 +27,14 @@ export const Newsletter = () => {
   const [statusFilter, setStatusFilter] = useState('all');
   const [selectedCountry, setSelectedCountry] = useState('all');
   const [selectedSubscribers, setSelectedSubscribers] = useState([]);
+  
+  // Email modal state
+  const [showEmailModal, setShowEmailModal] = useState(false);
+  const [emailSubject, setEmailSubject] = useState('');
+  const [emailBody, setEmailBody] = useState('');
+  const [recipientType, setRecipientType] = useState('active');
+  const [sending, setSending] = useState(false);
+  const [showPreview, setShowPreview] = useState(false);
 
   useEffect(() => {
     fetchData();
@@ -120,6 +132,77 @@ export const Newsletter = () => {
     URL.revokeObjectURL(url);
 
     toast.success('Subscribers exported successfully');
+  };
+
+  const handleSendBulkEmail = async () => {
+    if (!emailSubject.trim()) {
+      toast.error('Please enter email subject');
+      return;
+    }
+    
+    if (!emailBody.trim() || emailBody === '<p><br></p>') {
+      toast.error('Please enter email body');
+      return;
+    }
+    
+    if (recipientType === 'selected' && selectedSubscribers.length === 0) {
+      toast.error('Please select at least one subscriber');
+      return;
+    }
+    
+    if (!confirm(`Send email to ${getRecipientCount()} subscribers?`)) {
+      return;
+    }
+    
+    try {
+      setSending(true);
+      
+      const payload = {
+        subject: emailSubject,
+        body: emailBody,
+        recipients: recipientType,
+        selectedEmails: recipientType === 'selected' 
+          ? subscribers.filter(s => selectedSubscribers.includes(s._id)).map(s => s.email)
+          : []
+      };
+      
+      const response = await newsletterAPI.sendBulkEmail(payload);
+      
+      toast.success(
+        `Email sent successfully! Sent to ${response.data.data.sent} subscribers`,
+        { duration: 5000 }
+      );
+      
+      // Reset form
+      setShowEmailModal(false);
+      setEmailSubject('');
+      setEmailBody('');
+      setRecipientType('active');
+      setSelectedSubscribers([]);
+      
+    } catch (error) {
+      console.error('Error sending bulk email:', error);
+      toast.error(error.response?.data?.message || 'Failed to send email');
+    } finally {
+      setSending(false);
+    }
+  };
+  
+  const getRecipientCount = () => {
+    if (recipientType === 'all') {
+      return subscribers.length;
+    } else if (recipientType === 'active') {
+      return subscribers.filter(s => s.status === 'active').length;
+    } else if (recipientType === 'selected') {
+      return selectedSubscribers.length;
+    }
+    return 0;
+  };
+  
+  const getPreviewBody = () => {
+    return emailBody
+      .replace(/\{name\}/g, 'John Doe')
+      .replace(/\{email\}/g, 'subscriber@example.com');
   };
 
   // Filter subscribers
@@ -262,6 +345,15 @@ export const Newsletter = () => {
               Export
             </button>
 
+            {/* Send Email button */}
+            <button
+              onClick={() => setShowEmailModal(true)}
+              className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 flex items-center gap-2"
+            >
+              <Send className="h-4 w-4" />
+              Send Email
+            </button>
+
             {/* Bulk delete */}
             {selectedSubscribers.length > 0 && (
               <button
@@ -384,6 +476,190 @@ export const Newsletter = () => {
       <div className="text-sm text-gray-600 text-center">
         Showing {filteredSubscribers.length} of {subscribers.length} subscribers
       </div>
+
+      {/* Email Composition Modal */}
+      {showEmailModal && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+          <div className="bg-white rounded-lg shadow-xl max-w-4xl w-full max-h-[90vh] overflow-y-auto">
+            {/* Modal Header */}
+            <div className="sticky top-0 bg-white border-b border-gray-200 px-6 py-4 flex items-center justify-between">
+              <h2 className="text-2xl font-bold text-gray-900 flex items-center gap-2">
+                <Mail className="h-6 w-6 text-blue-600" />
+                Compose Email Campaign
+              </h2>
+              <button
+                onClick={() => setShowEmailModal(false)}
+                className="text-gray-400 hover:text-gray-600"
+              >
+                <X className="h-6 w-6" />
+              </button>
+            </div>
+
+            {/* Modal Body */}
+            <div className="p-6 space-y-6">
+              {/* Recipients Selection */}
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Send To
+                </label>
+                <div className="space-y-3">
+                  <label className="flex items-center space-x-3 cursor-pointer">
+                    <input
+                      type="radio"
+                      name="recipients"
+                      value="active"
+                      checked={recipientType === 'active'}
+                      onChange={(e) => setRecipientType(e.target.value)}
+                      className="h-4 w-4 text-blue-600 focus:ring-blue-500"
+                    />
+                    <span className="text-gray-700">
+                      All Active Subscribers ({subscribers.filter(s => s.status === 'active').length})
+                    </span>
+                  </label>
+                  
+                  <label className="flex items-center space-x-3 cursor-pointer">
+                    <input
+                      type="radio"
+                      name="recipients"
+                      value="selected"
+                      checked={recipientType === 'selected'}
+                      onChange={(e) => setRecipientType(e.target.value)}
+                      className="h-4 w-4 text-blue-600 focus:ring-blue-500"
+                    />
+                    <span className="text-gray-700">
+                      Selected Subscribers Only ({selectedSubscribers.length})
+                    </span>
+                  </label>
+                  
+                  <label className="flex items-center space-x-3 cursor-pointer">
+                    <input
+                      type="radio"
+                      name="recipients"
+                      value="all"
+                      checked={recipientType === 'all'}
+                      onChange={(e) => setRecipientType(e.target.value)}
+                      className="h-4 w-4 text-blue-600 focus:ring-blue-500"
+                    />
+                    <span className="text-gray-700">
+                      All Subscribers ({subscribers.length})
+                    </span>
+                  </label>
+                </div>
+                
+                {recipientType === 'selected' && selectedSubscribers.length === 0 && (
+                  <p className="mt-2 text-sm text-red-600">
+                    Please select subscribers from the table below before sending
+                  </p>
+                )}
+              </div>
+
+              {/* Subject */}
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Subject *
+                </label>
+                <input
+                  type="text"
+                  value={emailSubject}
+                  onChange={(e) => setEmailSubject(e.target.value)}
+                  placeholder="Enter email subject..."
+                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                />
+              </div>
+
+              {/* Email Body */}
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Email Body *
+                </label>
+                <div className="border border-gray-300 rounded-lg overflow-hidden">
+                  <ReactQuill
+                    theme="snow"
+                    value={emailBody}
+                    onChange={setEmailBody}
+                    placeholder="Write your email content here..."
+                    style={{ height: '300px', marginBottom: '42px' }}
+                    modules={{
+                      toolbar: [
+                        [{ header: [1, 2, 3, false] }],
+                        ['bold', 'italic', 'underline', 'strike'],
+                        [{ color: [] }, { background: [] }],
+                        [{ list: 'ordered' }, { list: 'bullet' }],
+                        [{ align: [] }],
+                        ['link', 'image'],
+                        ['clean'],
+                      ],
+                    }}
+                  />
+                </div>
+                <p className="mt-2 text-sm text-gray-500">
+                  Tip: Use <code className="px-1 py-0.5 bg-gray-100 rounded">&#123;name&#125;</code> to personalize with subscriber's name
+                </p>
+              </div>
+
+              {/* Preview Toggle */}
+              <div className="flex items-center justify-between">
+                <button
+                  onClick={() => setShowPreview(!showPreview)}
+                  className="flex items-center gap-2 text-blue-600 hover:text-blue-700 font-medium"
+                >
+                  <Eye className="h-4 w-4" />
+                  {showPreview ? 'Hide' : 'Show'} Preview
+                </button>
+                
+                <div className="text-sm text-gray-600">
+                  Will be sent to <span className="font-semibold">{getRecipientCount()}</span> subscribers
+                </div>
+              </div>
+
+              {/* Preview */}
+              {showPreview && (
+                <div className="border border-gray-300 rounded-lg p-6 bg-gray-50">
+                  <h3 className="text-lg font-bold text-gray-900 mb-4 pb-2 border-b">
+                    {emailSubject || '(No Subject)'}
+                  </h3>
+                  <div
+                    className="prose max-w-none"
+                    dangerouslySetInnerHTML={{ __html: getPreviewBody() }}
+                  />
+                  <div className="mt-6 pt-4 border-t border-gray-300 text-xs text-gray-500 text-center">
+                    <p>You are receiving this email because you subscribed to our newsletter.</p>
+                    <a href="#" className="text-blue-600 hover:underline">Unsubscribe</a> from future emails.
+                  </div>
+                </div>
+              )}
+            </div>
+
+            {/* Modal Footer */}
+            <div className="sticky bottom-0 bg-gray-50 border-t border-gray-200 px-6 py-4 flex items-center justify-end gap-3">
+              <button
+                onClick={() => setShowEmailModal(false)}
+                className="px-4 py-2 text-gray-700 hover:bg-gray-200 rounded-lg"
+                disabled={sending}
+              >
+                Cancel
+              </button>
+              <button
+                onClick={handleSendBulkEmail}
+                disabled={sending || !emailSubject.trim() || !emailBody.trim()}
+                className="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:bg-gray-300 disabled:cursor-not-allowed flex items-center gap-2"
+              >
+                {sending ? (
+                  <>
+                    <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white"></div>
+                    Sending...
+                  </>
+                ) : (
+                  <>
+                    <Send className="h-4 w-4" />
+                    Send Email
+                  </>
+                )}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

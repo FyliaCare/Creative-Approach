@@ -51,6 +51,9 @@ export const newsletterAPI = {
   getSubscribers: (params) => api.get('/newsletter/subscribers', { params }),
   getStats: () => api.get('/newsletter/stats'),
   deleteSubscriber: (id) => api.delete(`/newsletter/${id}`),
+  sendBulkEmail: (data) => api.post('/newsletter/send-bulk', data),
+  getCampaigns: (params) => api.get('/newsletter/campaigns', { params }),
+  getCampaign: (id) => api.get(`/newsletter/campaigns/${id}`),
 };
 
 // Blog API

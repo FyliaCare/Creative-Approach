@@ -1,6 +1,7 @@
 import express from 'express';
 import { body, validationResult } from 'express-validator';
 import Newsletter from '../models/Newsletter.js';
+import EmailCampaign from '../models/EmailCampaign.js';
 import { protect, authorize } from '../middleware/auth.js';
 
 const router = express.Router();
@@ -178,6 +179,186 @@ router.get('/stats', protect, authorize('admin'), async (req, res, next) => {
         recentSubscriptions,
         byCountry
       }
+    });
+  } catch (error) {
+    next(error);
+  }
+});
+
+// @route   POST /api/newsletter/send-bulk
+// @desc    Send bulk email to subscribers
+// @access  Private/Admin
+router.post('/send-bulk', protect, authorize('admin'), [
+  body('subject').notEmpty().withMessage('Subject is required'),
+  body('body').notEmpty().withMessage('Email body is required'),
+  body('recipients').isIn(['all', 'active', 'selected']).withMessage('Invalid recipients option')
+], async (req, res, next) => {
+  try {
+    const validationErrors = validationResult(req);
+    if (!validationErrors.isEmpty()) {
+      return res.status(400).json({
+        success: false,
+        errors: validationErrors.array()
+      });
+    }
+    
+    const { subject, body, recipients, selectedEmails = [] } = req.body;
+    
+    // Build query based on recipient selection
+    let query = {};
+    if (recipients === 'active') {
+      query.status = 'active';
+    } else if (recipients === 'selected' && selectedEmails.length > 0) {
+      query.email = { $in: selectedEmails };
+      query.status = 'active';
+    } else if (recipients === 'all') {
+      query.status = 'active';
+    }
+    
+    // Get subscribers
+    const subscribers = await Newsletter.find(query).select('email name');
+    
+    if (subscribers.length === 0) {
+      return res.status(400).json({
+        success: false,
+        message: 'No subscribers found for the selected criteria'
+      });
+    }
+    
+    // Create campaign record
+    const campaign = await EmailCampaign.create({
+      subject,
+      body,
+      recipientType: recipients,
+      recipientCount: subscribers.length,
+      sentBy: req.user._id,
+      status: 'sending'
+    });
+    
+    // Import nodemailer dynamically
+    const nodemailer = (await import('nodemailer')).default;
+    
+    // Create transporter
+    const transporter = nodemailer.createTransport({
+      service: 'gmail',
+      auth: {
+        user: process.env.EMAIL_USER,
+        pass: process.env.EMAIL_PASSWORD
+      }
+    });
+    
+    // Send emails
+    let sentCount = 0;
+    let failedCount = 0;
+    const emailErrors = [];
+    
+    for (const subscriber of subscribers) {
+      try {
+        // Personalize email
+        const personalizedBody = body
+          .replace(/\{name\}/g, subscriber.name || 'Subscriber')
+          .replace(/\{email\}/g, subscriber.email);
+        
+        // Add unsubscribe link
+        const unsubscribeLink = `${process.env.CLIENT_URL}/unsubscribe?email=${encodeURIComponent(subscriber.email)}`;
+        const emailBody = `
+          ${personalizedBody}
+          <br><br>
+          <hr style="border: 1px solid #e5e7eb; margin: 20px 0;">
+          <p style="font-size: 12px; color: #6b7280; text-align: center;">
+            You are receiving this email because you subscribed to our newsletter.<br>
+            <a href="${unsubscribeLink}" style="color: #3b82f6;">Unsubscribe</a> from future emails.
+          </p>
+        `;
+        
+        await transporter.sendMail({
+          from: `"Creative Approach" <${process.env.EMAIL_USER}>`,
+          to: subscriber.email,
+          subject: subject,
+          html: emailBody
+        });
+        
+        sentCount++;
+      } catch (error) {
+        failedCount++;
+        emailErrors.push({ email: subscriber.email, error: error.message });
+        console.error(`Failed to send to ${subscriber.email}:`, error);
+      }
+    }
+    
+    // Update campaign record
+    campaign.sentCount = sentCount;
+    campaign.failedCount = failedCount;
+    campaign.status = failedCount === 0 ? 'completed' : (sentCount > 0 ? 'completed' : 'failed');
+    campaign.completedAt = new Date();
+    campaign.errors = emailErrors.length > 0 ? emailErrors.slice(0, 10) : []; // Store first 10 errors
+    await campaign.save();
+    
+    res.json({
+      success: true,
+      message: `Email campaign sent successfully`,
+      data: {
+        campaignId: campaign._id,
+        total: subscribers.length,
+        sent: sentCount,
+        failed: failedCount,
+        errors: emailErrors.length > 0 ? emailErrors : undefined
+      }
+    });
+  } catch (error) {
+    next(error);
+  }
+});
+
+// @route   GET /api/newsletter/campaigns
+// @desc    Get email campaign history
+// @access  Private/Admin
+router.get('/campaigns', protect, authorize('admin'), async (req, res, next) => {
+  try {
+    const { page = 1, limit = 20 } = req.query;
+    
+    const campaigns = await EmailCampaign.find()
+      .sort({ sentAt: -1 })
+      .limit(limit * 1)
+      .skip((page - 1) * limit)
+      .populate('sentBy', 'name email')
+      .select('-body -errors'); // Exclude full body and errors from list
+    
+    const total = await EmailCampaign.countDocuments();
+    
+    res.json({
+      success: true,
+      data: campaigns,
+      pagination: {
+        page: parseInt(page),
+        limit: parseInt(limit),
+        total,
+        pages: Math.ceil(total / limit)
+      }
+    });
+  } catch (error) {
+    next(error);
+  }
+});
+
+// @route   GET /api/newsletter/campaigns/:id
+// @desc    Get single campaign with full details
+// @access  Private/Admin
+router.get('/campaigns/:id', protect, authorize('admin'), async (req, res, next) => {
+  try {
+    const campaign = await EmailCampaign.findById(req.params.id)
+      .populate('sentBy', 'name email');
+    
+    if (!campaign) {
+      return res.status(404).json({
+        success: false,
+        message: 'Campaign not found'
+      });
+    }
+    
+    res.json({
+      success: true,
+      data: campaign
     });
   } catch (error) {
     next(error);
