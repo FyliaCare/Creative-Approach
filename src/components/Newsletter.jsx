@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { newsletterAPI } from '../../services/api';
+import { newsletterAPI } from '../services/api';
 
 const Newsletter = () => {
   const [email, setEmail] = useState('');
