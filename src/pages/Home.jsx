@@ -1,6 +1,8 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { motion, useScroll, useTransform, useInView, AnimatePresence } from 'framer-motion';
 import { Link } from 'react-router-dom';
+import Newsletter from '../components/Newsletter';
+import LiveChat from '../components/chat/LiveChat';
 
 // Counter Animation Component
 function AnimatedCounter({ end, duration = 2, suffix = '', prefix = '' }) {
@@ -766,6 +768,12 @@ export default function Home() {
           </motion.div>
         </div>
       </section>
+
+      {/* Newsletter Section */}
+      <Newsletter />
+
+      {/* Live Chat Widget */}
+      <LiveChat />
     </div>
   );
 }

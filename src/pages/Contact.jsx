@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
+import { quotationAPI } from '../services/api';
 
 export default function Contact() {
   const [formData, setFormData] = useState({
@@ -11,12 +12,14 @@ export default function Contact() {
     projectType: '',
     budget: '',
     timeline: '',
+    location: '',
     message: ''
   });
 
   const [errors, setErrors] = useState({});
   const [submitted, setSubmitted] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [submitError, setSubmitError] = useState('');
   const [activeContactMethod, setActiveContactMethod] = useState('form');
 
   const handleChange = (e) => {
@@ -52,28 +55,37 @@ export default function Contact() {
     
     if (Object.keys(newErrors).length === 0) {
       setIsSubmitting(true);
+      setSubmitError('');
       
-      // Simulate API call
-      await new Promise(resolve => setTimeout(resolve, 1500));
-      
-      setSubmitted(true);
-      setIsSubmitting(false);
-      console.log('Form submitted:', formData);
-      
-      setTimeout(() => {
-        setFormData({
-          name: '',
-          email: '',
-          phone: '',
-          company: '',
-          service: '',
-          projectType: '',
-          budget: '',
-          timeline: '',
-          message: ''
-        });
-        setSubmitted(false);
-      }, 5000);
+      try {
+        // Submit to backend API
+        const response = await quotationAPI.submitQuote(formData);
+        
+        setSubmitted(true);
+        setIsSubmitting(false);
+        console.log('Quote submitted:', response);
+        
+        // Reset form after 5 seconds
+        setTimeout(() => {
+          setFormData({
+            name: '',
+            email: '',
+            phone: '',
+            company: '',
+            service: '',
+            projectType: '',
+            budget: '',
+            timeline: '',
+            location: '',
+            message: ''
+          });
+          setSubmitted(false);
+        }, 5000);
+      } catch (error) {
+        setIsSubmitting(false);
+        setSubmitError(error.message || 'Failed to submit quote request. Please try again.');
+        console.error('Quote submission error:', error);
+      }
     } else {
       setErrors(newErrors);
     }
@@ -363,7 +375,7 @@ export default function Contact() {
                       >
                         ✅
                       </motion.div>
-                      <h3 className="text-3xl font-bold text-green-700 mb-3">Message Sent Successfully!</h3>
+                      <h3 className="text-3xl font-bold text-green-700 mb-3">Quote Request Sent!</h3>
                       <p className="text-green-600 text-lg mb-4">Thank you for reaching out. We'll respond within 2 hours.</p>
                       <div className="flex items-center justify-center gap-2 text-green-600">
                         <span className="animate-pulse">●</span>
@@ -371,7 +383,23 @@ export default function Contact() {
                       </div>
                     </motion.div>
                   ) : (
-                    <form onSubmit={handleSubmit} className="space-y-6">
+                    <>
+                      {/* Error Message */}
+                      {submitError && (
+                        <motion.div
+                          initial={{ opacity: 0, y: -10 }}
+                          animate={{ opacity: 1, y: 0 }}
+                          className="bg-red-50 border-2 border-red-500 rounded-xl p-4 flex items-center gap-3"
+                        >
+                          <span className="text-2xl">⚠️</span>
+                          <div>
+                            <p className="font-bold text-red-700">Submission Failed</p>
+                            <p className="text-red-600 text-sm">{submitError}</p>
+                          </div>
+                        </motion.div>
+                      )}
+                      
+                      <form onSubmit={handleSubmit} className="space-y-6">
                       <div className="grid md:grid-cols-2 gap-6">
                         <div>
                           <label className="block text-sm font-bold mb-2 text-gray-700">Full Name *</label>
@@ -586,6 +614,7 @@ export default function Contact() {
                         )}
                       </motion.button>
                     </form>
+                    </>
                   )}
                 </div>
 
