@@ -173,6 +173,74 @@ export default function Home() {
         {/* Gradient Overlay */}
         <div className="absolute inset-0 bg-gradient-to-r from-drone-600/30 to-sky-600/30"></div>
 
+        {/* Animated Drones - More Visible */}
+        <motion.div
+          animate={{
+            y: [0, -30, 0],
+            x: [0, 40, 0],
+            rotate: [0, 5, -5, 0],
+          }}
+          transition={{
+            duration: 8,
+            repeat: Infinity,
+            ease: "easeInOut"
+          }}
+          className="absolute top-[15%] right-[8%] w-40 h-40 md:w-56 md:h-56 opacity-60 z-20"
+        >
+          <img src="/drone-animated.svg" alt="Drone" className="w-full h-full drop-shadow-2xl" />
+        </motion.div>
+
+        <motion.div
+          animate={{
+            y: [0, 25, 0],
+            x: [0, -30, 0],
+            rotate: [0, -3, 3, 0],
+          }}
+          transition={{
+            duration: 10,
+            repeat: Infinity,
+            ease: "easeInOut",
+            delay: 1
+          }}
+          className="absolute bottom-[20%] left-[5%] w-32 h-32 md:w-48 md:h-48 opacity-50 z-20"
+        >
+          <img src="/drone-animated.svg" alt="Drone" className="w-full h-full drop-shadow-2xl" />
+        </motion.div>
+
+        <motion.div
+          animate={{
+            y: [0, -20, 0],
+            x: [0, 20, 0],
+            rotate: [0, 8, -8, 0],
+          }}
+          transition={{
+            duration: 12,
+            repeat: Infinity,
+            ease: "easeInOut",
+            delay: 2
+          }}
+          className="absolute top-[40%] left-[12%] w-28 h-28 md:w-40 md:h-40 opacity-40 z-20 hidden md:block"
+        >
+          <img src="/drone-animated.svg" alt="Drone" className="w-full h-full drop-shadow-2xl" />
+        </motion.div>
+
+        <motion.div
+          animate={{
+            y: [0, 35, 0],
+            x: [0, -25, 0],
+            rotate: [0, -5, 5, 0],
+          }}
+          transition={{
+            duration: 9,
+            repeat: Infinity,
+            ease: "easeInOut",
+            delay: 0.5
+          }}
+          className="absolute top-[25%] right-[25%] w-36 h-36 md:w-52 md:h-52 opacity-30 z-20 hidden lg:block"
+        >
+          <img src="/drone-animated.svg" alt="Drone" className="w-full h-full drop-shadow-2xl" />
+        </motion.div>
+
         <motion.div
           style={{ opacity: heroOpacity, scale: heroScale }}
           className="relative z-10 text-center text-white px-4 max-w-6xl mx-auto"
@@ -235,8 +303,42 @@ export default function Home() {
       </section>
 
       {/* Services Grid Section */}
-      <section className="py-20 md:py-32 bg-white">
-        <div className="container mx-auto px-4 max-w-7xl">
+      <section className="py-20 md:py-32 bg-white relative overflow-hidden">
+        {/* Floating Drones in Background */}
+        <motion.div
+          animate={{
+            y: [0, -40, 0],
+            x: [0, 30, 0],
+            rotate: [0, 10, -10, 0],
+          }}
+          transition={{
+            duration: 15,
+            repeat: Infinity,
+            ease: "easeInOut"
+          }}
+          className="absolute top-20 right-10 w-32 h-32 opacity-15 z-0"
+        >
+          <img src="/drone-animated.svg" alt="Drone" className="w-full h-full" />
+        </motion.div>
+
+        <motion.div
+          animate={{
+            y: [0, 30, 0],
+            x: [0, -40, 0],
+            rotate: [0, -8, 8, 0],
+          }}
+          transition={{
+            duration: 18,
+            repeat: Infinity,
+            ease: "easeInOut",
+            delay: 2
+          }}
+          className="absolute bottom-20 left-10 w-40 h-40 opacity-15 z-0"
+        >
+          <img src="/drone-animated.svg" alt="Drone" className="w-full h-full" />
+        </motion.div>
+
+        <div className="container mx-auto px-4 max-w-7xl relative z-10">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
@@ -291,8 +393,42 @@ export default function Home() {
       </section>
 
       {/* Why Choose Us Section */}
-      <section className="py-20 md:py-32 bg-gray-50">
-        <div className="container mx-auto px-4 max-w-7xl">
+      <section className="py-20 md:py-32 bg-gray-50 relative overflow-hidden">
+        {/* Floating Drones */}
+        <motion.div
+          animate={{
+            y: [0, -35, 0],
+            x: [0, 50, 0],
+            rotate: [0, 15, -15, 0],
+          }}
+          transition={{
+            duration: 14,
+            repeat: Infinity,
+            ease: "easeInOut"
+          }}
+          className="absolute top-40 right-[5%] w-36 h-36 opacity-20 z-0"
+        >
+          <img src="/drone-animated.svg" alt="Drone" className="w-full h-full" />
+        </motion.div>
+
+        <motion.div
+          animate={{
+            y: [0, 40, 0],
+            x: [0, -35, 0],
+            rotate: [0, -12, 12, 0],
+          }}
+          transition={{
+            duration: 16,
+            repeat: Infinity,
+            ease: "easeInOut",
+            delay: 1.5
+          }}
+          className="absolute bottom-32 left-[8%] w-44 h-44 opacity-20 z-0"
+        >
+          <img src="/drone-animated.svg" alt="Drone" className="w-full h-full" />
+        </motion.div>
+
+        <div className="container mx-auto px-4 max-w-7xl relative z-10">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
@@ -336,8 +472,59 @@ export default function Home() {
       </section>
 
       {/* Process Section */}
-      <section className="py-20 md:py-32 bg-gradient-to-br from-drone-600 via-sky-600 to-purple-600 text-white">
-        <div className="container mx-auto px-4 max-w-7xl">
+      <section className="py-20 md:py-32 bg-gradient-to-br from-drone-600 via-sky-600 to-purple-600 text-white relative overflow-hidden">
+        {/* Large Floating Drones */}
+        <motion.div
+          animate={{
+            y: [0, -50, 0],
+            x: [0, 60, 0],
+            rotate: [0, 20, -20, 0],
+          }}
+          transition={{
+            duration: 20,
+            repeat: Infinity,
+            ease: "easeInOut"
+          }}
+          className="absolute top-10 right-[10%] w-48 h-48 md:w-72 md:h-72 opacity-20 z-0"
+        >
+          <img src="/drone-animated.svg" alt="Drone" className="w-full h-full filter brightness-150" />
+        </motion.div>
+
+        <motion.div
+          animate={{
+            y: [0, 45, 0],
+            x: [0, -50, 0],
+            rotate: [0, -15, 15, 0],
+          }}
+          transition={{
+            duration: 18,
+            repeat: Infinity,
+            ease: "easeInOut",
+            delay: 2
+          }}
+          className="absolute bottom-10 left-[5%] w-56 h-56 md:w-80 md:h-80 opacity-20 z-0"
+        >
+          <img src="/drone-animated.svg" alt="Drone" className="w-full h-full filter brightness-150" />
+        </motion.div>
+
+        <motion.div
+          animate={{
+            y: [0, -30, 0],
+            x: [0, 40, 0],
+            rotate: [0, 10, -10, 0],
+          }}
+          transition={{
+            duration: 22,
+            repeat: Infinity,
+            ease: "easeInOut",
+            delay: 1
+          }}
+          className="absolute top-[50%] left-[50%] w-64 h-64 opacity-10 z-0 hidden lg:block"
+        >
+          <img src="/drone-animated.svg" alt="Drone" className="w-full h-full filter brightness-150" />
+        </motion.div>
+
+        <div className="container mx-auto px-4 max-w-7xl relative z-10">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
@@ -493,16 +680,51 @@ export default function Home() {
             initial={{ opacity: 0, y: 30 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
-            className="text-center bg-gradient-to-br from-drone-600 to-sky-600 rounded-3xl p-12 md:p-16 shadow-2xl"
+            className="text-center bg-gradient-to-br from-drone-600 to-sky-600 rounded-3xl p-12 md:p-16 shadow-2xl relative overflow-hidden"
           >
-            <h2 className="text-4xl md:text-5xl font-bold text-white mb-6">
-              Ready to Get Started?
-            </h2>
-            <p className="text-xl text-white/90 mb-10 max-w-2xl mx-auto">
-              Contact us today for a free consultation and custom quote for your drone service needs
-            </p>
-            
-            <div className="flex flex-col sm:flex-row gap-4 justify-center">
+            {/* Floating Drone in CTA */}
+            <motion.div
+              animate={{
+                y: [0, -25, 0],
+                x: [0, 30, 0],
+                rotate: [0, 15, -15, 0],
+              }}
+              transition={{
+                duration: 12,
+                repeat: Infinity,
+                ease: "easeInOut"
+              }}
+              className="absolute top-10 right-10 w-32 h-32 md:w-48 md:h-48 opacity-30 z-0"
+            >
+              <img src="/drone-animated.svg" alt="Drone" className="w-full h-full filter brightness-150" />
+            </motion.div>
+
+            <motion.div
+              animate={{
+                y: [0, 30, 0],
+                x: [0, -25, 0],
+                rotate: [0, -12, 12, 0],
+              }}
+              transition={{
+                duration: 14,
+                repeat: Infinity,
+                ease: "easeInOut",
+                delay: 1
+              }}
+              className="absolute bottom-10 left-10 w-28 h-28 md:w-40 md:h-40 opacity-30 z-0"
+            >
+              <img src="/drone-animated.svg" alt="Drone" className="w-full h-full filter brightness-150" />
+            </motion.div>
+
+            <div className="relative z-10">
+              <h2 className="text-4xl md:text-5xl font-bold text-white mb-6">
+                Ready to Get Started?
+              </h2>
+              <p className="text-xl text-white/90 mb-10 max-w-2xl mx-auto">
+                Contact us today for a free consultation and custom quote for your drone service needs
+              </p>
+              
+              <div className="flex flex-col sm:flex-row gap-4 justify-center">
               <Link to="/contact">
                 <motion.button
                   whileHover={{ scale: 1.05, y: -2 }}
@@ -539,6 +761,7 @@ export default function Home() {
                 <span>📍</span>
                 <span className="font-semibold">Takoradi, Ghana</span>
               </div>
+            </div>
             </div>
           </motion.div>
         </div>
