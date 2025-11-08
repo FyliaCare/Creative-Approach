@@ -28,6 +28,10 @@ import { initializeChat } from './socket/chat.js';
 dotenv.config();
 
 const app = express();
+
+// Trust proxy - required for Render
+app.set('trust proxy', 1);
+
 const httpServer = createServer(app);
 const io = new Server(httpServer, {
   cors: {
