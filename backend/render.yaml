@@ -1,0 +1,38 @@
+# Build Configuration
+build:
+  # Render will run this command to build your app
+  buildCommand: npm install
+  
+# Start Configuration  
+start:
+  # Command to start the server
+  startCommand: npm start
+
+# Health Check
+healthCheckPath: /health
+
+# Environment
+environment: node
+
+# Plan
+plan: free
+
+# Region (Choose closest to your users)
+region: oregon # or frankfurt, singapore, ohio
+
+# Auto-Deploy
+autoDeploy: true
+
+# Environment Variables (Set these in Render Dashboard)
+# - NODE_ENV=production
+# - PORT=5000
+# - MONGODB_URI=<your-mongodb-atlas-connection-string>
+# - JWT_SECRET=<generate-secure-random-string>
+# - CLIENT_URL=<your-frontend-url>
+# - ADMIN_URL=<your-admin-dashboard-url>
+# - EMAIL_SERVICE=gmail
+# - EMAIL_USER=<your-email>
+# - EMAIL_PASSWORD=<app-password>
+# - EMAIL_FROM=Creative Approach <noreply@creativeapproach.gh>
+# - ADMIN_EMAIL=admin@creativeapproach.gh
+# - ADMIN_PASSWORD=<secure-password>
