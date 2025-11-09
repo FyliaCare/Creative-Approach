@@ -11,7 +11,6 @@ import { Blog } from './pages/Blog';
 import { BlogEditor } from './pages/BlogEditor';
 import { Quotations } from './pages/Quotations';
 import { QuotationDetail } from './pages/QuotationDetail';
-import { Portfolio } from './pages/Portfolio';
 import { PortfolioAdvanced } from './pages/PortfolioAdvanced';
 import { Chat } from './pages/Chat';
 import { Settings } from './pages/Settings';
@@ -107,16 +106,6 @@ function App() {
           />
           <Route
             path="/portfolio"
-            element={
-              <ProtectedRoute>
-                <DashboardLayout>
-                  <Portfolio />
-                </DashboardLayout>
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path="/portfolio/advanced"
             element={
               <ProtectedRoute>
                 <DashboardLayout>
