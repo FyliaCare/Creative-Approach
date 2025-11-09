@@ -13,6 +13,12 @@ import Industries from './pages/Industries';
 import { PrivacyPolicy } from './pages/PrivacyPolicyLegal';
 import { TermsOfService } from './pages/TermsOfServiceLegal';
 import AerialPhotography from './pages/services/AerialPhotography';
+import DroneInspection from './pages/services/DroneInspection';
+import MappingSurveying from './pages/services/MappingSurveying';
+import DocumentaryFilms from './pages/services/DocumentaryFilms';
+import CustomTraining from './pages/services/CustomTraining';
+import EmergencyResponse from './pages/services/EmergencyResponse';
+import NotFound from './pages/NotFound';
 
 function ScrollToTop() {
   const { pathname } = useLocation();
@@ -37,6 +43,11 @@ function App() {
             <Route path="/" element={<Home />} />
             <Route path="/services" element={<Services />} />
             <Route path="/services/aerial-photography" element={<AerialPhotography />} />
+            <Route path="/services/drone-inspection" element={<DroneInspection />} />
+            <Route path="/services/mapping-surveying" element={<MappingSurveying />} />
+            <Route path="/services/documentary-films" element={<DocumentaryFilms />} />
+            <Route path="/services/custom-training" element={<CustomTraining />} />
+            <Route path="/services/emergency-response" element={<EmergencyResponse />} />
             <Route path="/portfolio" element={<Portfolio />} />
             <Route path="/about" element={<About />} />
             <Route path="/industries" element={<Industries />} />
@@ -44,6 +55,7 @@ function App() {
             <Route path="/contact" element={<Contact />} />
             <Route path="/privacy" element={<PrivacyPolicy />} />
             <Route path="/terms" element={<TermsOfService />} />
+            <Route path="*" element={<NotFound />} />
           </Routes>
         </AnimatePresence>
       </main>

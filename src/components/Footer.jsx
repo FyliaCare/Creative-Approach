@@ -7,13 +7,22 @@ export default function Footer() {
 
   const footerLinks = {
     Services: [
-      'Aerial Photography',
-      'Drone Inspection',
-      'Mapping & Surveying',
-      'Documentary Production',
+      { name: 'Aerial Photography', path: '/services/aerial-photography' },
+      { name: 'Drone Inspection', path: '/services/drone-inspection' },
+      { name: 'Mapping & Surveying', path: '/services/mapping-surveying' },
+      { name: 'Documentary Production', path: '/services/documentary-films' },
     ],
-    Company: ['About Us', 'Portfolio', 'Contact', 'Blog'],
-    Support: ['FAQ', 'Privacy Policy', 'Terms of Service'],
+    Company: [
+      { name: 'About Us', path: '/about' },
+      { name: 'Portfolio', path: '/portfolio' },
+      { name: 'Contact', path: '/contact' },
+      { name: 'Blog', path: '/blog' },
+    ],
+    Support: [
+      { name: 'FAQ', path: '/contact' },
+      { name: 'Privacy Policy', path: '/privacy' },
+      { name: 'Terms of Service', path: '/terms' },
+    ],
   };
 
   const socialLinks = [
@@ -74,12 +83,12 @@ export default function Footer() {
               <h4 className="font-semibold text-lg mb-4">{category}</h4>
               <ul className="space-y-2">
                 {links.map((link) => (
-                  <li key={link}>
+                  <li key={link.name}>
                     <Link
-                      to="/"
+                      to={link.path}
                       className="text-gray-400 hover:text-white transition-colors hover:translate-x-1 inline-block"
                     >
-                      {link}
+                      {link.name}
                     </Link>
                   </li>
                 ))}
