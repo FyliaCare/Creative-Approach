@@ -10,8 +10,8 @@ import About from './pages/About';
 import Contact from './pages/Contact';
 import Blog from './pages/Blog';
 import Industries from './pages/Industries';
-import { PrivacyPolicy } from './pages/PrivacyPolicy';
-import { TermsOfService } from './pages/TermsOfService';
+import { PrivacyPolicy } from './pages/PrivacyPolicyLegal';
+import { TermsOfService } from './pages/TermsOfServiceLegal';
 
 function ScrollToTop() {
   const { pathname } = useLocation();
