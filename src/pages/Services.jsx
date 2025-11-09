@@ -3,7 +3,6 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { Link } from 'react-router-dom';
 
 export default function Services() {
-  const [selectedService, setSelectedService] = useState(null);
   const [activeCategory, setActiveCategory] = useState('all');
   const [activeFAQ, setActiveFAQ] = useState(null);
 
@@ -11,6 +10,7 @@ export default function Services() {
     {
       id: 1,
       title: 'Aerial Photography & Videography',
+      slug: 'aerial-photography',
       category: 'media',
       shortDesc: 'Stunning aerial visuals that tell your story',
       description: 'Professional high-resolution aerial imagery for commercial properties, real estate showcases, infrastructure documentation, corporate event coverage, and cinematic documentary storytelling.',
@@ -38,6 +38,7 @@ export default function Services() {
     {
       id: 2,
       title: 'Drone Inspection & Monitoring',
+      slug: 'drone-inspection',
       category: 'inspection',
       shortDesc: 'Safe, efficient infrastructure assessments',
       description: 'Comprehensive inspection services for infrastructure, construction sites, roofs, utilities, towers, and agricultural monitoring with detailed progress tracking and reporting.',
@@ -65,6 +66,7 @@ export default function Services() {
     {
       id: 3,
       title: 'Mapping, Surveying & 3D Modelling',
+      slug: 'mapping-surveying',
       category: 'surveying',
       shortDesc: 'Precision geospatial data & 3D models',
       description: 'Advanced mapping solutions including orthomosaic generation, digital elevation models (DEMs), contour mapping, 3D site reconstructions, volumetric analysis, and comprehensive GIS data processing.',
@@ -92,6 +94,7 @@ export default function Services() {
     {
       id: 4,
       title: 'Documentary Films & Photography',
+      slug: 'documentary-films',
       category: 'media',
       shortDesc: 'Compelling visual storytelling',
       description: 'Full-service documentary production from concept development to post-production, combining professional photography, aerial cinematography, and ground footage to tell powerful stories.',
@@ -119,6 +122,7 @@ export default function Services() {
     {
       id: 5,
       title: 'Custom Data Services & Training',
+      slug: 'custom-training',
       category: 'training',
       shortDesc: 'Specialized solutions & expert guidance',
       description: 'Tailored data collection, analysis, and reporting services combined with comprehensive training programs for drone operations, data interpretation, and workflow integration.',
@@ -146,6 +150,7 @@ export default function Services() {
     {
       id: 6,
       title: 'Emergency Response & Surveillance',
+      slug: 'emergency-response',
       category: 'inspection',
       shortDesc: 'Rapid deployment for critical situations',
       description: 'Quick-response drone services for emergency situations, disaster assessment, search and rescue support, security surveillance, and real-time monitoring of critical events.',
@@ -431,11 +436,11 @@ export default function Services() {
                   exit={{ opacity: 0, scale: 0.9 }}
                   transition={{ delay: index * 0.1 }}
                   whileHover={{ y: -8 }}
-                  className="group bg-white rounded-3xl shadow-lg hover:shadow-2xl transition-all duration-300 overflow-hidden border border-gray-100 cursor-pointer"
-                  onClick={() => setSelectedService(service)}
+                  className="group bg-white rounded-3xl shadow-lg hover:shadow-2xl transition-all duration-300 overflow-hidden border border-gray-100"
                 >
-                  {/* Card Header */}
-                  <div className={`h-2 bg-gradient-to-r ${service.gradient}`}></div>
+                  <Link to={`/services/${service.slug}`} className="block">
+                    {/* Card Header */}
+                    <div className={`h-2 bg-gradient-to-r ${service.gradient}`}></div>
                   
                   <div className="p-8">
                     {/* Icon */}
@@ -472,126 +477,22 @@ export default function Services() {
                         <div className="text-sm text-gray-500">Duration</div>
                         <div className="font-semibold text-gray-900">{service.duration}</div>
                       </div>
-                      <motion.button
+                      <motion.div
                         whileHover={{ scale: 1.05 }}
                         whileTap={{ scale: 0.95 }}
                         className={`px-6 py-2 bg-gradient-to-r ${service.gradient} text-white rounded-full font-semibold text-sm`}
                       >
                         Learn More
-                      </motion.button>
+                      </motion.div>
                     </div>
                   </div>
+                  </Link>
                 </motion.div>
               ))}
             </AnimatePresence>
           </motion.div>
         </div>
       </section>
-
-      {/* Service Detail Modal */}
-      <AnimatePresence>
-        {selectedService && (
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            className="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center p-4"
-            onClick={() => setSelectedService(null)}
-          >
-            <motion.div
-              initial={{ scale: 0.9, y: 50 }}
-              animate={{ scale: 1, y: 0 }}
-              exit={{ scale: 0.9, y: 50 }}
-              className="bg-white rounded-3xl max-w-4xl w-full max-h-[90vh] overflow-y-auto shadow-2xl"
-              onClick={(e) => e.stopPropagation()}
-            >
-              {/* Modal Header */}
-              <div className={`bg-gradient-to-r ${selectedService.gradient} p-6 sm:p-8 md:p-8 text-white relative`}>
-                <button
-                  onClick={() => setSelectedService(null)}
-                  className="absolute top-6 right-6 w-10 h-10 bg-white/20 backdrop-blur-md rounded-full flex items-center justify-center hover:bg-white/30 transition-colors"
-                >
-                  ✕
-                </button>
-                <div className="text-4xl sm:text-5xl md:text-5xl mb-4">{selectedService.icon}</div>
-                <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold mb-3">{selectedService.title}</h2>
-                <p className="text-white/90 text-lg">{selectedService.description}</p>
-              </div>
-
-              {/* Modal Content */}
-              <div className="p-6 sm:p-8 md:p-8">
-                <div className="grid md:grid-cols-2 gap-8 mb-8">
-                  {/* Features */}
-                  <div>
-                    <h3 className="text-2xl font-bold mb-4 text-gray-900">Key Features</h3>
-                    <div className="space-y-3">
-                      {selectedService.features.map((feature, i) => (
-                        <motion.div
-                          key={i}
-                          initial={{ opacity: 0, x: -20 }}
-                          animate={{ opacity: 1, x: 0 }}
-                          transition={{ delay: i * 0.1 }}
-                          className="flex items-start gap-3 p-3 bg-gray-50 rounded-xl"
-                        >
-                          <span className="text-green-500 text-xl">✓</span>
-                          <span className="text-gray-700">{feature}</span>
-                        </motion.div>
-                      ))}
-                    </div>
-                  </div>
-
-                  {/* Deliverables */}
-                  <div>
-                    <h3 className="text-2xl font-bold mb-4 text-gray-900">What You'll Receive</h3>
-                    <div className="space-y-3">
-                      {selectedService.deliverables.map((item, i) => (
-                        <motion.div
-                          key={i}
-                          initial={{ opacity: 0, x: 20 }}
-                          animate={{ opacity: 1, x: 0 }}
-                          transition={{ delay: i * 0.1 }}
-                          className="flex items-start gap-3 p-3 bg-gray-50 rounded-xl"
-                        >
-                          <span className="text-drone-500 text-xl">📦</span>
-                          <span className="text-gray-700">{item}</span>
-                        </motion.div>
-                      ))}
-                    </div>
-                  </div>
-                </div>
-
-                {/* Use Cases */}
-                <div className="mb-8">
-                  <h3 className="text-2xl font-bold mb-4 text-gray-900">Ideal For</h3>
-                  <div className="flex flex-wrap gap-3">
-                    {selectedService.useCases.map((useCase) => (
-                      <span key={useCase} className="px-6 py-3 bg-gradient-to-r from-gray-100 to-gray-200 text-gray-800 font-semibold rounded-full">
-                        {useCase}
-                      </span>
-                    ))}
-                  </div>
-                </div>
-
-                {/* CTA */}
-                <div className="flex flex-col sm:flex-row gap-4">
-                  <Link
-                    to="/contact"
-                    className={`flex-1 py-4 px-8 bg-gradient-to-r ${selectedService.gradient} text-white rounded-2xl font-bold text-center hover:shadow-lg transition-all`}
-                  >
-                    Get a Custom Quote
-                  </Link>
-                  <a
-                    href="tel:0541500716"
-                    className="flex-1 py-4 px-8 bg-gray-100 text-gray-900 rounded-2xl font-bold text-center hover:bg-gray-200 transition-all"
-                  >
-                    Call Us Now
-                  </a>
-                </div>
-              </div>
-            </motion.div>
-          </motion.div>
-        )}
-      </AnimatePresence>
 
       {/* Why Choose Us */}
       <section className="section-padding bg-gradient-to-br from-gray-50 to-blue-50">

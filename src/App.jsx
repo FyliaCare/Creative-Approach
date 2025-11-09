@@ -12,6 +12,7 @@ import Blog from './pages/Blog';
 import Industries from './pages/Industries';
 import { PrivacyPolicy } from './pages/PrivacyPolicyLegal';
 import { TermsOfService } from './pages/TermsOfServiceLegal';
+import AerialPhotography from './pages/services/AerialPhotography';
 
 function ScrollToTop() {
   const { pathname } = useLocation();
@@ -35,6 +36,7 @@ function App() {
           <Routes location={location} key={location.pathname}>
             <Route path="/" element={<Home />} />
             <Route path="/services" element={<Services />} />
+            <Route path="/services/aerial-photography" element={<AerialPhotography />} />
             <Route path="/portfolio" element={<Portfolio />} />
             <Route path="/about" element={<About />} />
             <Route path="/industries" element={<Industries />} />
