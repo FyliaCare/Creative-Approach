@@ -17,6 +17,7 @@ import blogRoutes from './routes/blog.js';
 import quotationRoutes from './routes/quotations.js';
 import analyticsRoutes from './routes/analytics.js';
 import uploadRoutes from './routes/upload.js';
+import portfolioRoutes from './routes/portfolio.js';
 
 // Import middleware
 import errorHandler from './middleware/errorHandler.js';
@@ -89,6 +90,7 @@ app.use('/api/blog', blogRoutes);
 app.use('/api/quotations', quotationRoutes);
 app.use('/api/analytics', analyticsRoutes);
 app.use('/api/upload', uploadRoutes);
+app.use('/api/portfolio', portfolioRoutes);
 
 // Initialize Socket.io for live chat
 initializeChat(io);

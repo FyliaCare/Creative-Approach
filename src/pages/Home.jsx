@@ -3,6 +3,7 @@ import { motion, useScroll, useTransform, useInView, AnimatePresence } from 'fra
 import { Link } from 'react-router-dom';
 import Newsletter from '../components/Newsletter';
 import LiveChat from '../components/chat/LiveChat';
+import heroVideo from '/landing-page.mp4';
 
 // Counter Animation Component
 function AnimatedCounter({ end, duration = 2, suffix = '', prefix = '' }) {
@@ -165,100 +166,49 @@ export default function Home() {
 
   return (
     <div className="min-h-screen bg-white">
-      {/* Hero Section - Full Width with Image Background */}
+      {/* Hero Section - Full Width with Video Background */}
       <section className="relative h-screen flex items-center justify-center overflow-hidden">
-        {/* Background Image Overlay */}
-        <div className="absolute inset-0 bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900">
-          <div className="absolute inset-0 opacity-20 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjAwIiBoZWlnaHQ9IjIwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48ZGVmcz48cGF0dGVybiBpZD0iZ3JpZCIgd2lkdGg9IjQwIiBoZWlnaHQ9IjQwIiBwYXR0ZXJuVW5pdHM9InVzZXJTcGFjZU9uVXNlIj48cGF0aCBkPSJNIDQwIDAgTCAwIDAgMCA0MCIgZmlsbD0ibm9uZSIgc3Ryb2tlPSJyZ2JhKDI1NSwyNTUsMjU1LDAuMSkiIHN0cm9rZS13aWR0aD0iMSIvPjwvcGF0dGVybj48L2RlZnM+PHJlY3Qgd2lkdGg9IjEwMCUiIGhlaWdodD0iMTAwJSIgZmlsbD0idXJsKCNncmlkKSIvPjwvc3ZnPg==')]"></div>
-        </div>
+        {/* Video Background */}
+        <video
+          autoPlay
+          loop
+          muted
+          playsInline
+          preload="metadata"
+          disablePictureInPicture
+          controlsList="nodownload"
+          className="absolute inset-0 w-full h-full object-cover pointer-events-none"
+          src={heroVideo}
+          onContextMenu={(e) => e.preventDefault()}
+          onError={(e) => {
+            console.error('Video failed to load:', e);
+          }}
+        >
+          Your browser does not support the video tag.
+        </video>
 
+        {/* Dark Overlay for better text readability */}
+        <div className="absolute inset-0 bg-black/40"></div>
+        
         {/* Gradient Overlay */}
-        <div className="absolute inset-0 bg-gradient-to-r from-drone-600/30 to-sky-600/30"></div>
-
-        {/* Animated Drones - More Visible */}
-        <motion.div
-          animate={{
-            y: [0, -30, 0],
-            x: [0, 40, 0],
-            rotate: [0, 5, -5, 0],
-          }}
-          transition={{
-            duration: 8,
-            repeat: Infinity,
-            ease: "easeInOut"
-          }}
-          className="absolute top-[15%] right-[8%] w-40 h-40 md:w-56 md:h-56 opacity-60 z-20"
-        >
-          <img src="/drone-animated.svg" alt="Drone" className="w-full h-full drop-shadow-2xl" />
-        </motion.div>
-
-        <motion.div
-          animate={{
-            y: [0, 25, 0],
-            x: [0, -30, 0],
-            rotate: [0, -3, 3, 0],
-          }}
-          transition={{
-            duration: 10,
-            repeat: Infinity,
-            ease: "easeInOut",
-            delay: 1
-          }}
-          className="absolute bottom-[20%] left-[5%] w-32 h-32 md:w-48 md:h-48 opacity-50 z-20"
-        >
-          <img src="/drone-animated.svg" alt="Drone" className="w-full h-full drop-shadow-2xl" />
-        </motion.div>
-
-        <motion.div
-          animate={{
-            y: [0, -20, 0],
-            x: [0, 20, 0],
-            rotate: [0, 8, -8, 0],
-          }}
-          transition={{
-            duration: 12,
-            repeat: Infinity,
-            ease: "easeInOut",
-            delay: 2
-          }}
-          className="absolute top-[40%] left-[12%] w-28 h-28 md:w-40 md:h-40 opacity-40 z-20 hidden md:block"
-        >
-          <img src="/drone-animated.svg" alt="Drone" className="w-full h-full drop-shadow-2xl" />
-        </motion.div>
-
-        <motion.div
-          animate={{
-            y: [0, 35, 0],
-            x: [0, -25, 0],
-            rotate: [0, -5, 5, 0],
-          }}
-          transition={{
-            duration: 9,
-            repeat: Infinity,
-            ease: "easeInOut",
-            delay: 0.5
-          }}
-          className="absolute top-[25%] right-[25%] w-36 h-36 md:w-52 md:h-52 opacity-30 z-20 hidden lg:block"
-        >
-          <img src="/drone-animated.svg" alt="Drone" className="w-full h-full drop-shadow-2xl" />
-        </motion.div>
+        <div className="absolute inset-0 bg-gradient-to-r from-drone-600/20 to-sky-600/20"></div>
 
         <motion.div
           style={{ opacity: heroOpacity, scale: heroScale }}
-          className="relative z-10 text-center text-white px-4 max-w-6xl mx-auto"
+          className="relative z-30 text-center text-white px-4 max-w-6xl mx-auto"
         >
           <motion.div
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8 }}
           >
-            <h1 className="text-3xl sm:text-5xl md:text-6xl lg:text-7xl font-bold mb-6 leading-tight">
+            <h1 className="text-3xl sm:text-5xl md:text-6xl lg:text-7xl font-bold mb-6 leading-tight drop-shadow-2xl">
               GHANA-WIDE DRONE SERVICES
             </h1>
-            <div className="w-24 h-1 bg-drone-500 mx-auto mb-6"></div>
-            <p className="text-xl sm:text-2xl md:text-3xl mb-8 font-light tracking-wide">
+            <div className="w-24 h-1 bg-drone-500 mx-auto mb-6 shadow-lg"></div>
+            <p className="text-xl sm:text-2xl md:text-3xl mb-8 font-light tracking-wide drop-shadow-xl">
               SIMPLE, CONVENIENT, & COMPLETELY CUSTOM<br />
-              <span className="text-drone-400">AERIAL DRONE PHOTOGRAPHY</span>
+              <span className="text-drone-400 font-semibold">AERIAL DRONE PHOTOGRAPHY</span>
             </p>
           </motion.div>
 
@@ -272,7 +222,7 @@ export default function Home() {
               <motion.button
                 whileHover={{ scale: 1.05, y: -2 }}
                 whileTap={{ scale: 0.95 }}
-                className="px-10 py-4 bg-drone-600 hover:bg-drone-700 text-white font-bold text-lg rounded-md shadow-2xl transition-all"
+                className="px-10 py-4 bg-drone-600 hover:bg-drone-700 text-white font-bold text-lg rounded-md shadow-2xl transition-all backdrop-blur-sm"
               >
                 LEARN MORE
               </motion.button>
@@ -281,7 +231,7 @@ export default function Home() {
               <motion.button
                 whileHover={{ scale: 1.05, y: -2 }}
                 whileTap={{ scale: 0.95 }}
-                className="px-10 py-4 bg-white hover:bg-gray-100 text-drone-600 font-bold text-lg rounded-md shadow-2xl transition-all"
+                className="px-10 py-4 bg-white/95 hover:bg-white text-drone-600 font-bold text-lg rounded-md shadow-2xl transition-all backdrop-blur-sm"
               >
                 GET A QUOTE
               </motion.button>
@@ -293,7 +243,7 @@ export default function Home() {
         <motion.div
           animate={{ y: [0, 10, 0] }}
           transition={{ duration: 2, repeat: Infinity }}
-          className="absolute bottom-10 left-1/2 transform -translate-x-1/2 text-white"
+          className="absolute bottom-10 left-1/2 transform -translate-x-1/2 text-white z-30"
         >
           <div className="flex flex-col items-center gap-2">
             <span className="text-sm uppercase tracking-wider">Scroll Down</span>
