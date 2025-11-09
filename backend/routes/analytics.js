@@ -1,5 +1,6 @@
 import express from 'express';
 import Visitor from '../models/Visitor.js';
+import Portfolio from '../models/Portfolio.js';
 import { protect, authorize } from '../middleware/auth.js';
 
 const router = express.Router();
@@ -396,6 +397,134 @@ router.get('/timeline', protect, authorize('admin'), async (req, res, next) => {
     res.json({
       success: true,
       data: timeline
+    });
+  } catch (error) {
+    next(error);
+  }
+});
+
+// ============================================
+// PORTFOLIO ANALYTICS ENDPOINTS
+// ============================================
+
+// @route   GET /api/analytics/portfolio/overview
+// @desc    Get overall portfolio analytics
+// @access  Private/Admin
+router.get('/portfolio/overview', protect, authorize('admin'), async (req, res, next) => {
+  try {
+    const portfolios = await Portfolio.find({ status: 'published' });
+    
+    const totalViews = portfolios.reduce((sum, p) => sum + (p.views || 0), 0);
+    const totalLikes = portfolios.reduce((sum, p) => sum + (p.likes || 0), 0);
+    const totalProjects = portfolios.length;
+    const avgSeoScore = portfolios.reduce((sum, p) => sum + (p.seoScore || 0), 0) / totalProjects || 0;
+    const avgQualityScore = portfolios.reduce((sum, p) => sum + (p.qualityScore || 0), 0) / totalProjects || 0;
+    
+    const topByViews = [...portfolios]
+      .sort((a, b) => (b.views || 0) - (a.views || 0))
+      .slice(0, 5)
+      .map(p => ({ id: p._id, title: p.title, views: p.views || 0, likes: p.likes || 0 }));
+    
+    const categoryStats = portfolios.reduce((acc, p) => {
+      const cat = p.category || 'other';
+      if (!acc[cat]) acc[cat] = { count: 0, views: 0, likes: 0 };
+      acc[cat].count++;
+      acc[cat].views += p.views || 0;
+      acc[cat].likes += p.likes || 0;
+      return acc;
+    }, {});
+    
+    res.json({
+      success: true,
+      data: {
+        overview: {
+          totalViews,
+          totalLikes,
+          totalProjects,
+          avgSeoScore: Math.round(avgSeoScore),
+          avgQualityScore: Math.round(avgQualityScore)
+        },
+        topPerformers: { byViews: topByViews },
+        categoryStats
+      }
+    });
+  } catch (error) {
+    next(error);
+  }
+});
+
+// @route   POST /api/analytics/portfolio/track-view
+// @desc    Track a portfolio view
+// @access  Public
+router.post('/portfolio/track-view', async (req, res, next) => {
+  try {
+    const { portfolioId, source, device, country } = req.body;
+    
+    const portfolio = await Portfolio.findById(portfolioId);
+    if (!portfolio) {
+      return res.status(404).json({ error: 'Portfolio not found' });
+    }
+    
+    portfolio.views = (portfolio.views || 0) + 1;
+    
+    if (!portfolio.analytics) {
+      portfolio.analytics = { totalViews: 0, trafficSources: {}, devices: {}, topLocations: [] };
+    }
+    
+    portfolio.analytics.totalViews = (portfolio.analytics.totalViews || 0) + 1;
+    
+    if (source && ['direct', 'search', 'social', 'referral'].includes(source)) {
+      if (!portfolio.analytics.trafficSources) portfolio.analytics.trafficSources = {};
+      portfolio.analytics.trafficSources[source] = (portfolio.analytics.trafficSources[source] || 0) + 1;
+    }
+    
+    if (device && ['desktop', 'mobile', 'tablet'].includes(device)) {
+      if (!portfolio.analytics.devices) portfolio.analytics.devices = {};
+      portfolio.analytics.devices[device] = (portfolio.analytics.devices[device] || 0) + 1;
+    }
+    
+    await portfolio.save();
+    
+    res.json({ success: true, views: portfolio.views });
+  } catch (error) {
+    next(error);
+  }
+});
+
+// @route   POST /api/analytics/portfolio/update-scores
+// @desc    Update SEO and quality scores
+// @access  Private/Admin
+router.post('/portfolio/update-scores', protect, authorize('admin'), async (req, res, next) => {
+  try {
+    const { portfolioId, seoScore, qualityScore, optimization } = req.body;
+    
+    const portfolio = await Portfolio.findById(portfolioId);
+    if (!portfolio) {
+      return res.status(404).json({ error: 'Portfolio not found' });
+    }
+    
+    if (seoScore !== undefined) {
+      portfolio.seoScore = Math.min(100, Math.max(0, seoScore));
+    }
+    
+    if (qualityScore !== undefined) {
+      portfolio.qualityScore = Math.min(100, Math.max(0, qualityScore));
+    }
+    
+    if (optimization) {
+      portfolio.optimization = {
+        ...portfolio.optimization,
+        ...optimization,
+        lastOptimized: new Date()
+      };
+    }
+    
+    await portfolio.save();
+    
+    res.json({
+      success: true,
+      seoScore: portfolio.seoScore,
+      qualityScore: portfolio.qualityScore
     });
   } catch (error) {
     next(error);

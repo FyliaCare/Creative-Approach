@@ -71,7 +71,81 @@ const portfolioSchema = new mongoose.Schema({
   },
   metaTitle: String,
   metaDescription: String,
-  metaKeywords: String
+  metaKeywords: String,
+  // AI-powered optimization scores
+  seoScore: {
+    type: Number,
+    default: 0,
+    min: 0,
+    max: 100
+  },
+  qualityScore: {
+    type: Number,
+    default: 0,
+    min: 0,
+    max: 100
+  },
+  optimization: {
+    imageCompressed: {
+      type: Boolean,
+      default: false
+    },
+    metaTagsComplete: {
+      type: Boolean,
+      default: false
+    },
+    altTextComplete: {
+      type: Boolean,
+      default: false
+    },
+    lastOptimized: Date
+  },
+  // Analytics tracking
+  analytics: {
+    totalViews: {
+      type: Number,
+      default: 0
+    },
+    totalLikes: {
+      type: Number,
+      default: 0
+    },
+    totalShares: {
+      type: Number,
+      default: 0
+    },
+    avgTimeOnPage: {
+      type: Number,
+      default: 0
+    },
+    bounceRate: {
+      type: Number,
+      default: 0
+    },
+    viewHistory: [{
+      date: Date,
+      count: Number
+    }],
+    engagementRate: {
+      type: Number,
+      default: 0
+    },
+    trafficSources: {
+      direct: { type: Number, default: 0 },
+      search: { type: Number, default: 0 },
+      social: { type: Number, default: 0 },
+      referral: { type: Number, default: 0 }
+    },
+    devices: {
+      desktop: { type: Number, default: 0 },
+      mobile: { type: Number, default: 0 },
+      tablet: { type: Number, default: 0 }
+    },
+    topLocations: [{
+      country: String,
+      views: Number
+    }]
+  }
 }, {
   timestamps: true
 });
