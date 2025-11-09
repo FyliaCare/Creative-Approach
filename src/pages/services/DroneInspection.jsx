@@ -2,6 +2,7 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { Search, Shield, TrendingDown, Clock, MessageCircle, Settings, Camera, BarChart, FileText, Zap, Building, Leaf, Battery, AlertTriangle, CheckCircle, ChevronRight } from 'lucide-react';
+import SEO, { seoPresets } from '../../components/SEO';
 
 export default function DroneInspection() {
   const stats = [
@@ -222,7 +223,9 @@ export default function DroneInspection() {
   ];
 
   return (
-    <div className="min-h-screen bg-white">
+    <>
+      <SEO {...seoPresets.droneInspection} />
+      <div className="min-h-screen bg-white">
       {/* Hero Section */}
       <section className="relative min-h-[70vh] flex items-center justify-center overflow-hidden bg-gradient-to-br from-purple-900 via-purple-700 to-pink-600">
         <div className="absolute inset-0 bg-black/20"></div>
@@ -599,6 +602,7 @@ export default function DroneInspection() {
           </div>
         </div>
       </section>
-    </div>
+      </div>
+    </>
   );
 }

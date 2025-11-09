@@ -6,6 +6,7 @@ import {
   Clock, DollarSign, Users, TrendingUp, Zap, Shield,
   Star, MessageCircle, Download, Eye, Layers, Settings
 } from 'lucide-react';
+import SEO, { seoPresets } from '../../components/SEO';
 
 export default function AerialPhotography() {
   const benefits = [
@@ -215,7 +216,9 @@ export default function AerialPhotography() {
   ];
 
   return (
-    <div className="min-h-screen bg-white">
+    <>
+      <SEO {...seoPresets.aerialPhotography} />
+      <div className="min-h-screen bg-white">
       {/* Hero Section */}
       <section className="relative h-[70vh] flex items-center justify-center overflow-hidden">
         <div className="absolute inset-0 bg-gradient-to-br from-blue-900 via-blue-700 to-cyan-600" />
@@ -654,6 +657,7 @@ export default function AerialPhotography() {
           </motion.div>
         </div>
       </section>
-    </div>
+      </div>
+    </>
   );
 }

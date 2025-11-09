@@ -2,6 +2,7 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { Map, Layers, Box, Ruler, MessageCircle, Settings, Camera, Database, FileText, Mountain, Building2, Tractor, HardHat, TrendingUp, Clock, CheckCircle, ChevronRight } from 'lucide-react';
+import SEO, { seoPresets } from '../../components/SEO';
 
 export default function MappingSurveying() {
   const stats = [
@@ -226,7 +227,9 @@ export default function MappingSurveying() {
   ];
 
   return (
-    <div className="min-h-screen bg-white">
+    <>
+      <SEO {...seoPresets.mappingSurveying} />
+      <div className="min-h-screen bg-white">
       {/* Hero Section */}
       <section className="relative min-h-[70vh] flex items-center justify-center overflow-hidden bg-gradient-to-br from-emerald-900 via-teal-700 to-cyan-600">
         <div className="absolute inset-0 bg-black/20"></div>
@@ -603,6 +606,7 @@ export default function MappingSurveying() {
           </div>
         </div>
       </section>
-    </div>
+      </div>
+    </>
   );
 }

@@ -2,6 +2,7 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { Film, Video, Clapperboard, Palette, MessageCircle, FileText, Camera, Edit, Package, TrendingUp, Clock, Users, CheckCircle, ChevronRight } from 'lucide-react';
+import SEO, { seoPresets } from '../../components/SEO';
 
 export default function DocumentaryFilms() {
   const stats = [
@@ -234,7 +235,9 @@ export default function DocumentaryFilms() {
   ];
 
   return (
-    <div className="min-h-screen bg-white">
+    <>
+      <SEO {...seoPresets.documentaryFilms} />
+      <div className="min-h-screen bg-white">
       {/* Hero Section */}
       <section className="relative min-h-[70vh] flex items-center justify-center overflow-hidden bg-gradient-to-br from-orange-900 via-red-700 to-pink-600">
         <div className="absolute inset-0 bg-black/20"></div>
@@ -611,6 +614,7 @@ export default function DocumentaryFilms() {
           </div>
         </div>
       </section>
-    </div>
+      </div>
+    </>
   );
 }

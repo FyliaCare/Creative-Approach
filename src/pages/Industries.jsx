@@ -1,6 +1,7 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { motion, AnimatePresence, useInView } from 'framer-motion';
 import { Link } from 'react-router-dom';
+import SEO, { seoPresets } from '../components/SEO';
 
 // Animated Counter Component
 const AnimatedCounter = ({ end, suffix = '', duration = 2 }) => {
@@ -293,7 +294,9 @@ export default function Industries() {
   ];
 
   return (
-    <div className="min-h-screen pt-20">
+    <>
+      <SEO {...seoPresets.industries} />
+      <div className="min-h-screen pt-20">
       {/* Hero Section */}
       <section className="relative bg-gradient-to-br from-drone-900 via-sky-900 to-purple-950 text-white section-padding overflow-hidden">
         {/* Animated Background */}
@@ -718,6 +721,7 @@ export default function Industries() {
           </motion.div>
         </div>
       </section>
-    </div>
+      </div>
+    </>
   );
 }

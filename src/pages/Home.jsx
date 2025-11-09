@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { motion, useScroll, useTransform, useInView, AnimatePresence } from 'framer-motion';
 import { Link } from 'react-router-dom';
+import SEO, { seoPresets } from '../components/SEO';
 import Newsletter from '../components/Newsletter';
 import LiveChat from '../components/chat/LiveChat';
 import heroVideo from '/landing-page.mp4';
@@ -165,9 +166,11 @@ export default function Home() {
   ];
 
   return (
-    <div className="min-h-screen bg-white">
-      {/* Hero Section - Full Width with Video Background */}
-      <section className="relative h-screen flex items-center justify-center overflow-hidden">
+    <>
+      <SEO {...seoPresets.home} />
+      <div className="min-h-screen bg-white">
+        {/* Hero Section - Full Width with Video Background */}
+        <section className="relative h-screen flex items-center justify-center overflow-hidden">
         {/* Video Background */}
         <video
           autoPlay
@@ -724,6 +727,7 @@ export default function Home() {
 
       {/* Live Chat Widget */}
       <LiveChat />
-    </div>
+      </div>
+    </>
   );
 }

@@ -2,6 +2,7 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { AlertTriangle, Radio, Zap, Eye, MessageCircle, Settings, Camera, FileText, Shield, Clock, MapPin, Phone, Target, Activity, CheckCircle, ChevronRight } from 'lucide-react';
+import SEO, { seoPresets } from '../../components/SEO';
 
 export default function EmergencyResponse() {
   const stats = [
@@ -233,7 +234,9 @@ export default function EmergencyResponse() {
   ];
 
   return (
-    <div className="min-h-screen bg-white">
+    <>
+      <SEO {...seoPresets.emergencyResponse} />
+      <div className="min-h-screen bg-white">
       {/* Hero Section */}
       <section className="relative min-h-[70vh] flex items-center justify-center overflow-hidden bg-gradient-to-br from-red-900 via-orange-700 to-yellow-600">
         <div className="absolute inset-0 bg-black/20"></div>
@@ -627,6 +630,7 @@ export default function EmergencyResponse() {
           </div>
         </div>
       </section>
-    </div>
+      </div>
+    </>
   );
 }

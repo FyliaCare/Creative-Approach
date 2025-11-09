@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import { Link } from 'react-router-dom';
+import SEO, { seoPresets } from '../components/SEO';
 
 export default function Blog() {
   const [selectedCategory, setSelectedCategory] = useState('all');
@@ -105,7 +106,9 @@ export default function Blog() {
   const featuredPosts = blogPosts.filter(post => post.featured);
 
   return (
-    <div className="min-h-screen pt-20">
+    <>
+      <SEO {...seoPresets.blog} />
+      <div className="min-h-screen pt-20">
       {/* Hero Section */}
       <section className="relative bg-gradient-to-br from-indigo-900 via-drone-900 to-sky-950 text-white section-padding overflow-hidden">
         <div className="absolute inset-0 opacity-20">
@@ -303,6 +306,7 @@ export default function Blog() {
           </motion.div>
         </div>
       </section>
-    </div>
+      </div>
+    </>
   );
 }

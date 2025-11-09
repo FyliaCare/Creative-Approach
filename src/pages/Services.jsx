@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Link } from 'react-router-dom';
+import SEO, { seoPresets } from '../components/SEO';
 
 export default function Services() {
   const [activeCategory, setActiveCategory] = useState('all');
@@ -301,7 +302,9 @@ export default function Services() {
     : services.filter(service => service.category === activeCategory);
 
   return (
-    <div className="min-h-screen pt-20">
+    <>
+      <SEO {...seoPresets.services} />
+      <div className="min-h-screen pt-20">
       {/* Hero Section */}
       <section className="relative bg-gradient-to-br from-drone-900 via-sky-900 to-purple-950 text-white section-padding overflow-hidden">
         {/* Animated Background */}
@@ -743,6 +746,7 @@ export default function Services() {
           </div>
         </div>
       </section>
-    </div>
+      </div>
+    </>
   );
 }

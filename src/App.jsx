@@ -1,24 +1,36 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, lazy, Suspense } from 'react';
 import { Routes, Route, useLocation } from 'react-router-dom';
 import { AnimatePresence } from 'framer-motion';
 import Navbar from './components/Navbar';
 import Footer from './components/Footer';
-import Home from './pages/Home';
-import Services from './pages/Services';
-import Portfolio from './pages/Portfolio';
-import About from './pages/About';
-import Contact from './pages/Contact';
-import Blog from './pages/Blog';
-import Industries from './pages/Industries';
-import { PrivacyPolicy } from './pages/PrivacyPolicyLegal';
-import { TermsOfService } from './pages/TermsOfServiceLegal';
-import AerialPhotography from './pages/services/AerialPhotography';
-import DroneInspection from './pages/services/DroneInspection';
-import MappingSurveying from './pages/services/MappingSurveying';
-import DocumentaryFilms from './pages/services/DocumentaryFilms';
-import CustomTraining from './pages/services/CustomTraining';
-import EmergencyResponse from './pages/services/EmergencyResponse';
-import NotFound from './pages/NotFound';
+
+// Lazy load pages for code splitting
+const Home = lazy(() => import('./pages/Home'));
+const Services = lazy(() => import('./pages/Services'));
+const Portfolio = lazy(() => import('./pages/Portfolio'));
+const About = lazy(() => import('./pages/About'));
+const Contact = lazy(() => import('./pages/Contact'));
+const Blog = lazy(() => import('./pages/Blog'));
+const Industries = lazy(() => import('./pages/Industries'));
+const PrivacyPolicy = lazy(() => import('./pages/PrivacyPolicyLegal').then(module => ({ default: module.PrivacyPolicy })));
+const TermsOfService = lazy(() => import('./pages/TermsOfServiceLegal').then(module => ({ default: module.TermsOfService })));
+const AerialPhotography = lazy(() => import('./pages/services/AerialPhotography'));
+const DroneInspection = lazy(() => import('./pages/services/DroneInspection'));
+const MappingSurveying = lazy(() => import('./pages/services/MappingSurveying'));
+const DocumentaryFilms = lazy(() => import('./pages/services/DocumentaryFilms'));
+const CustomTraining = lazy(() => import('./pages/services/CustomTraining'));
+const EmergencyResponse = lazy(() => import('./pages/services/EmergencyResponse'));
+const NotFound = lazy(() => import('./pages/NotFound'));
+
+// Loading component for suspense fallback
+const PageLoader = () => (
+  <div className="min-h-screen flex items-center justify-center bg-white">
+    <div className="text-center">
+      <div className="inline-block animate-spin rounded-full h-16 w-16 border-t-2 border-b-2 border-blue-600 mb-4"></div>
+      <p className="text-gray-600 font-medium">Loading...</p>
+    </div>
+  </div>
+);
 
 function ScrollToTop() {
   const { pathname } = useLocation();
@@ -38,8 +50,9 @@ function App() {
       <Navbar />
       <ScrollToTop />
       <main className="flex-grow">
-        <AnimatePresence mode="wait">
-          <Routes location={location} key={location.pathname}>
+        <Suspense fallback={<PageLoader />}>
+          <AnimatePresence mode="wait">
+            <Routes location={location} key={location.pathname}>
             <Route path="/" element={<Home />} />
             <Route path="/services" element={<Services />} />
             <Route path="/services/aerial-photography" element={<AerialPhotography />} />
@@ -58,6 +71,7 @@ function App() {
             <Route path="*" element={<NotFound />} />
           </Routes>
         </AnimatePresence>
+        </Suspense>
       </main>
       <Footer />
     </div>

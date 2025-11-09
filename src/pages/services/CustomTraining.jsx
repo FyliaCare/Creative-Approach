@@ -2,6 +2,7 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { GraduationCap, Users, BookOpen, Award, MessageCircle, FileText, Monitor, Trophy, CheckCircle, TrendingUp, Clock, Target, Brain, ChevronRight } from 'lucide-react';
+import SEO, { seoPresets } from '../../components/SEO';
 
 export default function CustomTraining() {
   const stats = [
@@ -233,7 +234,9 @@ export default function CustomTraining() {
   ];
 
   return (
-    <div className="min-h-screen bg-white">
+    <>
+      <SEO {...seoPresets.customTraining} />
+      <div className="min-h-screen bg-white">
       {/* Hero Section */}
       <section className="relative min-h-[70vh] flex items-center justify-center overflow-hidden bg-gradient-to-br from-indigo-900 via-purple-700 to-pink-600">
         <div className="absolute inset-0 bg-black/20"></div>
@@ -610,6 +613,7 @@ export default function CustomTraining() {
           </div>
         </div>
       </section>
-    </div>
+      </div>
+    </>
   );
 }

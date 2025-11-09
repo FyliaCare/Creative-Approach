@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { quotationAPI } from '../services/api';
+import SEO, { seoPresets } from '../components/SEO';
 
 export default function Contact() {
   const [formData, setFormData] = useState({
@@ -190,9 +191,11 @@ export default function Contact() {
   ];
 
   return (
-    <div className="min-h-screen pt-20">
-      {/* Hero Section */}
-      <section className="relative bg-gradient-to-br from-drone-900 via-sky-900 to-purple-950 text-white section-padding overflow-hidden">
+    <>
+      <SEO {...seoPresets.contact} />
+      <div className="min-h-screen pt-20">
+        {/* Hero Section */}
+        <section className="relative bg-gradient-to-br from-drone-900 via-sky-900 to-purple-950 text-white section-padding overflow-hidden">
         {/* Animated Background */}
         <div className="absolute inset-0">
           <motion.div
@@ -817,6 +820,7 @@ export default function Contact() {
           </motion.div>
         </div>
       </section>
-    </div>
+      </div>
+    </>
   );
 }

@@ -1,0 +1,23 @@
+# robots.txt for Creative Approach Ghana - Drone Services
+
+User-agent: *
+Allow: /
+
+# Disallow admin and private areas
+Disallow: /admin/
+Disallow: /api/
+Disallow: /_vite/
+
+# Allow important pages
+Allow: /services/
+Allow: /portfolio/
+Allow: /about/
+Allow: /contact/
+Allow: /blog/
+Allow: /industries/
+
+# Sitemap location
+Sitemap: https://creative-approach.com.gh/sitemap.xml
+
+# Crawl-delay for respectful crawling
+Crawl-delay: 1

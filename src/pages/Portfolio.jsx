@@ -5,6 +5,7 @@ import {
   Camera, X, ArrowRight, Play, Award, MapPin, Calendar, 
   ExternalLink, ChevronLeft, ChevronRight, Heart, Eye
 } from 'lucide-react';
+import SEO, { seoPresets } from '../components/SEO';
 
 const API_URL = import.meta.env.VITE_API_URL;
 
@@ -97,7 +98,9 @@ export default function Portfolio() {
   };
 
   return (
-    <div className="min-h-screen bg-white">
+    <>
+      <SEO {...seoPresets.portfolio} />
+      <div className="min-h-screen bg-white">
       {/* Minimal Hero */}
       <section className="relative pt-32 pb-20 px-4 md:px-8">
         <div className="max-w-[1800px] mx-auto">
@@ -408,6 +411,7 @@ export default function Portfolio() {
           </motion.div>
         )}
       </AnimatePresence>
-    </div>
+      </div>
+    </>
   );
 }
