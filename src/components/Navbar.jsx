@@ -37,27 +37,27 @@ export default function Navbar() {
       }`}
     >
       <div className="container-custom">
-        <div className="flex items-center justify-between h-20">
-          {/* Logo - switches between white and black based on background */}
-          <Link to="/" className="flex items-center space-x-3">
+        <div className="flex items-center justify-between h-16 md:h-20">
+          {/* Logo - optimized for mobile */}
+          <Link to="/" className="flex items-center space-x-2 md:space-x-3">
             <motion.img
               src={scrolled || !isHomePage ? "/creative-approach-black.png" : "/creative-approach-white.png"}
               alt="Creative Approach Logo"
-              className="h-12 transition-all duration-300"
+              className="h-10 md:h-12 transition-all duration-300"
               whileHover={{ scale: 1.05 }}
               transition={{ duration: 0.3 }}
             />
           </Link>
 
           {/* Desktop Navigation */}
-          <div className="hidden md:flex items-center space-x-8">
+          <div className="hidden lg:flex items-center space-x-6 xl:space-x-8">
             {navLinks.map((link) => (
               <Link
                 key={link.path}
                 to={link.path}
                 className="relative group"
               >
-                <span className={`font-medium transition-colors ${
+                <span className={`font-medium text-sm xl:text-base transition-colors ${
                   location.pathname === link.path
                     ? 'text-drone-600'
                     : (scrolled || !isHomePage) ? 'text-gray-700 hover:text-drone-600' : 'text-white hover:text-drone-200'
@@ -86,41 +86,121 @@ export default function Navbar() {
           {/* Mobile Menu Button */}
           <button
             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-            className="md:hidden p-2"
+            className="lg:hidden p-2 z-50"
           >
-            <div className="w-6 h-5 flex flex-col justify-between">
-              <span className={`block h-0.5 w-full transition-all ${(scrolled || !isHomePage) ? 'bg-gray-900' : 'bg-white'}`} />
-              <span className={`block h-0.5 w-full transition-all ${(scrolled || !isHomePage) ? 'bg-gray-900' : 'bg-white'}`} />
-              <span className={`block h-0.5 w-full transition-all ${(scrolled || !isHomePage) ? 'bg-gray-900' : 'bg-white'}`} />
-            </div>
+            <motion.div 
+              className="w-6 h-5 flex flex-col justify-between"
+              animate={mobileMenuOpen ? "open" : "closed"}
+            >
+              <motion.span 
+                className={`block h-0.5 w-full transition-all ${(scrolled || !isHomePage) ? 'bg-gray-900' : 'bg-white'}`}
+                variants={{
+                  closed: { rotate: 0, y: 0 },
+                  open: { rotate: 45, y: 8 }
+                }}
+              />
+              <motion.span 
+                className={`block h-0.5 w-full transition-all ${(scrolled || !isHomePage) ? 'bg-gray-900' : 'bg-white'}`}
+                variants={{
+                  closed: { opacity: 1 },
+                  open: { opacity: 0 }
+                }}
+              />
+              <motion.span 
+                className={`block h-0.5 w-full transition-all ${(scrolled || !isHomePage) ? 'bg-gray-900' : 'bg-white'}`}
+                variants={{
+                  closed: { rotate: 0, y: 0 },
+                  open: { rotate: -45, y: -8 }
+                }}
+              />
+            </motion.div>
           </button>
         </div>
       </div>
 
-      {/* Mobile Menu */}
+      {/* Enhanced Mobile Menu - Desktop-like Experience */}
       <AnimatePresence>
         {mobileMenuOpen && (
-          <motion.div
-            initial={{ opacity: 0, height: 0 }}
-            animate={{ opacity: 1, height: 'auto' }}
-            exit={{ opacity: 0, height: 0 }}
-            className="md:hidden bg-white border-t"
-          >
-            <div className="container-custom py-4 space-y-4">
-              {navLinks.map((link) => (
-                <Link
-                  key={link.path}
-                  to={link.path}
-                  onClick={() => setMobileMenuOpen(false)}
-                  className={`block py-2 font-medium ${
-                    location.pathname === link.path ? 'text-blue-600' : 'text-gray-900'
-                  }`}
+          <>
+            {/* Backdrop */}
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              onClick={() => setMobileMenuOpen(false)}
+              className="fixed inset-0 bg-black/50 backdrop-blur-sm z-40 lg:hidden"
+            />
+            
+            {/* Menu Panel */}
+            <motion.div
+              initial={{ x: '100%' }}
+              animate={{ x: 0 }}
+              exit={{ x: '100%' }}
+              transition={{ type: 'spring', damping: 30, stiffness: 300 }}
+              className="fixed top-0 right-0 bottom-0 w-80 max-w-[85vw] bg-white shadow-2xl z-50 lg:hidden overflow-y-auto"
+            >
+              <div className="p-6 pt-20">
+                {/* Mobile Navigation Links */}
+                <div className="space-y-1">
+                  {navLinks.map((link, index) => (
+                    <motion.div
+                      key={link.path}
+                      initial={{ opacity: 0, x: 50 }}
+                      animate={{ opacity: 1, x: 0 }}
+                      transition={{ delay: index * 0.05 }}
+                    >
+                      <Link
+                        to={link.path}
+                        onClick={() => setMobileMenuOpen(false)}
+                        className={`block py-3 px-4 font-medium text-lg rounded-lg transition-all ${
+                          location.pathname === link.path 
+                            ? 'bg-gradient-to-r from-drone-500 to-sky-500 text-white shadow-lg' 
+                            : 'text-gray-700 hover:bg-gray-100'
+                        }`}
+                      >
+                        {link.name}
+                      </Link>
+                    </motion.div>
+                  ))}
+                </div>
+
+                {/* CTA Button */}
+                <motion.div
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 0.4 }}
+                  className="mt-8"
                 >
-                  {link.name}
-                </Link>
-              ))}
-            </div>
-          </motion.div>
+                  <Link 
+                    to="/contact"
+                    onClick={() => setMobileMenuOpen(false)}
+                  >
+                    <button className="w-full py-4 bg-gradient-to-r from-drone-500 to-sky-500 text-white rounded-xl font-semibold text-lg shadow-xl hover:shadow-2xl transition-all">
+                      Get a Free Quote
+                    </button>
+                  </Link>
+                </motion.div>
+
+                {/* Contact Info */}
+                <motion.div
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  transition={{ delay: 0.5 }}
+                  className="mt-8 pt-8 border-t border-gray-200"
+                >
+                  <p className="text-sm text-gray-600 mb-4">Get in touch</p>
+                  <div className="space-y-3 text-sm">
+                    <a href="tel:+233123456789" className="block text-gray-700 hover:text-drone-600">
+                      📞 +233 123 456 789
+                    </a>
+                    <a href="mailto:info@creativeapproach.gh" className="block text-gray-700 hover:text-drone-600">
+                      ✉️ info@creativeapproach.gh
+                    </a>
+                  </div>
+                </motion.div>
+              </div>
+            </motion.div>
+          </>
         )}
       </AnimatePresence>
     </motion.nav>
