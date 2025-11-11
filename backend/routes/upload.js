@@ -21,7 +21,7 @@ const storage = multer.diskStorage({
   }
 });
 
-// File filter
+// File filter for images and documents
 const fileFilter = (req, file, cb) => {
   // Allowed file types
   const allowedTypes = /jpeg|jpg|png|gif|webp|pdf|doc|docx/;
@@ -35,13 +35,36 @@ const fileFilter = (req, file, cb) => {
   }
 };
 
-// Initialize multer
+// File filter for videos
+const videoFilter = (req, file, cb) => {
+  const allowedTypes = /mp4|mov|avi|webm|mkv/;
+  const extname = allowedTypes.test(path.extname(file.originalname).toLowerCase());
+  const mimetypePattern = /video\//;
+  const mimetype = mimetypePattern.test(file.mimetype);
+  
+  if (extname && mimetype) {
+    return cb(null, true);
+  } else {
+    cb(new Error('Invalid file type. Allowed: MP4, MOV, AVI, WebM, MKV'));
+  }
+};
+
+// Initialize multer for images/documents
 const upload = multer({
   storage: storage,
   limits: {
     fileSize: 10 * 1024 * 1024 // 10MB limit
   },
   fileFilter: fileFilter
+});
+
+// Initialize multer for videos with larger size limit
+const videoUpload = multer({
+  storage: storage,
+  limits: {
+    fileSize: 100 * 1024 * 1024 // 100MB limit for videos
+  },
+  fileFilter: videoFilter
 });
 
 // @route   POST /api/upload/image
@@ -111,6 +134,35 @@ router.post('/document', protect, authorize('admin'), upload.single('document'),
       return res.status(400).json({
         success: false,
         message: 'No file uploaded'
+      });
+    }
+    
+    const fileUrl = `/uploads/${req.file.filename}`;
+    
+    res.json({
+      success: true,
+      data: {
+        url: fileUrl,
+        filename: req.file.filename,
+        originalName: req.file.originalname,
+        size: req.file.size,
+        mimetype: req.file.mimetype
+      }
+    });
+  } catch (error) {
+    next(error);
+  }
+});
+
+// @route   POST /api/upload/video
+// @desc    Upload video file
+// @access  Private/Admin
+router.post('/video', protect, authorize('admin'), videoUpload.single('video'), async (req, res, next) => {
+  try {
+    if (!req.file) {
+      return res.status(400).json({
+        success: false,
+        message: 'No video file uploaded'
       });
     }
     

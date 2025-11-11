@@ -38,8 +38,7 @@ const portfolioSchema = new mongoose.Schema({
     required: true
   },
   images: [{
-    url: String,
-    caption: String
+    type: String
   }],
   videoUrl: {
     type: String

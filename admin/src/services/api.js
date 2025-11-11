@@ -88,6 +88,16 @@ export const analyticsAPI = {
   getTimeline: (period = '7d') => api.get('/analytics/timeline', { params: { period } }),
 };
 
+// Portfolio API
+export const portfolioAPI = {
+  getAll: (params) => api.get('/portfolio', { params }),
+  getById: (id) => api.get(`/portfolio/${id}`),
+  create: (data) => api.post('/portfolio', data),
+  update: (id, data) => api.patch(`/portfolio/${id}`, data),
+  delete: (id) => api.delete(`/portfolio/${id}`),
+  getStats: () => api.get('/portfolio/stats'),
+};
+
 // Upload API
 export const uploadAPI = {
   uploadImage: (file) => {
@@ -102,6 +112,19 @@ export const uploadAPI = {
     files.forEach(file => formData.append('images', file));
     return api.post('/upload/images', formData, {
       headers: { 'Content-Type': 'multipart/form-data' },
+    });
+  },
+  uploadVideo: (file, onProgress) => {
+    const formData = new FormData();
+    formData.append('video', file);
+    return api.post('/upload/video', formData, {
+      headers: { 'Content-Type': 'multipart/form-data' },
+      onUploadProgress: (progressEvent) => {
+        if (onProgress && progressEvent.total) {
+          const percentCompleted = Math.round((progressEvent.loaded * 100) / progressEvent.total);
+          onProgress(percentCompleted);
+        }
+      },
     });
   },
   uploadDocument: (file) => {

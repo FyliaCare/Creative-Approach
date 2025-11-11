@@ -6,16 +6,34 @@ import { body, validationResult } from 'express-validator';
 const router = express.Router();
 
 // @route   GET /api/portfolio
-// @desc    Get all published portfolio items
-// @access  Public
+// @desc    Get all portfolio items (published for public, all for admin)
+// @access  Public/Admin
 router.get('/', async (req, res) => {
   try {
-    const { category, featured, limit = 20, sort = '-date' } = req.query;
+    const { category, featured, limit = 20, sort = '-date', status } = req.query;
     
-    let query = { status: 'published' };
+    // Check if user is admin
+    const token = req.headers.authorization?.split(' ')[1];
+    let isAdmin = false;
+    
+    if (token) {
+      try {
+        const jwt = await import('jsonwebtoken');
+        const decoded = jwt.default.verify(token, process.env.JWT_SECRET);
+        if (decoded.role === 'admin') {
+          isAdmin = true;
+        }
+      } catch (err) {
+        // Token invalid or expired, treat as public
+      }
+    }
+    
+    // Build query - admins see all, public only sees published
+    let query = isAdmin ? {} : { status: 'published' };
     
     if (category) query.category = category;
     if (featured) query.featured = featured === 'true';
+    if (status && isAdmin) query.status = status;
     
     const portfolios = await Portfolio.find(query)
       .sort(sort)
