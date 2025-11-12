@@ -3,7 +3,7 @@ import { Routes, Route, useLocation } from 'react-router-dom';
 import { AnimatePresence } from 'framer-motion';
 import Navbar from './components/Navbar';
 import Footer from './components/Footer';
-import LiveChat from './components/chat/LiveChat';
+import AdvancedLiveChat from './components/chat/AdvancedLiveChat';
 import QuoteBot from './components/QuoteBot';
 
 // Lazy load pages for code splitting
@@ -80,8 +80,8 @@ function App() {
       </main>
       <Footer />
       
-      {/* Live Chat */}
-      <LiveChat />
+      {/* Advanced Live Chat */}
+      <AdvancedLiveChat />
       
       {/* Quote Bot Modal */}
       <QuoteBot isOpen={isQuoteBotOpen} onClose={() => setIsQuoteBotOpen(false)} />

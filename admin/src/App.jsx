@@ -12,7 +12,7 @@ import { BlogEditor } from './pages/BlogEditor';
 import { Quotations } from './pages/Quotations';
 import { QuotationDetail } from './pages/QuotationDetail';
 import { PortfolioAdvanced } from './pages/PortfolioAdvanced';
-import { Chat } from './pages/Chat';
+import AdvancedAdminChat from './pages/AdvancedAdminChat';
 import { Settings } from './pages/Settings';
 
 function App() {
@@ -119,7 +119,7 @@ function App() {
             element={
               <ProtectedRoute>
                 <DashboardLayout>
-                  <Chat />
+                  <AdvancedAdminChat />
                 </DashboardLayout>
               </ProtectedRoute>
             }

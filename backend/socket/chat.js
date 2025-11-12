@@ -1,8 +1,10 @@
 import ChatMessage from '../models/ChatMessage.js';
 import { v4 as uuidv4 } from 'uuid';
 
-// Store for active connections
+// Store for active connections and online status
 const activeUsers = new Map();
+const onlineAdmins = new Set();
+const userTypingStatus = new Map();
 
 export const initializeChat = (io) => {
   io.on('connection', (socket) => {
@@ -73,19 +75,45 @@ export const initializeChat = (io) => {
           attachments,
           sessionId: socket.handshake.sessionID,
           ipAddress: socket.handshake.address,
-          userAgent: socket.handshake.headers['user-agent']
+          userAgent: socket.handshake.headers['user-agent'],
+          status: 'sent', // Add message status
+          deliveredAt: new Date()
         });
         
-        // Emit to conversation room
+        // Emit to conversation room with delivery status
         io.to(conversationId).emit('new-message', newMessage);
+        
+        // Emit message delivered confirmation to sender
+        socket.emit('message-delivered', {
+          messageId: newMessage._id,
+          tempId: messageData.tempId,
+          conversationId
+        });
         
         // Notify admin room if message from visitor
         if (senderType === 'visitor') {
           io.to('admin-room').emit('new-visitor-message', {
             conversationId,
-            message: newMessage
+            message: newMessage,
+            unreadCount: await ChatMessage.countDocuments({
+              conversationId,
+              isRead: false,
+              senderType: 'visitor'
+            })
           });
         }
+        
+        // Update message status to delivered for recipient
+        await ChatMessage.findByIdAndUpdate(newMessage._id, {
+          status: 'delivered',
+          deliveredAt: new Date()
+        });
+        
+        io.to(conversationId).emit('message-status-updated', {
+          messageId: newMessage._id,
+          status: 'delivered',
+          conversationId
+        });
       } catch (error) {
         console.error('Send message error:', error);
         socket.emit('error', { message: 'Failed to send message' });
@@ -118,14 +146,29 @@ export const initializeChat = (io) => {
           {
             $set: {
               isRead: true,
-              readAt: new Date()
+              readAt: new Date(),
+              status: 'read'
             }
           }
         );
         
+        // Notify sender that messages were read
         socket.to(conversationId).emit('messages-read', {
           conversationId,
-          messageIds
+          messageIds,
+          readAt: new Date()
+        });
+        
+        // Update admin room with new unread count
+        const unreadCount = await ChatMessage.countDocuments({
+          conversationId,
+          isRead: false,
+          senderType: 'visitor'
+        });
+        
+        io.to('admin-room').emit('unread-count-updated', {
+          conversationId,
+          unreadCount
         });
       } catch (error) {
         console.error('Mark read error:', error);
@@ -133,9 +176,16 @@ export const initializeChat = (io) => {
     });
     
     // Admin joins admin room
-    socket.on('join-admin', ({ userId }) => {
+    socket.on('join-admin', ({ userId, adminName }) => {
       socket.join('admin-room');
-      console.log('Admin joined admin room:', userId);
+      onlineAdmins.add(socket.id);
+      console.log('Admin joined admin room:', userId, adminName);
+      
+      // Broadcast admin online status to all conversations
+      io.emit('admin-online', {
+        adminName,
+        timestamp: new Date()
+      });
       
       // Send active conversations count
       const activeConversations = Array.from(activeUsers.values())
@@ -229,6 +279,18 @@ export const initializeChat = (io) => {
         }
         
         activeUsers.delete(socket.id);
+      }
+      
+      // Remove from online admins
+      if (onlineAdmins.has(socket.id)) {
+        onlineAdmins.delete(socket.id);
+        
+        // If no admins online, broadcast offline status
+        if (onlineAdmins.size === 0) {
+          io.emit('admin-offline', {
+            timestamp: new Date()
+          });
+        }
       }
       
       console.log('Client disconnected:', socket.id);

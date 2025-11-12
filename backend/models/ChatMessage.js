@@ -57,6 +57,14 @@ const chatMessageSchema = new mongoose.Schema({
   readAt: {
     type: Date
   },
+  status: {
+    type: String,
+    enum: ['sending', 'sent', 'delivered', 'read', 'failed'],
+    default: 'sent'
+  },
+  deliveredAt: {
+    type: Date
+  },
   
   // Session Info
   sessionId: {
