@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 
-export default function Navbar() {
+export default function Navbar({ onOpenQuoteBot }) {
   const [scrolled, setScrolled] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const location = useLocation();
@@ -72,15 +72,14 @@ export default function Navbar() {
                 )}
               </Link>
             ))}
-            <Link to="/contact">
-              <motion.button
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.95 }}
-                className="btn-primary"
-              >
-                Get Quote
-              </motion.button>
-            </Link>
+            <motion.button
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
+              onClick={onOpenQuoteBot}
+              className="btn-primary"
+            >
+              Get Quote
+            </motion.button>
           </div>
 
           {/* Mobile Menu Button */}
@@ -171,14 +170,15 @@ export default function Navbar() {
                   transition={{ delay: 0.4 }}
                   className="mt-8"
                 >
-                  <Link 
-                    to="/contact"
-                    onClick={() => setMobileMenuOpen(false)}
+                  <button 
+                    onClick={() => {
+                      setMobileMenuOpen(false);
+                      onOpenQuoteBot();
+                    }}
+                    className="w-full py-4 bg-gradient-to-r from-drone-500 to-sky-500 text-white rounded-xl font-semibold text-lg shadow-xl hover:shadow-2xl transition-all"
                   >
-                    <button className="w-full py-4 bg-gradient-to-r from-drone-500 to-sky-500 text-white rounded-xl font-semibold text-lg shadow-xl hover:shadow-2xl transition-all">
-                      Get a Free Quote
-                    </button>
-                  </Link>
+                    Get a Free Quote
+                  </button>
                 </motion.div>
 
                 {/* Contact Info */}

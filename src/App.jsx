@@ -1,9 +1,10 @@
-import React, { useEffect, lazy, Suspense } from 'react';
+import React, { useEffect, lazy, Suspense, useState } from 'react';
 import { Routes, Route, useLocation } from 'react-router-dom';
 import { AnimatePresence } from 'framer-motion';
 import Navbar from './components/Navbar';
 import Footer from './components/Footer';
 import LiveChat from './components/chat/LiveChat';
+import QuoteBot from './components/QuoteBot';
 
 // Lazy load pages for code splitting
 const Home = lazy(() => import('./pages/Home'));
@@ -45,10 +46,11 @@ function ScrollToTop() {
 
 function App() {
   const location = useLocation();
+  const [isQuoteBotOpen, setIsQuoteBotOpen] = useState(false);
   
   return (
     <div className="min-h-screen flex flex-col">
-      <Navbar />
+      <Navbar onOpenQuoteBot={() => setIsQuoteBotOpen(true)} />
       <ScrollToTop />
       <main className="flex-grow">
         <Suspense fallback={<PageLoader />}>
@@ -78,6 +80,9 @@ function App() {
       
       {/* Live Chat */}
       <LiveChat />
+      
+      {/* Quote Bot Modal */}
+      <QuoteBot isOpen={isQuoteBotOpen} onClose={() => setIsQuoteBotOpen(false)} />
     </div>
   );
 }
