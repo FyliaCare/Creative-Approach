@@ -313,7 +313,7 @@ export default function Services() {
           loop 
           muted 
           playsInline
-          className="absolute inset-0 w-full h-full object-cover opacity-50"
+          className="absolute inset-0 w-full h-full object-cover opacity-30"
         >
           <source src="/Services Landing Page-1.mp4" type="video/mp4" />
         </video>

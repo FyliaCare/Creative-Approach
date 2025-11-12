@@ -215,7 +215,7 @@ export default function About() {
         <img 
           src="/AERIAL PHOTOGRAPHY AND VIDEOGRAPHY/DJI_20231201134820_0013_V.JPG" 
           alt="About CA Ghana" 
-          className="absolute inset-0 w-full h-full object-cover opacity-50"
+          className="absolute inset-0 w-full h-full object-cover opacity-30"
         />
         
         <div className="container-custom relative z-10">

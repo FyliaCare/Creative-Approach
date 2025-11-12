@@ -200,7 +200,7 @@ export default function Contact() {
         <img 
           src="/AERIAL PHOTOGRAPHY AND VIDEOGRAPHY/Atlantic.jpg" 
           alt="Contact Us" 
-          className="absolute inset-0 w-full h-full object-cover opacity-50"
+          className="absolute inset-0 w-full h-full object-cover opacity-30"
         />
         
         <div className="container-custom relative z-10">

@@ -240,7 +240,7 @@ export default function Home() {
           preload="metadata"
           disablePictureInPicture
           controlsList="nodownload"
-          className="absolute inset-0 w-full h-full object-cover pointer-events-none opacity-60"
+          className="absolute inset-0 w-full h-full object-cover pointer-events-none opacity-40"
           src={heroVideo}
           onContextMenu={(e) => e.preventDefault()}
           onError={(e) => {
