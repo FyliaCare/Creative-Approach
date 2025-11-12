@@ -307,12 +307,16 @@ export default function Services() {
       <div className="min-h-screen pt-20">
       {/* Hero Section */}
       <section className="relative text-white section-padding overflow-hidden min-h-[70vh] flex items-center">
-        {/* Background Image */}
-        <img 
-          src="/AERIAL PHOTOGRAPHY LANDING PAGE.jpg" 
-          alt="Drone Services" 
+        {/* Background Video */}
+        <video 
+          autoPlay 
+          loop 
+          muted 
+          playsInline
           className="absolute inset-0 w-full h-full object-cover"
-        />
+        >
+          <source src="/Services Landing Page-1.mp4" type="video/mp4" />
+        </video>
         <div className="absolute inset-0 bg-gradient-to-br from-drone-900/80 via-sky-900/70 to-purple-950/80"></div>
         
         {/* Animated Pattern Overlay */}
