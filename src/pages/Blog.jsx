@@ -115,23 +115,8 @@ export default function Blog() {
         <img 
           src="/SURVEY AND MAPPING/Orthomosaic-Detail-v2-2-1.jpg" 
           alt="Blog" 
-          className="absolute inset-0 w-full h-full object-cover"
+          className="absolute inset-0 w-full h-full object-cover opacity-50"
         />
-        <div className="absolute inset-0 bg-gradient-to-br from-indigo-900/85 via-drone-900/80 to-sky-950/85"></div>
-        
-        {/* Animated Gradient Overlays */}
-        <div className="absolute inset-0 opacity-20">
-          <motion.div
-            animate={{ rotate: [0, 360], scale: [1, 1.2, 1], x: [0, 50, 0] }}
-            transition={{ duration: 30, repeat: Infinity, ease: "linear" }}
-            className="absolute top-1/3 right-1/4 w-[500px] h-[500px] bg-indigo-500 rounded-full blur-3xl"
-          />
-          <motion.div
-            animate={{ y: [0, -50, 0], scale: [1.1, 1, 1.1] }}
-            transition={{ duration: 25, repeat: Infinity, ease: "easeInOut" }}
-            className="absolute bottom-1/4 left-1/4 w-[500px] h-[500px] bg-drone-500 rounded-full blur-3xl"
-          />
-        </div>
         
         <div className="container-custom relative z-10">
           <motion.div

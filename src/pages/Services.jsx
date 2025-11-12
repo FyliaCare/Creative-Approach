@@ -313,11 +313,10 @@ export default function Services() {
           loop 
           muted 
           playsInline
-          className="absolute inset-0 w-full h-full object-cover"
+          className="absolute inset-0 w-full h-full object-cover opacity-50"
         >
           <source src="/Services Landing Page-1.mp4" type="video/mp4" />
         </video>
-        <div className="absolute inset-0 bg-gradient-to-br from-drone-900/80 via-sky-900/70 to-purple-950/80"></div>
         
         <div className="container-custom relative z-10">
           <motion.div

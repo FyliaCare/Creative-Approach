@@ -4,7 +4,7 @@ import { Link } from 'react-router-dom';
 import SEO, { seoPresets } from '../components/SEO';
 import Newsletter from '../components/Newsletter';
 import LiveChat from '../components/chat/LiveChat';
-import heroVideo from '/Services Landing Page-1.mp4';
+import heroVideo from '/landing-page.mp4';
 
 // Counter Animation Component
 function AnimatedCounter({ end, duration = 2, suffix = '', prefix = '' }) {
@@ -180,7 +180,7 @@ export default function Home() {
           preload="metadata"
           disablePictureInPicture
           controlsList="nodownload"
-          className="absolute inset-0 w-full h-full object-cover pointer-events-none"
+          className="absolute inset-0 w-full h-full object-cover pointer-events-none opacity-60"
           src={heroVideo}
           onContextMenu={(e) => e.preventDefault()}
           onError={(e) => {
@@ -189,12 +189,6 @@ export default function Home() {
         >
           Your browser does not support the video tag.
         </video>
-
-        {/* Dark Overlay for better text readability */}
-        <div className="absolute inset-0 bg-black/40"></div>
-        
-        {/* Gradient Overlay */}
-        <div className="absolute inset-0 bg-gradient-to-r from-drone-600/20 to-sky-600/20"></div>
 
         <motion.div
           style={{ opacity: heroOpacity, scale: heroScale }}
