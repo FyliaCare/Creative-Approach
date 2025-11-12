@@ -40,10 +40,10 @@ export default function About() {
   const [selectedMember, setSelectedMember] = useState(null);
 
   const stats = [
-    { number: 500, suffix: '+', label: 'Projects Completed', icon: '📊' },
+    { number: 11, suffix: '', label: 'Projects Completed', icon: '📊' },
     { number: 50, suffix: '+', label: 'Happy Clients', icon: '😊' },
-    { number: 10000, suffix: '+', label: 'Flight Hours', icon: '⏱️' },
-    { number: 100, suffix: '%', label: 'Safety Record', icon: '🛡️' }
+    { number: 420, suffix: '+', label: 'Flight Hours', icon: '⏱️' },
+    { number: 99, suffix: '%', label: 'Safety Record', icon: '🛡️' }
   ];
 
   const team = [
