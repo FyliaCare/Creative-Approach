@@ -98,37 +98,51 @@ export default function Footer() {
         </div>
 
         {/* Bottom Bar */}
-        <div className="border-t border-gray-700 pt-8 flex flex-col md:flex-row justify-between items-center">
-          <p className="text-gray-400 text-sm">
-            &copy; {currentYear} Creative Approach. All rights reserved.
-          </p>
-          <div className="flex space-x-6 mt-4 md:mt-0 items-center">
-            <Link to="/privacy" className="text-gray-400 hover:text-white text-sm transition-colors">
-              Privacy Policy
-            </Link>
-            <Link to="/terms" className="text-gray-400 hover:text-white text-sm transition-colors">
-              Terms of Service
-            </Link>
+        <div className="border-t border-gray-700 pt-8">
+          <div className="flex flex-col md:flex-row justify-between items-center mb-4">
+            <p className="text-gray-400 text-sm">
+              &copy; {currentYear} Creative Approach. All rights reserved.
+            </p>
+            <div className="flex space-x-6 mt-4 md:mt-0 items-center">
+              <Link to="/privacy" className="text-gray-400 hover:text-white text-sm transition-colors">
+                Privacy Policy
+              </Link>
+              <Link to="/terms" className="text-gray-400 hover:text-white text-sm transition-colors">
+                Terms of Service
+              </Link>
+              <a
+                href="https://creative-approach-admin.onrender.com"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex items-center space-x-1 text-gray-400 hover:text-blue-400 text-sm transition-colors group"
+              >
+                <svg
+                  className="w-4 h-4 group-hover:scale-110 transition-transform"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"
+                  />
+                </svg>
+                <span>Admin</span>
+              </a>
+            </div>
+          </div>
+          
+          {/* Powered By */}
+          <div className="text-center pt-4 border-t border-gray-700/50">
             <a
-              href="https://creative-approach-admin.onrender.com"
+              href="https://microaisystems.com"
               target="_blank"
               rel="noopener noreferrer"
-              className="flex items-center space-x-1 text-gray-400 hover:text-blue-400 text-sm transition-colors group"
+              className="text-gray-500 hover:text-gray-300 text-xs transition-colors inline-flex items-center gap-1"
             >
-              <svg
-                className="w-4 h-4 group-hover:scale-110 transition-transform"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"
-                />
-              </svg>
-              <span>Admin</span>
+              Powered by <span className="font-semibold">MicroAI Systems</span>
             </a>
           </div>
         </div>
