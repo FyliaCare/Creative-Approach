@@ -1,9 +1,9 @@
 # Render.com configuration for SPA routing
-# For Static Site deployment
+# Using Web Service with serve package for proper SPA routing
 services:
   - type: web
     name: creative-approach
-    env: static
+    env: node
     buildCommand: npm ci && npm run build
-    staticPublishPath: ./dist
+    startCommand: npm run serve
     pullRequestPreviewsEnabled: true
