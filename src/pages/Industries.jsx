@@ -287,9 +287,9 @@ export default function Industries() {
     : industries.filter(ind => ind.category === activeFilter);
 
   const globalStats = [
-    { number: 8, label: 'Industries Served', icon: '🏭' },
-    { number: 575, suffix: '+', label: 'Projects Delivered', icon: '📊' },
-    { number: 50, suffix: '+', label: 'Corporate Clients', icon: '🤝' },
+    { number: 6, label: 'Industries Served', icon: '🏭' },
+    { number: 75, suffix: '+', label: 'Projects Delivered', icon: '📊' },
+    { number: 30, suffix: '+', label: 'Corporate Clients', icon: '🤝' },
     { number: 98, suffix: '%', label: 'Client Satisfaction', icon: '⭐' }
   ];
 
