@@ -46,7 +46,7 @@ function AnimatedCounter({ end, duration = 2, suffix = '', prefix = '' }) {
   );
 }
 
-export default function Home() {
+export default function Home({ onOpenQuoteBot }) {
   const { scrollYProgress } = useScroll();
   const heroOpacity = useTransform(scrollYProgress, [0, 0.3], [1, 0]);
   const heroScale = useTransform(scrollYProgress, [0, 0.3], [1, 0.95]);
@@ -293,15 +293,14 @@ export default function Home() {
                 LEARN MORE
               </motion.button>
             </Link>
-            <Link to="/contact">
-              <motion.button
-                whileHover={{ scale: 1.05, y: -2 }}
-                whileTap={{ scale: 0.95 }}
-                className="px-10 py-4 bg-white/95 hover:bg-white text-drone-600 font-bold text-lg rounded-md shadow-2xl transition-all backdrop-blur-sm"
-              >
-                GET A QUOTE
-              </motion.button>
-            </Link>
+            <motion.button
+              onClick={onOpenQuoteBot}
+              whileHover={{ scale: 1.05, y: -2 }}
+              whileTap={{ scale: 0.95 }}
+              className="px-10 py-4 bg-white/95 hover:bg-white text-drone-600 font-bold text-lg rounded-md shadow-2xl transition-all backdrop-blur-sm"
+            >
+              GET A QUOTE
+            </motion.button>
           </motion.div>
         </motion.div>
 
@@ -768,15 +767,14 @@ export default function Home() {
               </p>
               
               <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <Link to="/contact">
-                <motion.button
-                  whileHover={{ scale: 1.05, y: -2 }}
-                  whileTap={{ scale: 0.95 }}
-                  className="px-12 py-5 bg-white text-drone-600 font-bold text-lg rounded-md shadow-xl hover:shadow-2xl transition-all"
-                >
-                  GET A QUOTE NOW
-                </motion.button>
-              </Link>
+              <motion.button
+                onClick={onOpenQuoteBot}
+                whileHover={{ scale: 1.05, y: -2 }}
+                whileTap={{ scale: 0.95 }}
+                className="px-12 py-5 bg-white text-drone-600 font-bold text-lg rounded-md shadow-xl hover:shadow-2xl transition-all"
+              >
+                GET A QUOTE NOW
+              </motion.button>
               <Link to="/services">
                 <motion.button
                   whileHover={{ scale: 1.05, y: -2 }}

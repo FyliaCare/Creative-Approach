@@ -57,7 +57,7 @@ function App() {
         <Suspense fallback={<PageLoader />}>
           <AnimatePresence mode="wait">
             <Routes location={location} key={location.pathname}>
-            <Route path="/" element={<Home />} />
+            <Route path="/" element={<Home onOpenQuoteBot={() => setIsQuoteBotOpen(true)} />} />
             <Route path="/services" element={<Services />} />
             <Route path="/services/aerial-photography" element={<AerialPhotography />} />
             <Route path="/services/drone-inspection" element={<DroneInspection />} />
