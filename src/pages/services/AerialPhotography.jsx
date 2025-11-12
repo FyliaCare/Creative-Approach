@@ -221,8 +221,14 @@ export default function AerialPhotography() {
       <div className="min-h-screen bg-white">
       {/* Hero Section */}
       <section className="relative h-[70vh] flex items-center justify-center overflow-hidden">
-        <div className="absolute inset-0 bg-gradient-to-br from-blue-900 via-blue-700 to-cyan-600" />
-        <div className="absolute inset-0 bg-black/30" />
+        <div className="absolute inset-0">
+          <img 
+            src="/AERIAL  PHOTOGRAPHY LANDING PAGE.jpg" 
+            alt="Aerial Photography Hero" 
+            className="w-full h-full object-cover"
+          />
+          <div className="absolute inset-0 bg-gradient-to-r from-black/70 via-black/50 to-black/30" />
+        </div>
         
         <motion.div
           initial={{ opacity: 0, y: 30 }}
@@ -330,27 +336,29 @@ export default function AerialPhotography() {
             >
               <div className="space-y-4">
                 <img 
-                  src="https://images.unsplash.com/photo-1473968512647-3e447244af8f?w=800" 
-                  alt="Aerial photography sample"
+                  src="/AERIAL PHOTOGRAPHY AND VIDEOGRAPHY/Atlantic.jpg" 
+                  alt="Aerial view of Atlantic"
                   className="rounded-lg shadow-xl w-full h-48 object-cover"
                 />
                 <img 
-                  src="https://images.unsplash.com/photo-1508614589041-895b88991e3e?w=800" 
-                  alt="Drone videography"
+                  src="/AERIAL PHOTOGRAPHY AND VIDEOGRAPHY/DJI_20231201134820_0013_V.JPG" 
+                  alt="Aerial photography sample"
                   className="rounded-lg shadow-xl w-full h-64 object-cover"
                 />
               </div>
               <div className="space-y-4 mt-8">
                 <img 
-                  src="https://images.unsplash.com/photo-1464207687429-7505649dae38?w=800" 
-                  alt="Professional aerial shots"
+                  src="/AERIAL PHOTOGRAPHY AND VIDEOGRAPHY/DJI_20231201134831_0014_V.JPG" 
+                  alt="Professional aerial shot"
                   className="rounded-lg shadow-xl w-full h-64 object-cover"
                 />
-                <img 
-                  src="https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=800" 
-                  alt="Cinematic drone footage"
-                  className="rounded-lg shadow-xl w-full h-48 object-cover"
-                />
+                <div className="bg-gradient-to-br from-blue-600 to-cyan-600 rounded-lg shadow-xl p-6 flex items-center justify-center text-white h-48">
+                  <div className="text-center">
+                    <Camera className="w-12 h-12 mb-3 mx-auto" />
+                    <div className="text-2xl font-bold mb-1">8K Ultra HD</div>
+                    <div className="text-sm">Professional Quality</div>
+                  </div>
+                </div>
               </div>
             </motion.div>
           </div>

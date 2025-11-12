@@ -4,7 +4,7 @@ import { Link } from 'react-router-dom';
 import SEO, { seoPresets } from '../components/SEO';
 import Newsletter from '../components/Newsletter';
 import LiveChat from '../components/chat/LiveChat';
-import heroVideo from '/landing-page.mp4';
+import heroVideo from '/Services Landing Page-1.mp4';
 
 // Counter Animation Component
 function AnimatedCounter({ end, duration = 2, suffix = '', prefix = '' }) {
