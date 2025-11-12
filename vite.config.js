@@ -17,4 +17,8 @@ export default defineConfig({
     },
   },
   publicDir: 'public',
+  // Ensure SPA routing works on refresh
+  preview: {
+    port: 3000,
+  },
 });
