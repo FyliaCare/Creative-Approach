@@ -1,292 +1,581 @@
-# Creative Approach - Full-Stack Web Application
+# Creative Approach - Drone Services Platform# Creative Approach - Full-Stack Web Application
 
-A modern, professional full-stack website for Creative Approach - Ghana's leading provider of drone-based geospatial and visual media solutions.
 
-## 🚀 Live Demo
 
-- **Website:** [https://creative-approach.onrender.com](https://creative-approach.onrender.com)
-- **Repository:** [GitHub](https://github.com/FyliaCare/Creative-Approach)
+A modern, full-stack web application for Creative Approach, showcasing professional drone services including aerial photography, videography, inspections, surveys, and mapping.A modern, professional full-stack website for Creative Approach - Ghana's leading provider of drone-based geospatial and visual media solutions.
 
----
 
-## ✨ Features Overview
+
+## 🚀 Tech Stack## 🚀 Live Demo
+
+
+
+### Frontend- **Website:** [https://creative-approach.onrender.com](https://creative-approach.onrender.com)
+
+- **React 18** with Vite for fast development- **Repository:** [GitHub](https://github.com/FyliaCare/Creative-Approach)
+
+- **Tailwind CSS** for styling
+
+- **Framer Motion** for animations---
+
+- **React Router** for navigation
+
+- **Axios** for API calls## ✨ Features Overview
+
+- **Socket.IO** for real-time chat
 
 ### Frontend (React + Vite + Tailwind CSS)
-- ✅ Modern, responsive design with Framer Motion animations
-- ✅ Homepage with dronegenuity.com-inspired layout
-- ✅ 12+ animated drones throughout pages
-- ✅ Services, About, Industries, Contact pages (fully redesigned)
-- ✅ Newsletter subscription component
-- ✅ Real-time live chat widget
-- ✅ Mobile-responsive on all devices
 
-### Backend (Node.js + Express + MongoDB + Socket.io)
-- ✅ Comprehensive REST API (40+ endpoints)
-- ✅ JWT authentication with bcrypt password hashing
-- ✅ Real-time live chat with Socket.io
-- ✅ Newsletter management system
-- ✅ Blog/CMS with categories, tags, and SEO
-- ✅ Quote request handling with status workflow
+### Backend- ✅ Modern, responsive design with Framer Motion animations
+
+- **Node.js** with Express- ✅ Homepage with dronegenuity.com-inspired layout
+
+- **MongoDB** with Mongoose- ✅ 12+ animated drones throughout pages
+
+- **JWT** authentication- ✅ Services, About, Industries, Contact pages (fully redesigned)
+
+- **Socket.IO** for real-time features- ✅ Newsletter subscription component
+
+- **Nodemailer** for email services- ✅ Real-time live chat widget
+
+- **Multer** for file uploads- ✅ Mobile-responsive on all devices
+
+
+
+### Admin Panel### Backend (Node.js + Express + MongoDB + Socket.io)
+
+- Separate React application- ✅ Comprehensive REST API (40+ endpoints)
+
+- Advanced analytics with Recharts- ✅ JWT authentication with bcrypt password hashing
+
+- Blog management with React Quill- ✅ Real-time live chat with Socket.io
+
+- Portfolio management with image optimization- ✅ Newsletter management system
+
+- Live chat system- ✅ Blog/CMS with categories, tags, and SEO
+
+- Quotation/Invoice generator with PDF export- ✅ Quote request handling with status workflow
+
 - ✅ Visitor analytics with GeoIP country tracking
-- ✅ File upload system (images/documents)
+
+## 📁 Project Structure- ✅ File upload system (images/documents)
+
 - ✅ Security (Helmet, CORS, rate limiting, validation)
 
-### Key Integrations
-- 💬 **Live Chat** - Real-time visitor support via Socket.io
-- 📧 **Newsletter** - Email subscriptions with country tracking
-- 📊 **Analytics** - Track visitors from different countries, page views, conversions
-- 💼 **Quotations** - Automated quote request management
-- 🔐 **Authentication** - Secure admin access with JWT
+```
 
----
+Creative-Approach/### Key Integrations
 
-## 📚 Documentation
+├── src/                    # Main frontend application- 💬 **Live Chat** - Real-time visitor support via Socket.io
 
-**Quick Access:**
-- 🚀 **[SETUP_GUIDE.md](./SETUP_GUIDE.md)** - Complete installation and setup instructions
-- ⚡ **[backend/QUICKSTART.md](./backend/QUICKSTART.md)** - Backend 5-minute setup
-- 🔗 **[INTEGRATION_GUIDE.md](./INTEGRATION_GUIDE.md)** - Frontend-backend integration
-- 🧪 **[TESTING_GUIDE.md](./TESTING_GUIDE.md)** - Complete testing scenarios
-- 📦 **[PROJECT_STATUS.md](./PROJECT_STATUS.md)** - Comprehensive project overview
-- 🚢 **[DEPLOYMENT.md](./DEPLOYMENT.md)** - Deployment instructions
+│   ├── components/         # Reusable React components- 📧 **Newsletter** - Email subscriptions with country tracking
+
+│   ├── pages/             # Page components- 📊 **Analytics** - Track visitors from different countries, page views, conversions
+
+│   ├── services/          # API service layer- 💼 **Quotations** - Automated quote request management
+
+│   └── utils/             # Utility functions- 🔐 **Authentication** - Secure admin access with JWT
+
+├── admin/                 # Admin panel application
+
+│   └── src/               # Admin source files---
+
+├── backend/               # Express API server
+
+│   ├── models/            # MongoDB models## 📚 Documentation
+
+│   ├── routes/            # API routes
+
+│   ├── middleware/        # Custom middleware**Quick Access:**
+
+│   └── socket/            # Socket.IO handlers- 🚀 **[SETUP_GUIDE.md](./SETUP_GUIDE.md)** - Complete installation and setup instructions
+
+├── assets/                # Static assets- ⚡ **[backend/QUICKSTART.md](./backend/QUICKSTART.md)** - Backend 5-minute setup
+
+│   ├── images/            # Images for services, portfolio, etc.- 🔗 **[INTEGRATION_GUIDE.md](./INTEGRATION_GUIDE.md)** - Frontend-backend integration
+
+│   └── videos/            # Video assets- 🧪 **[TESTING_GUIDE.md](./TESTING_GUIDE.md)** - Complete testing scenarios
+
+└── public/                # Public static files- 📦 **[PROJECT_STATUS.md](./PROJECT_STATUS.md)** - Comprehensive project overview
+
+```- 🚢 **[DEPLOYMENT.md](./DEPLOYMENT.md)** - Deployment instructions
+
 - 📖 **[backend/README.md](./backend/README.md)** - Backend API documentation
 
+## 🛠️ Installation
+
 ---
 
-## 🎯 Quick Start
-
 ### Prerequisites
+
+- Node.js 18+ and npm## 🎯 Quick Start
+
+- MongoDB database
+
+- SMTP server for emails### Prerequisites
+
 - Node.js v18+ and npm v9+
-- MongoDB (local or MongoDB Atlas)
 
-### Installation
+### Setup- MongoDB (local or MongoDB Atlas)
 
-```powershell
-# Clone repository
-git clone https://github.com/FyliaCare/Creative-Approach.git
+
+
+1. **Clone the repository**### Installation
+
+```bash
+
+git clone https://github.com/FyliaCare/Creative-Approach.git```powershell
+
+cd Creative-Approach# Clone repository
+
+```git clone https://github.com/FyliaCare/Creative-Approach.git
+
 Set-Location Creative-Approach
 
-# Install frontend dependencies
+2. **Install dependencies**
+
+```bash# Install frontend dependencies
+
+# Install frontend dependenciesnpm install
+
 npm install
 
 # Install backend dependencies
-Set-Location backend
+
+# Install admin dependenciesSet-Location backend
+
+cd adminnpm install
+
 npm install
 
-# Setup environment files
-Copy-Item .env.example .env
-# Edit backend/.env with your MongoDB URI and secrets
+cd ..# Setup environment files
 
-# Seed admin user
-npm run seed
+Copy-Item .env.example .env
+
+# Install backend dependencies# Edit backend/.env with your MongoDB URI and secrets
+
+cd backend
+
+npm install# Seed admin user
+
+cd ..npm run seed
+
+```
 
 # Start backend (in backend folder)
-npm run dev  # Runs on port 5000
 
-# Start frontend (in project root, new terminal)
+3. **Environment Configuration**npm run dev  # Runs on port 5000
+
+
+
+Create `.env` files:# Start frontend (in project root, new terminal)
+
 npm run dev  # Runs on port 5173
-```
 
-**See [SETUP_GUIDE.md](./SETUP_GUIDE.md) for detailed instructions.**
+**Root `.env` (Frontend)**```
 
----
+```env
 
-## 📁 Project Structure
+VITE_API_URL=http://localhost:5000**See [SETUP_GUIDE.md](./SETUP_GUIDE.md) for detailed instructions.**
 
-```
-Creative-Approach/
-├── backend/                      # Node.js Backend
-│   ├── models/                  # Mongoose models (User, Newsletter, Blog, etc.)
-│   ├── routes/                  # API routes (auth, newsletter, blog, etc.)
-│   ├── middleware/              # Custom middleware (auth, analytics, errors)
-│   ├── socket/                  # Socket.io handlers (live chat)
-│   ├── seeders/                 # Database seeders
-│   ├── uploads/                 # File uploads storage
-│   ├── server.js                # Main Express server
+VITE_SOCKET_URL=http://localhost:5000
+
+```---
+
+
+
+**Backend `.env`**## 📁 Project Structure
+
+```env
+
+PORT=5000```
+
+MONGODB_URI=your_mongodb_connection_stringCreative-Approach/
+
+JWT_SECRET=your_jwt_secret_key├── backend/                      # Node.js Backend
+
+SMTP_HOST=your_smtp_host│   ├── models/                  # Mongoose models (User, Newsletter, Blog, etc.)
+
+SMTP_PORT=587│   ├── routes/                  # API routes (auth, newsletter, blog, etc.)
+
+SMTP_USER=your_email@domain.com│   ├── middleware/              # Custom middleware (auth, analytics, errors)
+
+SMTP_PASS=your_email_password│   ├── socket/                  # Socket.io handlers (live chat)
+
+FRONTEND_URL=http://localhost:5173│   ├── seeders/                 # Database seeders
+
+ADMIN_URL=http://localhost:3001│   ├── uploads/                 # File uploads storage
+
+```│   ├── server.js                # Main Express server
+
 │   ├── package.json
-│   └── README.md
-│
-├── src/                         # React Frontend
-│   ├── components/
-│   │   ├── chat/
+
+**Admin `.env`**│   └── README.md
+
+```env│
+
+VITE_API_URL=http://localhost:5000├── src/                         # React Frontend
+
+VITE_SOCKET_URL=http://localhost:5000│   ├── components/
+
+```│   │   ├── chat/
+
 │   │   │   └── LiveChat.jsx    # Real-time chat widget
-│   │   └── Newsletter.jsx       # Newsletter subscription
-│   ├── pages/
-│   │   ├── Home.jsx            # Homepage with animations
-│   │   ├── About.jsx           # About page
-│   │   ├── Services.jsx        # Services page
+
+4. **Initialize Database**│   │   └── Newsletter.jsx       # Newsletter subscription
+
+```bash│   ├── pages/
+
+cd backend│   │   ├── Home.jsx            # Homepage with animations
+
+npm run seed│   │   ├── About.jsx           # About page
+
+```│   │   ├── Services.jsx        # Services page
+
 │   │   ├── Industries.jsx      # Industries page
-│   │   └── Contact.jsx         # Contact with quote form
+
+## 🚀 Development│   │   └── Contact.jsx         # Contact with quote form
+
 │   ├── services/
-│   │   └── api.js              # API service layer
+
+Run all services concurrently:│   │   └── api.js              # API service layer
+
 │   ├── App.jsx
-│   └── main.jsx
-│
-├── public/                      # Static assets
-├── SETUP_GUIDE.md              # Complete setup instructions
+
+```bash│   └── main.jsx
+
+# Terminal 1 - Backend│
+
+cd backend├── public/                      # Static assets
+
+npm run dev├── SETUP_GUIDE.md              # Complete setup instructions
+
 ├── INTEGRATION_GUIDE.md        # Integration documentation
-├── TESTING_GUIDE.md            # Testing scenarios
-├── PROJECT_STATUS.md           # Project overview
+
+# Terminal 2 - Frontend├── TESTING_GUIDE.md            # Testing scenarios
+
+npm run dev├── PROJECT_STATUS.md           # Project overview
+
 ├── DEPLOYMENT.md               # Deployment guide
-├── package.json
-├── vite.config.js
-└── tailwind.config.js
-```
 
----
+# Terminal 3 - Admin Panel├── package.json
 
-## 🎯 Core Features
+cd admin├── vite.config.js
 
-### 1. Newsletter System
+npm run dev└── tailwind.config.js
+
+``````
+
+
+
+- Frontend: http://localhost:5173---
+
+- Admin Panel: http://localhost:3001
+
+- Backend API: http://localhost:5000## 🎯 Core Features
+
+
+
+## 📦 Production Build### 1. Newsletter System
+
 - Email subscriptions with validation
-- Country detection via GeoIP
-- Admin management interface (backend ready)
-- Unsubscribe functionality
+
+```bash- Country detection via GeoIP
+
+# Build frontend- Admin management interface (backend ready)
+
+npm run build- Unsubscribe functionality
+
 - Statistics dashboard
 
-### 2. Live Chat
-- Real-time Socket.io connection
-- Visitor-admin conversations
+# Build admin panel
+
+cd admin### 2. Live Chat
+
+npm run build- Real-time Socket.io connection
+
+cd ..- Visitor-admin conversations
+
 - Typing indicators
-- Read receipts
-- Message history
-- Online/offline status
-- Mobile responsive chat window
 
-### 3. Quote Request System
+# Backend runs without build- Read receipts
+
+cd backend- Message history
+
+npm start- Online/offline status
+
+```- Mobile responsive chat window
+
+
+
+## 🌐 Deployment (Render.com)### 3. Quote Request System
+
 - Comprehensive contact form
-- Service and project type selection
-- Budget and timeline tracking
-- Status workflow (new → quoted → accepted/rejected)
-- Admin notes and assignments
-- Conversion tracking
 
-### 4. Visitor Analytics
-- GeoIP country detection
+### Backend Deployment- Service and project type selection
+
+1. Create a new **Web Service** on Render- Budget and timeline tracking
+
+2. Connect your GitHub repository- Status workflow (new → quoted → accepted/rejected)
+
+3. Configure:- Admin notes and assignments
+
+   - **Root Directory**: `backend`- Conversion tracking
+
+   - **Build Command**: `npm install`
+
+   - **Start Command**: `npm start`### 4. Visitor Analytics
+
+4. Add environment variables from backend `.env`- GeoIP country detection
+
 - Page view tracking
-- Session duration
-- Device/browser/OS detection
-- Bounce rate calculation
-- Conversion tracking
-- Real-time active visitors
-- Referrer tracking
 
-### 5. Blog/CMS (Backend Ready)
+### Frontend Deployment- Session duration
+
+1. Create a new **Static Site** on Render- Device/browser/OS detection
+
+2. Configure:- Bounce rate calculation
+
+   - **Build Command**: `npm install && npm run build`- Conversion tracking
+
+   - **Publish Directory**: `dist`- Real-time active visitors
+
+3. Add environment variables:- Referrer tracking
+
+   - `VITE_API_URL`: Your backend URL
+
+   - `VITE_SOCKET_URL`: Your backend URL### 5. Blog/CMS (Backend Ready)
+
 - Full CRUD operations
-- Categories and tags
-- SEO fields (meta title, description, keywords)
-- Draft/publish workflow
-- Featured posts
-- View and like counters
-- Slug auto-generation
 
-### 6. File Upload System
-- Image uploads (10MB limit)
+### Admin Panel Deployment- Categories and tags
+
+1. Create a new **Static Site** on Render- SEO fields (meta title, description, keywords)
+
+2. Configure:- Draft/publish workflow
+
+   - **Root Directory**: `admin`- Featured posts
+
+   - **Build Command**: `npm install && npm run build`- View and like counters
+
+   - **Publish Directory**: `admin/dist`- Slug auto-generation
+
+3. Add environment variables:
+
+   - `VITE_API_URL`: Your backend URL### 6. File Upload System
+
+   - `VITE_SOCKET_URL`: Your backend URL- Image uploads (10MB limit)
+
 - Document uploads (PDF, DOC, DOCX)
-- File validation
-- Secure storage
+
+### Important: SPA Routing- File validation
+
+Both frontend and admin have `public/_redirects` files for proper SPA routing on Render.- Secure storage
+
 - Multiple file support
 
+## 🔑 Default Admin Credentials
+
 ---
 
-## 🔒 Security Features
+```
 
-- ✅ JWT authentication with secure tokens
+Email: admin@creativeapproach.gh## 🔒 Security Features
+
+Password: admin123
+
+```- ✅ JWT authentication with secure tokens
+
 - ✅ bcrypt password hashing (10 rounds)
-- ✅ Rate limiting (100 requests per 15 minutes)
+
+⚠️ **Change these immediately after first login!**- ✅ Rate limiting (100 requests per 15 minutes)
+
 - ✅ CORS configuration
-- ✅ Helmet security headers
+
+## ✨ Key Features- ✅ Helmet security headers
+
 - ✅ Input validation (express-validator)
-- ✅ File upload restrictions
-- ✅ MongoDB injection protection
-- ✅ XSS protection
-- ✅ Environment variable management
 
----
+### Public Website- ✅ File upload restrictions
 
-## 🚀 API Endpoints
+- Dynamic hero section with video background- ✅ MongoDB injection protection
 
-### Public Endpoints
+- Service showcase (Aerial Photography, Inspections, Surveys, etc.)- ✅ XSS protection
+
+- Portfolio gallery with filtering- ✅ Environment variable management
+
+- Blog with search and categories
+
+- Contact form with email integration---
+
+- Newsletter subscription
+
+- Live chat with admin## 🚀 API Endpoints
+
+- SEO optimized
+
+- Fully responsive design### Public Endpoints
+
 ```
-POST   /api/auth/register           - Register user
-POST   /api/auth/login              - Login user
-POST   /api/newsletter/subscribe    - Subscribe to newsletter
-GET    /api/blog                    - Get all blog posts
-GET    /api/blog/:slug              - Get single blog post
-POST   /api/quotations              - Submit quote request
-GET    /health                      - Health check
-```
 
-### Protected Admin Endpoints
-```
-GET    /api/auth/me                      - Get current user
-GET    /api/newsletter/subscribers       - Get all subscribers
-GET    /api/newsletter/stats             - Newsletter statistics
-POST   /api/blog                         - Create blog post
+### Admin DashboardPOST   /api/auth/register           - Register user
+
+- **Analytics**: Visitor tracking, page views, conversion metricsPOST   /api/auth/login              - Login user
+
+- **Blog Management**: Create, edit, delete posts with rich text editorPOST   /api/newsletter/subscribe    - Subscribe to newsletter
+
+- **Portfolio Management**: Upload and organize project imagesGET    /api/blog                    - Get all blog posts
+
+- **Newsletter**: Send campaigns to subscribersGET    /api/blog/:slug              - Get single blog post
+
+- **Quotations**: Generate professional invoices with PDF exportPOST   /api/quotations              - Submit quote request
+
+- **Live Chat**: Real-time messaging with website visitorsGET    /health                      - Health check
+
+- **Settings**: Manage site configuration```
+
+
+
+### Advanced Features### Protected Admin Endpoints
+
+- **WhatsApp-style Chat**: Read receipts, typing indicators, message status```
+
+- **Invoice Generator**: Dual-language (English/French) with PDF exportGET    /api/auth/me                      - Get current user
+
+- **Image Optimization**: Automatic compression on uploadGET    /api/newsletter/subscribers       - Get all subscribers
+
+- **SEO Tools**: Built-in SEO analyzer and optimizationGET    /api/newsletter/stats             - Newsletter statistics
+
+- **Real-time Updates**: Socket.IO for instant notificationsPOST   /api/blog                         - Create blog post
+
 PUT    /api/blog/:id                     - Update blog post
-DELETE /api/blog/:id                     - Delete blog post
+
+## 📚 API DocumentationDELETE /api/blog/:id                     - Delete blog post
+
 GET    /api/quotations                   - Get all quotes
-PUT    /api/quotations/:id               - Update quote
-GET    /api/analytics/overview           - Analytics dashboard
-GET    /api/analytics/countries          - Visitors by country
-GET    /api/analytics/realtime           - Real-time visitors
-POST   /api/upload/image                 - Upload image
+
+### AuthenticationPUT    /api/quotations/:id               - Update quote
+
+```GET    /api/analytics/overview           - Analytics dashboard
+
+POST /api/auth/login      # Admin loginGET    /api/analytics/countries          - Visitors by country
+
+POST /api/auth/register   # Register new adminGET    /api/analytics/realtime           - Real-time visitors
+
+```POST   /api/upload/image                 - Upload image
+
 ... and 15+ more endpoints
+
+### Blog```
+
 ```
 
-**See [backend/README.md](./backend/README.md) for complete API documentation.**
+GET    /api/blog          # Get all posts**See [backend/README.md](./backend/README.md) for complete API documentation.**
 
----
+GET    /api/blog/:id      # Get single post
 
-## 🧪 Testing
+POST   /api/blog          # Create post (auth required)---
+
+PUT    /api/blog/:id      # Update post (auth required)
+
+DELETE /api/blog/:id      # Delete post (auth required)## 🧪 Testing
+
+```
 
 Run comprehensive tests following the [TESTING_GUIDE.md](./TESTING_GUIDE.md):
 
-1. ✅ Newsletter subscription
-2. ✅ Live chat functionality
-3. ✅ Quote request submission
-4. ✅ Analytics tracking
-5. ✅ API health checks
-6. ✅ Socket.io connections
+### Portfolio
+
+```1. ✅ Newsletter subscription
+
+GET    /api/portfolio     # Get all projects2. ✅ Live chat functionality
+
+POST   /api/portfolio     # Create project (auth required)3. ✅ Quote request submission
+
+PUT    /api/portfolio/:id # Update project (auth required)4. ✅ Analytics tracking
+
+DELETE /api/portfolio/:id # Delete project (auth required)5. ✅ API health checks
+
+```6. ✅ Socket.io connections
+
 7. ✅ Mobile responsiveness
-8. ✅ Error handling
 
----
+### Quotations8. ✅ Error handling
 
-## 🚢 Deployment
+```
+
+GET    /api/quotations           # Get all quotations---
+
+POST   /api/quotations           # Create quotation
+
+POST   /api/quotations/save-detailed # Save detailed invoice## 🚢 Deployment
+
+```
 
 ### Quick Start: Deploy to Render + MongoDB Atlas (FREE)
 
-**Complete step-by-step guide:** [RENDER_DEPLOYMENT.md](./RENDER_DEPLOYMENT.md)
+### Contact & Newsletter
 
-#### 1. Setup MongoDB Atlas (5 minutes)
-- Create free cluster at https://cloud.mongodb.com
+```**Complete step-by-step guide:** [RENDER_DEPLOYMENT.md](./RENDER_DEPLOYMENT.md)
+
+POST   /api/contact/submit       # Submit contact form
+
+POST   /api/newsletter/subscribe # Subscribe to newsletter#### 1. Setup MongoDB Atlas (5 minutes)
+
+```- Create free cluster at https://cloud.mongodb.com
+
 - Create database user and get connection string
-- Whitelist all IPs (0.0.0.0/0)
 
-#### 2. Deploy Backend to Render (10 minutes)
-```powershell
-# Generate secure secrets
-./generate-secrets.ps1
+## 🤝 Contributing- Whitelist all IPs (0.0.0.0/0)
+
+
+
+1. Fork the repository#### 2. Deploy Backend to Render (10 minutes)
+
+2. Create a feature branch (`git checkout -b feature/AmazingFeature`)```powershell
+
+3. Commit your changes (`git commit -m 'Add some AmazingFeature'`)# Generate secure secrets
+
+4. Push to the branch (`git push origin feature/AmazingFeature`)./generate-secrets.ps1
+
+5. Open a Pull Request
 
 # Push to GitHub
-git add .
+
+## 📝 Licensegit add .
+
 git commit -m "Ready for production"
-git push origin main
+
+This project is proprietary software owned by Creative Approach Ghana.git push origin main
+
 ```
 
+## 📧 Contact
+
 - Create Web Service on Render
-- Connect GitHub repo
-- Set Root Directory: `backend`
-- Add environment variables (see RENDER_DEPLOYMENT.md)
-- Deploy! 🚀
 
-#### 3. Deploy Frontend (5 minutes each)
+**Creative Approach**- Connect GitHub repo
 
-**Main Website:**
-- Create Static Site on Render
-- Build Command: `npm install && npm run build`
-- Publish Directory: `dist`
+- Website: https://creativeapproach.gh- Set Root Directory: `backend`
+
+- Email: info@creativeapproach.gh- Add environment variables (see RENDER_DEPLOYMENT.md)
+
+- Phone: +233 XX XXX XXXX- Deploy! 🚀
+
+
+
+## 🙏 Acknowledgments#### 3. Deploy Frontend (5 minutes each)
+
+
+
+- Built with React and modern web technologies**Main Website:**
+
+- Deployed on Render.com- Create Static Site on Render
+
+- Icons by Lucide React- Build Command: `npm install && npm run build`
+
+- UI animations by Framer Motion- Publish Directory: `dist`
+
 - Add env: `VITE_API_URL=https://your-backend.onrender.com`
 
 **Admin Dashboard:**

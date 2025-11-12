@@ -1,9 +1,82 @@
-# Render.com configuration for SPA routing
-# Using Web Service with serve package for proper SPA routing
+# Render.com Configuration# Render.com configuration for SPA routing
+
+# Deploy Creative Approach platform with three services# Using Web Service with serve package for proper SPA routing
+
 services:
+
+services:  - type: web
+
+  # Backend API Service    name: creative-approach
+
+  - type: web    env: node
+
+    name: creative-approach-api    buildCommand: npm ci && npm run build
+
+    runtime: node    startCommand: npm run serve
+
+    region: oregon    pullRequestPreviewsEnabled: true
+
+    plan: starter
+    rootDir: backend
+    buildCommand: npm install
+    startCommand: npm start
+    healthCheckPath: /api/health
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: PORT
+        value: 5000
+    # Add these in Render Dashboard:
+    # MONGODB_URI, JWT_SECRET, SMTP_HOST, SMTP_PORT, SMTP_USER, SMTP_PASS
+    # FRONTEND_URL, ADMIN_URL
+
+  # Frontend Static Site
   - type: web
-    name: creative-approach
-    env: node
-    buildCommand: npm ci && npm run build
-    startCommand: npm run serve
+    name: creative-approach-web
+    runtime: static
+    region: oregon
+    buildCommand: npm install && npm run build
+    staticPublishPath: ./dist
     pullRequestPreviewsEnabled: true
+    headers:
+      - path: /*
+        name: X-Frame-Options
+        value: SAMEORIGIN
+      - path: /*
+        name: X-Content-Type-Options
+        value: nosniff
+      - path: /*
+        name: Referrer-Policy
+        value: strict-origin-when-cross-origin
+    routes:
+      - type: rewrite
+        source: /*
+        destination: /index.html
+    # Add in Render Dashboard:
+    # VITE_API_URL, VITE_SOCKET_URL
+
+  # Admin Panel Static Site
+  - type: web
+    name: creative-approach-admin
+    runtime: static
+    region: oregon
+    rootDir: admin
+    buildCommand: npm install && npm run build
+    staticPublishPath: ./admin/dist
+    pullRequestPreviewsEnabled: true
+    headers:
+      - path: /*
+        name: X-Frame-Options
+        value: DENY
+      - path: /*
+        name: X-Content-Type-Options
+        value: nosniff
+      - path: /*
+        name: Referrer-Policy
+        value: strict-origin-when-cross-origin
+    routes:
+      - type: rewrite
+        source: /*
+        destination: /index.html
+    # Add in Render Dashboard:
+    # VITE_API_URL, VITE_SOCKET_URL

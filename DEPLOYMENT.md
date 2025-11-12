@@ -1,114 +1,88 @@
-# Creative Approach - Render Deployment
+# Render.com Deployment Guide
 
-This project is configured for deployment on Render.
+Quick reference for deploying Creative Approach to Render.com.
 
-## Deployment Steps
+## Services to Create
 
-### Option 1: Deploy via Render Dashboard (Recommended)
-
-1. **Push your code to GitHub:**
-   ```bash
-   git init
-   git add .
-   git commit -m "Initial commit - Ready for Render deployment"
-   git branch -M main
-   git remote add origin <your-github-repo-url>
-   git push -u origin main
-   ```
-
-2. **Connect to Render:**
-   - Go to [Render Dashboard](https://dashboard.render.com/)
-   - Click "New +" → "Static Site"
-   - Connect your GitHub repository
-   - Render will automatically detect the `render.yaml` configuration
-
-3. **Configuration (Auto-detected from render.yaml):**
-   - **Build Command:** `npm install && npm run build`
-   - **Publish Directory:** `dist`
-   - Click "Create Static Site"
-
-### Option 2: Deploy via Render Blueprint
-
-1. Push code to GitHub (same as above)
-2. In Render Dashboard, click "New +" → "Blueprint"
-3. Select your repository
-4. Render will use the `render.yaml` file for configuration
-5. Click "Apply"
-
-## Environment Variables
-
-Currently, no environment variables are required. If you need to add API keys or other secrets:
-
-1. Go to your Render service dashboard
-2. Navigate to "Environment" tab
-3. Add your variables as key-value pairs
-
-## Custom Domain Setup
-
-After deployment:
-
-1. Go to your static site in Render
-2. Click "Settings" → "Custom Domain"
-3. Add your domain (e.g., `www.creativeapproach.gh`)
-4. Update your DNS records as instructed by Render
-
-## Build Configuration
-
-The project uses Vite for building:
-- **Build command:** `npm run build`
-- **Output directory:** `dist`
-- **Node version:** Latest LTS (auto-detected)
-
-## SPA Routing
-
-The `render.yaml` includes rewrite rules to handle React Router:
-- All routes redirect to `index.html`
-- This enables client-side routing for `/services`, `/about`, `/industries`, etc.
-
-## Security Headers
-
-Security headers are configured in `render.yaml`:
-- `X-Frame-Options: SAMEORIGIN`
-- `X-Content-Type-Options: nosniff`
-- `X-XSS-Protection: 1; mode=block`
-- `Referrer-Policy: strict-origin-when-cross-origin`
-
-## Preview Deployments
-
-Pull request previews are enabled. Each PR will get a unique preview URL.
-
-## Local Testing Before Deployment
-
-```bash
-# Install dependencies
-npm install
-
-# Build for production
-npm run build
-
-# Preview production build locally
-npm run preview
+### 1. Backend API (Web Service)
 ```
+Type: Web Service
+Name: creative-approach-api
+Root Directory: backend
+Build Command: npm install
+Start Command: npm start
+Instance Type: Starter ($7/mo recommended)
+```
+
+**Environment Variables**:
+```
+MONGODB_URI=mongodb+srv://username:password@cluster.mongodb.net/database
+JWT_SECRET=your_secure_jwt_secret_minimum_32_characters
+SMTP_HOST=smtp.gmail.com
+SMTP_PORT=587
+SMTP_USER=your_email@gmail.com
+SMTP_PASS=your_app_specific_password
+FRONTEND_URL=https://creative-approach.onrender.com
+ADMIN_URL=https://creative-approach-admin.onrender.com
+NODE_ENV=production
+```
+
+### 2. Frontend (Static Site)
+```
+Type: Static Site
+Name: creative-approach
+Build Command: npm install && npm run build
+Publish Directory: dist
+Auto-Deploy: Yes
+```
+
+**Environment Variables**:
+```
+VITE_API_URL=https://creative-approach-api.onrender.com
+VITE_SOCKET_URL=https://creative-approach-api.onrender.com
+```
+
+### 3. Admin Panel (Static Site)
+```
+Type: Static Site
+Name: creative-approach-admin
+Root Directory: admin
+Build Command: npm install && npm run build
+Publish Directory: admin/dist
+Auto-Deploy: Yes
+```
+
+**Environment Variables**:
+```
+VITE_API_URL=https://creative-approach-api.onrender.com
+VITE_SOCKET_URL=https://creative-approach-api.onrender.com
+```
+
+## Quick Deploy Checklist
+
+- [ ] MongoDB Atlas cluster created and configured
+- [ ] Gmail App Password generated for SMTP
+- [ ] Code pushed to GitHub main branch
+- [ ] Backend service created on Render
+- [ ] Frontend static site created on Render
+- [ ] Admin static site created on Render
+- [ ] All environment variables configured
+- [ ] Admin account seeded
+- [ ] All services tested
+
+## Default Admin Login
+```
+Email: admin@creativeapproach.gh
+Password: admin123
+```
+**⚠️ Change immediately after first login!**
 
 ## Troubleshooting
 
-### Build Fails
-- Check Node.js version compatibility
-- Verify all dependencies are listed in `package.json`
-- Test build locally: `npm run build`
-
-### Routing Issues (404 on refresh)
-- Verify `render.yaml` has the rewrite rule
-- Check that routes are defined in `src/App.jsx`
-
-### Assets Not Loading
-- Ensure all assets are in the `public/` folder
-- Check `vite.config.js` base path configuration
-- Verify paths use relative imports
+**Backend won't start**: Check MongoDB connection string and environment variables
+**404 on refresh**: Ensure `_redirects` file exists in public folders
+**Socket.IO errors**: Verify VITE_SOCKET_URL matches backend URL exactly
+**Images not loading**: Check uploads directory and Multer configuration
 
 ## Support
-
-For Render-specific issues, check:
-- [Render Documentation](https://render.com/docs)
-- [Render Status](https://status.render.com/)
-- [Render Community](https://community.render.com/)
+For issues, check logs in Render dashboard or MongoDB Atlas monitoring.
