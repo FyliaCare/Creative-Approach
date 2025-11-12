@@ -112,9 +112,9 @@ export default function Contact() {
     {
       icon: '✉️',
       title: 'Email Us',
-      primary: 'info@creativeapproach.gh',
+      primary: 'sales@caghana.com',
       secondary: 'Available 24/7',
-      action: 'mailto:info@creativeapproach.gh',
+      action: 'mailto:sales@caghana.com',
       color: 'from-purple-500 to-pink-500'
     },
     {

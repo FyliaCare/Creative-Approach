@@ -23,11 +23,11 @@ export default function SEO({
     '@type': 'Organization',
     name: 'Creative Approach',
     description: 'Professional drone services provider in Ghana',
-    url: 'https://creative-approach.com.gh',
-    logo: 'https://creative-approach.com.gh/creative-approach-black.png',
-    image: 'https://creative-approach.com.gh/og-image.jpg',
-    telephone: '+233-123-456-789',
-    email: 'info@creativeapproach.com.gh',
+    url: 'https://caghana.com',
+    logo: 'https://caghana.com/creative-approach-black.png',
+    image: 'https://caghana.com/og-image.jpg',
+    telephone: '+233 541 500 716',
+    email: 'sales@caghana.com',
     address: {
       '@type': 'PostalAddress',
       addressLocality: 'Takoradi',
@@ -283,7 +283,7 @@ export const seoPresets = {
 
   contact: {
     title: 'Contact Creative Approach - Get a Free Drone Services Quote | Ghana',
-    description: 'Contact Ghana\'s leading drone services provider. Free quotes, 24/7 emergency hotline, offices in Takoradi. Call +233-123-456-789 or email info@creativeapproach.com.gh',
+    description: 'Contact Ghana\'s leading drone services provider. Free quotes, 24/7 emergency hotline, offices in Takoradi. Call +233 541 500 716 or email sales@caghana.com',
     keywords: 'contact creative approach, drone services quote, free consultation, takoradi drone services, ghana drone contact',
     schemaData: {
       '@context': 'https://schema.org',

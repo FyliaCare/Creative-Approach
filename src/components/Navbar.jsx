@@ -190,11 +190,11 @@ export default function Navbar() {
                 >
                   <p className="text-sm text-gray-600 mb-4">Get in touch</p>
                   <div className="space-y-3 text-sm">
-                    <a href="tel:+233123456789" className="block text-gray-700 hover:text-drone-600">
-                      📞 +233 123 456 789
+                    <a href="tel:+233541500716" className="block text-gray-700 hover:text-drone-600">
+                      📞 +233 541 500 716
                     </a>
-                    <a href="mailto:info@creativeapproach.gh" className="block text-gray-700 hover:text-drone-600">
-                      ✉️ info@creativeapproach.gh
+                    <a href="mailto:sales@caghana.com" className="block text-gray-700 hover:text-drone-600">
+                      ✉️ sales@caghana.com
                     </a>
                   </div>
                 </motion.div>

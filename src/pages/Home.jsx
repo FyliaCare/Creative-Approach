@@ -709,7 +709,7 @@ export default function Home() {
               <div className="hidden md:block text-white/40">|</div>
               <div className="flex items-center gap-2 justify-center">
                 <span>📧</span>
-                <span className="font-semibold">info@creativeapproach.gh</span>
+                <span className="font-semibold">sales@caghana.com</span>
               </div>
               <div className="hidden md:block text-white/40">|</div>
               <div className="flex items-center gap-2 justify-center">

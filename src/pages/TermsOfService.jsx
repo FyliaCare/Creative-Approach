@@ -513,8 +513,9 @@ You confirm you are at least 18 years of age and legally competent to enter into
 
 **Contact for Questions:**
 If you have questions about these Terms, contact us before engaging our services:
-• Email: info@creativeapproach.com.gh
-• Phone: +233 (0) XX XXX XXXX
+• Email: sales@caghana.com
+• Phone: +233 541 500 716
+• Website: https://caghana.com
 
 **Effective Date:** ${lastUpdated}
 
