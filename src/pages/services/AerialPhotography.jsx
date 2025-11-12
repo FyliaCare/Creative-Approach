@@ -70,59 +70,6 @@ export default function AerialPhotography() {
     }
   ];
 
-  const packages = [
-    {
-      name: 'Essential',
-      price: 'GHS 1,500',
-      description: 'Perfect for small properties and personal projects',
-      features: [
-        'Up to 10 edited aerial photos',
-        '1 location shoot (2 hours)',
-        'Basic color correction',
-        '4K resolution images',
-        'Online gallery',
-        '3-day turnaround',
-        'Full commercial license'
-      ],
-      popular: false
-    },
-    {
-      name: 'Professional',
-      price: 'GHS 3,500',
-      description: 'Ideal for real estate and commercial marketing',
-      features: [
-        'Up to 25 edited aerial photos',
-        '1-2 location shoots (4 hours)',
-        'Advanced editing & color grading',
-        '8K resolution images',
-        '2-minute promotional video',
-        'Cloud storage delivery',
-        '2-day turnaround',
-        'Full commercial license',
-        '1 round of revisions'
-      ],
-      popular: true
-    },
-    {
-      name: 'Premium',
-      price: 'GHS 6,500',
-      description: 'Comprehensive package for large projects',
-      features: [
-        'Unlimited edited aerial photos',
-        'Multiple location shoots (8 hours)',
-        'Professional editing suite',
-        '8K resolution + RAW files',
-        '5-minute cinematic video',
-        'Virtual tour integration',
-        'Priority 24-hour turnaround',
-        'Full commercial license',
-        'Unlimited revisions',
-        'Dedicated project manager'
-      ],
-      popular: false
-    }
-  ];
-
   const applications = [
     {
       title: 'Real Estate Marketing',
@@ -447,78 +394,32 @@ export default function AerialPhotography() {
         </div>
       </section>
 
-      {/* Packages & Pricing */}
-      <section className="section-padding">
+      {/* Custom Quote Section */}
+      <section className="section-padding bg-gradient-to-br from-blue-50 to-cyan-50">
         <div className="container-custom">
-          <div className="text-center mb-12">
-            <h2 className="text-4xl font-bold mb-4">Flexible Packages</h2>
-            <p className="text-xl text-gray-600 max-w-2xl mx-auto">
-              Choose the package that fits your needs, or contact us for a custom solution
-            </p>
-          </div>
-
-          <div className="grid md:grid-cols-3 gap-8 max-w-6xl mx-auto">
-            {packages.map((pkg, index) => (
-              <motion.div
-                key={index}
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ delay: index * 0.1 }}
-                className={`relative bg-white rounded-2xl shadow-xl p-8 ${
-                  pkg.popular ? 'ring-4 ring-blue-600 scale-105' : ''
-                }`}
-              >
-                {pkg.popular && (
-                  <div className="absolute -top-4 left-1/2 -translate-x-1/2 bg-gradient-to-r from-blue-600 to-cyan-600 text-white px-6 py-2 rounded-full text-sm font-semibold">
-                    MOST POPULAR
-                  </div>
-                )}
-                
-                <div className="text-center mb-6">
-                  <h3 className="text-2xl font-bold mb-2">{pkg.name}</h3>
-                  <p className="text-gray-600 text-sm mb-4">{pkg.description}</p>
-                  <div className="text-4xl font-bold text-blue-600">{pkg.price}</div>
-                  <div className="text-gray-500 text-sm">Starting price</div>
-                </div>
-
-                <ul className="space-y-3 mb-8">
-                  {pkg.features.map((feature, i) => (
-                    <li key={i} className="flex items-start gap-2">
-                      <CheckCircle className="w-5 h-5 text-green-500 flex-shrink-0 mt-0.5" />
-                      <span className="text-gray-700">{feature}</span>
-                    </li>
-                  ))}
-                </ul>
-
-                <Link to="/contact">
-                  <motion.button
-                    whileHover={{ scale: 1.02 }}
-                    whileTap={{ scale: 0.98 }}
-                    className={`w-full py-3 rounded-lg font-semibold transition-colors ${
-                      pkg.popular
-                        ? 'bg-gradient-to-r from-blue-600 to-cyan-600 text-white hover:from-blue-700 hover:to-cyan-700'
-                        : 'bg-gray-100 text-gray-900 hover:bg-gray-200'
-                    }`}
-                  >
-                    Get Started
-                  </motion.button>
-                </Link>
-              </motion.div>
-            ))}
-          </div>
-
-          <div className="mt-12 text-center">
-            <p className="text-gray-600 mb-4">Need a custom package? We'll create a solution tailored to your specific needs.</p>
-            <Link to="/contact">
-              <motion.button
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.95 }}
-                className="px-8 py-3 border-2 border-blue-600 text-blue-600 rounded-lg font-semibold hover:bg-blue-50 transition-colors"
-              >
-                Request Custom Quote
-              </motion.button>
-            </Link>
+          <div className="max-w-4xl mx-auto text-center">
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+            >
+              <h2 className="text-4xl font-bold mb-6">Custom Pricing for Your Project</h2>
+              <p className="text-xl text-gray-700 mb-4">
+                Every project is unique, and we believe your pricing should be too. 
+              </p>
+              <p className="text-lg text-gray-600 mb-8">
+                Whether you need aerial photography for a small property or a comprehensive package for large-scale commercial projects, we'll create a tailored solution that fits your specific needs and budget.
+              </p>
+              <Link to="/contact">
+                <motion.button
+                  whileHover={{ scale: 1.05 }}
+                  whileTap={{ scale: 0.95 }}
+                  className="px-12 py-4 bg-gradient-to-r from-blue-600 to-cyan-600 text-white text-lg rounded-full font-semibold hover:from-blue-700 hover:to-cyan-700 transition-all shadow-xl"
+                >
+                  Request Custom Quote
+                </motion.button>
+              </Link>
+            </motion.div>
           </div>
         </div>
       </section>

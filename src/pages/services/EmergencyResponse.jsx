@@ -136,7 +136,6 @@ export default function EmergencyResponse() {
         'Dedicated account manager',
         'Annual contract discount'
       ],
-      cta: 'Contact Sales',
       popular: false
     }
   ];
@@ -447,62 +446,32 @@ export default function EmergencyResponse() {
         </div>
       </section>
 
-      {/* Pricing Section */}
-      <section className="py-20">
+      {/* Custom Quote Section */}
+      <section className="py-20 bg-gradient-to-br from-red-50 to-yellow-50">
         <div className="container-custom">
-          <div className="text-center mb-12">
-            <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
-              Response Plans
-            </h2>
-            <p className="text-xl text-gray-600">
-              Flexible options for every organization
-            </p>
-          </div>
-          
-          <div className="grid md:grid-cols-3 gap-8">
-            {packages.map((pkg, index) => (
-              <motion.div
-                key={index}
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                transition={{ delay: index * 0.1 }}
-                className={`bg-white rounded-2xl shadow-xl overflow-hidden ${
-                  pkg.popular ? 'ring-4 ring-red-600 scale-105' : ''
-                }`}
-              >
-                {pkg.popular && (
-                  <div className="bg-gradient-to-r from-red-600 to-yellow-600 text-white text-center py-2 font-semibold">
-                    MOST POPULAR
-                  </div>
-                )}
-                
-                <div className="p-8">
-                  <h3 className="text-2xl font-bold text-gray-900 mb-2">{pkg.name}</h3>
-                  <p className="text-gray-600 mb-4">{pkg.description}</p>
-                  <div className="text-4xl font-bold text-gray-900 mb-6">{pkg.price}</div>
-                  
-                  <ul className="space-y-3 mb-8">
-                    {pkg.features.map((feature, idx) => (
-                      <li key={idx} className="flex items-start gap-2">
-                        <CheckCircle className="w-5 h-5 text-red-600 flex-shrink-0 mt-0.5" />
-                        <span className="text-gray-600">{feature}</span>
-                      </li>
-                    ))}
-                  </ul>
-                  
-                  <Link
-                    to="/contact"
-                    className={`block w-full py-3 rounded-lg text-center font-semibold transition-all ${
-                      pkg.popular
-                        ? 'bg-gradient-to-r from-red-600 to-yellow-600 text-white hover:shadow-lg'
-                        : 'bg-gray-100 text-gray-900 hover:bg-gray-200'
-                    }`}
-                  >
-                    {pkg.cta}
-                  </Link>
-                </div>
-              </motion.div>
-            ))}
+          <div className="max-w-4xl mx-auto text-center">
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+            >
+              <h2 className="text-4xl font-bold mb-6">Custom Emergency Response Plans</h2>
+              <p className="text-xl text-gray-700 mb-4">
+                Every emergency situation requires immediate, specialized response.
+              </p>
+              <p className="text-lg text-gray-600 mb-8">
+                From search and rescue operations to disaster assessment, we'll develop a rapid-response plan with the right equipment, expertise, and coordination to meet your critical needs.
+              </p>
+              <Link to="/contact">
+                <motion.button
+                  whileHover={{ scale: 1.05 }}
+                  whileTap={{ scale: 0.95 }}
+                  className="px-12 py-4 bg-gradient-to-r from-red-600 to-yellow-600 text-white text-lg rounded-full font-semibold hover:from-red-700 hover:to-yellow-700 transition-all shadow-xl"
+                >
+                  Request Custom Quote
+                </motion.button>
+              </Link>
+            </motion.div>
           </div>
         </div>
       </section>

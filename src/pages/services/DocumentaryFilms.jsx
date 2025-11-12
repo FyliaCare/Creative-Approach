@@ -137,8 +137,6 @@ export default function DocumentaryFilms() {
         'Screening event coordination',
         'Ongoing creative partnership'
       ],
-      cta: 'Contact Sales',
-      popular: false
     }
   ];
 
@@ -239,8 +237,19 @@ export default function DocumentaryFilms() {
       <SEO {...seoPresets.documentaryFilms} />
       <div className="min-h-screen bg-white">
       {/* Hero Section */}
-      <section className="relative min-h-[70vh] flex items-center justify-center overflow-hidden bg-gradient-to-br from-orange-900 via-red-700 to-pink-600">
-        <div className="absolute inset-0 bg-black/20"></div>
+      <section className="relative min-h-[70vh] flex items-center justify-center overflow-hidden">
+        <div className="absolute inset-0">
+          <video 
+            autoPlay 
+            loop 
+            muted 
+            playsInline
+            className="w-full h-full object-cover"
+          >
+            <source src="/DOCUMENTARY FILM AND PHOTOGRAPHY LANDING PAGE.MP4" type="video/mp4" />
+          </video>
+          <div className="absolute inset-0 bg-gradient-to-r from-black/70 via-black/50 to-black/30"></div>
+        </div>
         <div className="container-custom relative z-10 text-center text-white py-20">
           <motion.div
             initial={{ opacity: 0, scale: 0.9 }}
@@ -437,62 +446,32 @@ export default function DocumentaryFilms() {
         </div>
       </section>
 
-      {/* Pricing Section */}
-      <section className="py-20">
+      {/* Custom Quote Section */}
+      <section className="py-20 bg-gradient-to-br from-orange-50 to-pink-50">
         <div className="container-custom">
-          <div className="text-center mb-12">
-            <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
-              Production Packages
-            </h2>
-            <p className="text-xl text-gray-600">
-              Flexible solutions for every story and budget
-            </p>
-          </div>
-          
-          <div className="grid md:grid-cols-3 gap-8">
-            {packages.map((pkg, index) => (
-              <motion.div
-                key={index}
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                transition={{ delay: index * 0.1 }}
-                className={`bg-white rounded-2xl shadow-xl overflow-hidden ${
-                  pkg.popular ? 'ring-4 ring-orange-600 scale-105' : ''
-                }`}
-              >
-                {pkg.popular && (
-                  <div className="bg-gradient-to-r from-orange-600 to-pink-600 text-white text-center py-2 font-semibold">
-                    MOST POPULAR
-                  </div>
-                )}
-                
-                <div className="p-8">
-                  <h3 className="text-2xl font-bold text-gray-900 mb-2">{pkg.name}</h3>
-                  <p className="text-gray-600 mb-4">{pkg.description}</p>
-                  <div className="text-4xl font-bold text-gray-900 mb-6">{pkg.price}</div>
-                  
-                  <ul className="space-y-3 mb-8">
-                    {pkg.features.map((feature, idx) => (
-                      <li key={idx} className="flex items-start gap-2">
-                        <CheckCircle className="w-5 h-5 text-orange-600 flex-shrink-0 mt-0.5" />
-                        <span className="text-gray-600">{feature}</span>
-                      </li>
-                    ))}
-                  </ul>
-                  
-                  <Link
-                    to="/contact"
-                    className={`block w-full py-3 rounded-lg text-center font-semibold transition-all ${
-                      pkg.popular
-                        ? 'bg-gradient-to-r from-orange-600 to-pink-600 text-white hover:shadow-lg'
-                        : 'bg-gray-100 text-gray-900 hover:bg-gray-200'
-                    }`}
-                  >
-                    {pkg.cta}
-                  </Link>
-                </div>
-              </motion.div>
-            ))}
+          <div className="max-w-4xl mx-auto text-center">
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+            >
+              <h2 className="text-4xl font-bold mb-6">Custom Pricing for Your Story</h2>
+              <p className="text-xl text-gray-700 mb-4">
+                Every documentary tells a unique story, and deserves unique pricing.
+              </p>
+              <p className="text-lg text-gray-600 mb-8">
+                From short-form documentaries to comprehensive multi-part series, we'll create a tailored production package that aligns with your vision, timeline, and budget.
+              </p>
+              <Link to="/contact">
+                <motion.button
+                  whileHover={{ scale: 1.05 }}
+                  whileTap={{ scale: 0.95 }}
+                  className="px-12 py-4 bg-gradient-to-r from-orange-600 to-pink-600 text-white text-lg rounded-full font-semibold hover:from-orange-700 hover:to-pink-700 transition-all shadow-xl"
+                >
+                  Request Custom Quote
+                </motion.button>
+              </Link>
+            </motion.div>
           </div>
         </div>
       </section>

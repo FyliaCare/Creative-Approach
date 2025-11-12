@@ -73,74 +73,6 @@ export default function CustomTraining() {
     }
   ];
 
-  const packages = [
-    {
-      name: 'Beginner Drone Pilot',
-      price: 'GHS 3,500',
-      description: 'Start your drone journey',
-      features: [
-        '5 days theory training',
-        'Aviation basics',
-        'GCAA regulations overview',
-        '10 hours practical training',
-        'Simulator sessions',
-        'Basic flight maneuvers',
-        'Safety protocols',
-        'Training manual included',
-        'Certificate of completion',
-        '3 months email support'
-      ],
-      cta: 'Enroll Now',
-      popular: false
-    },
-    {
-      name: 'RPL Certification Program',
-      price: 'GHS 8,500',
-      description: 'Full commercial license',
-      features: [
-        '10 days comprehensive theory',
-        'Complete aviation knowledge',
-        'GCAA regulations mastery',
-        '20 hours practical training',
-        'Advanced flight techniques',
-        'Emergency procedures',
-        'Risk assessment training',
-        'GCAA exam preparation',
-        'Practical test supervision',
-        'RPL license application support',
-        'Study materials & manuals',
-        '6 months mentorship',
-        '1 year support access'
-      ],
-      cta: 'Most Popular',
-      popular: true
-    },
-    {
-      name: 'Enterprise & Custom',
-      price: 'Custom Quote',
-      description: 'Specialized training solutions',
-      features: [
-        'Fully customized curriculum',
-        'Industry-specific training',
-        'Multiple team members',
-        'On-site training available',
-        'Specialized applications',
-        'Advanced data analysis',
-        'Software training (Pix4D, DroneDeploy)',
-        'Workflow integration',
-        'Equipment recommendations',
-        'Procurement assistance',
-        'Ongoing consulting',
-        'Annual refresher courses',
-        'Dedicated account manager',
-        'Unlimited email/phone support',
-        'Priority scheduling'
-      ],
-      cta: 'Contact Sales',
-      popular: false
-    }
-  ];
-
   const applications = [
     {
       title: 'RPL License Training',
@@ -436,62 +368,32 @@ export default function CustomTraining() {
         </div>
       </section>
 
-      {/* Pricing Section */}
-      <section className="py-20">
+      {/* Custom Quote Section */}
+      <section className="py-20 bg-gradient-to-br from-indigo-50 to-pink-50">
         <div className="container-custom">
-          <div className="text-center mb-12">
-            <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
-              Training Programs
-            </h2>
-            <p className="text-xl text-gray-600">
-              Flexible options for every skill level and goal
-            </p>
-          </div>
-          
-          <div className="grid md:grid-cols-3 gap-8">
-            {packages.map((pkg, index) => (
-              <motion.div
-                key={index}
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                transition={{ delay: index * 0.1 }}
-                className={`bg-white rounded-2xl shadow-xl overflow-hidden ${
-                  pkg.popular ? 'ring-4 ring-indigo-600 scale-105' : ''
-                }`}
-              >
-                {pkg.popular && (
-                  <div className="bg-gradient-to-r from-indigo-600 to-pink-600 text-white text-center py-2 font-semibold">
-                    MOST POPULAR
-                  </div>
-                )}
-                
-                <div className="p-8">
-                  <h3 className="text-2xl font-bold text-gray-900 mb-2">{pkg.name}</h3>
-                  <p className="text-gray-600 mb-4">{pkg.description}</p>
-                  <div className="text-4xl font-bold text-gray-900 mb-6">{pkg.price}</div>
-                  
-                  <ul className="space-y-3 mb-8">
-                    {pkg.features.map((feature, idx) => (
-                      <li key={idx} className="flex items-start gap-2">
-                        <CheckCircle className="w-5 h-5 text-indigo-600 flex-shrink-0 mt-0.5" />
-                        <span className="text-gray-600">{feature}</span>
-                      </li>
-                    ))}
-                  </ul>
-                  
-                  <Link
-                    to="/contact"
-                    className={`block w-full py-3 rounded-lg text-center font-semibold transition-all ${
-                      pkg.popular
-                        ? 'bg-gradient-to-r from-indigo-600 to-pink-600 text-white hover:shadow-lg'
-                        : 'bg-gray-100 text-gray-900 hover:bg-gray-200'
-                    }`}
-                  >
-                    {pkg.cta}
-                  </Link>
-                </div>
-              </motion.div>
-            ))}
+          <div className="max-w-4xl mx-auto text-center">
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+            >
+              <h2 className="text-4xl font-bold mb-6">Custom Training Programs</h2>
+              <p className="text-xl text-gray-700 mb-4">
+                Every team has unique training needs and skill levels.
+              </p>
+              <p className="text-lg text-gray-600 mb-8">
+                From beginner drone pilot certification to advanced commercial cinematography, we'll design a customized training program that fits your schedule, location, and learning objectives.
+              </p>
+              <Link to="/contact">
+                <motion.button
+                  whileHover={{ scale: 1.05 }}
+                  whileTap={{ scale: 0.95 }}
+                  className="px-12 py-4 bg-gradient-to-r from-indigo-600 to-pink-600 text-white text-lg rounded-full font-semibold hover:from-indigo-700 hover:to-pink-700 transition-all shadow-xl"
+                >
+                  Request Custom Quote
+                </motion.button>
+              </Link>
+            </motion.div>
           </div>
         </div>
       </section>

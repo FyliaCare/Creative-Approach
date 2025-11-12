@@ -73,63 +73,6 @@ export default function DroneInspection() {
     }
   ];
 
-  const packages = [
-    {
-      name: 'Basic Inspection',
-      price: 'GHS 2,000',
-      description: 'Essential visual inspection',
-      features: [
-        'Visual inspection only',
-        'Up to 2 structures/areas',
-        'High-resolution photography',
-        '50+ detailed images',
-        'Basic inspection report',
-        'Issue identification',
-        '5-day turnaround',
-        'Email support'
-      ],
-      cta: 'Get Started',
-      popular: false
-    },
-    {
-      name: 'Professional Inspection',
-      price: 'GHS 4,500',
-      description: 'Comprehensive assessment',
-      features: [
-        'Visual + thermal imaging',
-        'Up to 5 structures/areas',
-        '8K resolution imagery',
-        '150+ annotated images',
-        'Detailed technical report',
-        'Severity classification',
-        '3-day turnaround',
-        'Priority support',
-        '1 follow-up inspection'
-      ],
-      cta: 'Most Popular',
-      popular: true
-    },
-    {
-      name: 'Enterprise Inspection',
-      price: 'GHS 8,000',
-      description: 'Complete facility assessment',
-      features: [
-        'Multi-spectrum imaging',
-        'Unlimited structures',
-        '8K + RAW thermal data',
-        '300+ images + video',
-        'Comprehensive analysis report',
-        'Predictive maintenance insights',
-        '24-hour turnaround',
-        'Dedicated project manager',
-        'Quarterly inspection program',
-        'Real-time monitoring portal'
-      ],
-      cta: 'Contact Sales',
-      popular: false
-    }
-  ];
-
   const applications = [
     {
       title: 'Building & Roof Inspections',
@@ -227,8 +170,19 @@ export default function DroneInspection() {
       <SEO {...seoPresets.droneInspection} />
       <div className="min-h-screen bg-white">
       {/* Hero Section */}
-      <section className="relative min-h-[70vh] flex items-center justify-center overflow-hidden bg-gradient-to-br from-purple-900 via-purple-700 to-pink-600">
-        <div className="absolute inset-0 bg-black/20"></div>
+      <section className="relative min-h-[70vh] flex items-center justify-center overflow-hidden">
+        <div className="absolute inset-0">
+          <video 
+            autoPlay 
+            loop 
+            muted 
+            playsInline
+            className="w-full h-full object-cover"
+          >
+            <source src="/INSPECTIONS/inspection.mp4" type="video/mp4" />
+          </video>
+          <div className="absolute inset-0 bg-gradient-to-r from-purple-900/80 via-purple-700/60 to-black/50"></div>
+        </div>
         <div className="container-custom relative z-10 text-center text-white py-20">
           <motion.div
             initial={{ opacity: 0, scale: 0.9 }}
@@ -325,22 +279,22 @@ export default function DroneInspection() {
             
             <div className="grid grid-cols-2 gap-4">
               <img
-                src="https://images.unsplash.com/photo-1473116763249-2faaef81ccda?w=500"
+                src="/INSPECTIONS/flare-stack-offshore-survey-1024x518.jpg"
                 alt="Infrastructure inspection"
                 className="rounded-lg shadow-xl"
               />
               <img
-                src="https://images.unsplash.com/photo-1581094271901-8022df4466f9?w=500"
+                src="/INSPECTIONS/DJI_20231201134642_0003_SUPR.JPG"
                 alt="Thermal imaging"
                 className="rounded-lg shadow-xl mt-8"
               />
               <img
-                src="https://images.unsplash.com/photo-1581092160562-40aa08e78837?w=500"
-                alt="Building inspection"
+                src="/INSPECTIONS/ZOOMED QUALITY (1).JPG"
+                alt="Building inspection detail"
                 className="rounded-lg shadow-xl -mt-8"
               />
               <img
-                src="https://images.unsplash.com/photo-1581092921461-eab62e97a780?w=500"
+                src="/INSPECTIONS/ZOOMED QUALITY (2).JPG"
                 alt="Industrial inspection"
                 className="rounded-lg shadow-xl"
               />
@@ -425,62 +379,32 @@ export default function DroneInspection() {
         </div>
       </section>
 
-      {/* Pricing Section */}
-      <section className="py-20">
+      {/* Custom Quote Section */}
+      <section className="py-20 bg-gradient-to-br from-purple-50 to-pink-50">
         <div className="container-custom">
-          <div className="text-center mb-12">
-            <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
-              Inspection Packages
-            </h2>
-            <p className="text-xl text-gray-600">
-              Flexible solutions for every inspection need
-            </p>
-          </div>
-          
-          <div className="grid md:grid-cols-3 gap-8">
-            {packages.map((pkg, index) => (
-              <motion.div
-                key={index}
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                transition={{ delay: index * 0.1 }}
-                className={`bg-white rounded-2xl shadow-xl overflow-hidden ${
-                  pkg.popular ? 'ring-4 ring-purple-600 scale-105' : ''
-                }`}
-              >
-                {pkg.popular && (
-                  <div className="bg-gradient-to-r from-purple-600 to-pink-600 text-white text-center py-2 font-semibold">
-                    MOST POPULAR
-                  </div>
-                )}
-                
-                <div className="p-8">
-                  <h3 className="text-2xl font-bold text-gray-900 mb-2">{pkg.name}</h3>
-                  <p className="text-gray-600 mb-4">{pkg.description}</p>
-                  <div className="text-4xl font-bold text-gray-900 mb-6">{pkg.price}</div>
-                  
-                  <ul className="space-y-3 mb-8">
-                    {pkg.features.map((feature, idx) => (
-                      <li key={idx} className="flex items-start gap-2">
-                        <CheckCircle className="w-5 h-5 text-purple-600 flex-shrink-0 mt-0.5" />
-                        <span className="text-gray-600">{feature}</span>
-                      </li>
-                    ))}
-                  </ul>
-                  
-                  <Link
-                    to="/contact"
-                    className={`block w-full py-3 rounded-lg text-center font-semibold transition-all ${
-                      pkg.popular
-                        ? 'bg-gradient-to-r from-purple-600 to-pink-600 text-white hover:shadow-lg'
-                        : 'bg-gray-100 text-gray-900 hover:bg-gray-200'
-                    }`}
-                  >
-                    {pkg.cta}
-                  </Link>
-                </div>
-              </motion.div>
-            ))}
+          <div className="max-w-4xl mx-auto text-center">
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+            >
+              <h2 className="text-4xl font-bold mb-6">Custom Pricing for Your Inspection</h2>
+              <p className="text-xl text-gray-700 mb-4">
+                Every inspection project requires unique expertise and equipment.
+              </p>
+              <p className="text-lg text-gray-600 mb-8">
+                From routine building inspections to complex industrial facility assessments, we'll develop a tailored inspection package with the right technology, expertise, and reporting to meet your specific requirements.
+              </p>
+              <Link to="/contact">
+                <motion.button
+                  whileHover={{ scale: 1.05 }}
+                  whileTap={{ scale: 0.95 }}
+                  className="px-12 py-4 bg-gradient-to-r from-purple-600 to-pink-600 text-white text-lg rounded-full font-semibold hover:from-purple-700 hover:to-pink-700 transition-all shadow-xl"
+                >
+                  Request Custom Quote
+                </motion.button>
+              </Link>
+            </motion.div>
           </div>
         </div>
       </section>

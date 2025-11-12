@@ -73,67 +73,6 @@ export default function MappingSurveying() {
     }
   ];
 
-  const packages = [
-    {
-      name: 'Basic Mapping',
-      price: 'GHS 3,500',
-      description: 'Essential site mapping',
-      features: [
-        'Up to 50 acres coverage',
-        'Orthomosaic map (5cm/pixel)',
-        'Digital elevation model',
-        'GeoTIFF format',
-        'Basic contour lines',
-        'PDF map export',
-        '7-day turnaround',
-        'Email support'
-      ],
-      cta: 'Get Started',
-      popular: false
-    },
-    {
-      name: 'Professional Survey',
-      price: 'GHS 7,500',
-      description: 'Comprehensive surveying',
-      features: [
-        'Up to 200 acres coverage',
-        'High-res orthomosaic (2cm/pixel)',
-        'Detailed DEM/DSM',
-        'Point cloud (LAS/LAZ)',
-        'Contour mapping (custom intervals)',
-        'CAD/GIS compatible exports',
-        'Volumetric calculations',
-        '5-day turnaround',
-        'Phone support',
-        '1 revision included'
-      ],
-      cta: 'Most Popular',
-      popular: true
-    },
-    {
-      name: 'Enterprise 3D Modeling',
-      price: 'GHS 15,000',
-      description: 'Advanced 3D solutions',
-      features: [
-        'Unlimited acreage',
-        'Ultra-high res (1cm/pixel)',
-        'Full 3D textured mesh',
-        'Dense point cloud',
-        'Precision contours (10cm)',
-        'All file formats (DWG, SHP, KML, etc.)',
-        'Interactive web viewer',
-        'Cut/fill analysis',
-        'Stockpile volumes',
-        '3-day priority turnaround',
-        'Dedicated manager',
-        'Unlimited revisions',
-        'Monthly monitoring option'
-      ],
-      cta: 'Contact Sales',
-      popular: false
-    }
-  ];
-
   const applications = [
     {
       title: 'Mining & Quarries',
@@ -231,8 +170,13 @@ export default function MappingSurveying() {
       <SEO {...seoPresets.mappingSurveying} />
       <div className="min-h-screen bg-white">
       {/* Hero Section */}
-      <section className="relative min-h-[70vh] flex items-center justify-center overflow-hidden bg-gradient-to-br from-emerald-900 via-teal-700 to-cyan-600">
-        <div className="absolute inset-0 bg-black/20"></div>
+      <section className="relative min-h-[70vh] flex items-center justify-center overflow-hidden">
+        <img 
+          src="/SURVEY AND MAPPING/Survey and mapping.jpg" 
+          alt="Survey and Mapping" 
+          className="absolute inset-0 w-full h-full object-cover"
+        />
+        <div className="absolute inset-0 bg-gradient-to-br from-emerald-900/70 via-teal-700/60 to-cyan-600/70"></div>
         <div className="container-custom relative z-10 text-center text-white py-20">
           <motion.div
             initial={{ opacity: 0, scale: 0.9 }}
@@ -329,23 +273,23 @@ export default function MappingSurveying() {
             
             <div className="grid grid-cols-2 gap-4">
               <img
-                src="https://images.unsplash.com/photo-1473116763249-2faaef81ccda?w=500"
-                alt="Drone mapping"
+                src="/SURVEY AND MAPPING/Construction site monitoring.png"
+                alt="Construction site monitoring"
                 className="rounded-lg shadow-xl"
               />
               <img
-                src="https://images.unsplash.com/photo-1581092160562-40aa08e78837?w=500"
-                alt="3D modeling"
+                src="/SURVEY AND MAPPING/Orthomosaic-Detail-v2-2-1.jpg"
+                alt="Orthomosaic mapping detail"
                 className="rounded-lg shadow-xl mt-8"
               />
               <img
-                src="https://images.unsplash.com/photo-1581092918056-0c4c3acd3789?w=500"
-                alt="Surveying"
+                src="/SURVEY AND MAPPING/pexels-tomfisk-3856477.jpg"
+                alt="Survey equipment"
                 className="rounded-lg shadow-xl -mt-8"
               />
               <img
-                src="https://images.unsplash.com/photo-1581092162384-8987c1d64718?w=500"
-                alt="Topographic map"
+                src="/SURVEY AND MAPPING/pexels-tomfisk-3856033.jpg"
+                alt="Aerial surveying"
                 className="rounded-lg shadow-xl"
               />
             </div>
@@ -429,62 +373,32 @@ export default function MappingSurveying() {
         </div>
       </section>
 
-      {/* Pricing Section */}
-      <section className="py-20">
+      {/* Custom Quote Section */}
+      <section className="py-20 bg-gradient-to-br from-emerald-50 to-cyan-50">
         <div className="container-custom">
-          <div className="text-center mb-12">
-            <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
-              Surveying Packages
-            </h2>
-            <p className="text-xl text-gray-600">
-              Flexible solutions for every project size
-            </p>
-          </div>
-          
-          <div className="grid md:grid-cols-3 gap-8">
-            {packages.map((pkg, index) => (
-              <motion.div
-                key={index}
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                transition={{ delay: index * 0.1 }}
-                className={`bg-white rounded-2xl shadow-xl overflow-hidden ${
-                  pkg.popular ? 'ring-4 ring-emerald-600 scale-105' : ''
-                }`}
-              >
-                {pkg.popular && (
-                  <div className="bg-gradient-to-r from-emerald-600 to-cyan-600 text-white text-center py-2 font-semibold">
-                    MOST POPULAR
-                  </div>
-                )}
-                
-                <div className="p-8">
-                  <h3 className="text-2xl font-bold text-gray-900 mb-2">{pkg.name}</h3>
-                  <p className="text-gray-600 mb-4">{pkg.description}</p>
-                  <div className="text-4xl font-bold text-gray-900 mb-6">{pkg.price}</div>
-                  
-                  <ul className="space-y-3 mb-8">
-                    {pkg.features.map((feature, idx) => (
-                      <li key={idx} className="flex items-start gap-2">
-                        <CheckCircle className="w-5 h-5 text-emerald-600 flex-shrink-0 mt-0.5" />
-                        <span className="text-gray-600">{feature}</span>
-                      </li>
-                    ))}
-                  </ul>
-                  
-                  <Link
-                    to="/contact"
-                    className={`block w-full py-3 rounded-lg text-center font-semibold transition-all ${
-                      pkg.popular
-                        ? 'bg-gradient-to-r from-emerald-600 to-cyan-600 text-white hover:shadow-lg'
-                        : 'bg-gray-100 text-gray-900 hover:bg-gray-200'
-                    }`}
-                  >
-                    {pkg.cta}
-                  </Link>
-                </div>
-              </motion.div>
-            ))}
+          <div className="max-w-4xl mx-auto text-center">
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+            >
+              <h2 className="text-4xl font-bold mb-6">Custom Pricing for Your Survey</h2>
+              <p className="text-xl text-gray-700 mb-4">
+                Every mapping and surveying project has unique accuracy and scope requirements.
+              </p>
+              <p className="text-lg text-gray-600 mb-8">
+                From small-site topographic surveys to large-scale 3D mapping projects, we'll create a tailored package that delivers the precision, data formats, and deliverables your project demands.
+              </p>
+              <Link to="/contact">
+                <motion.button
+                  whileHover={{ scale: 1.05 }}
+                  whileTap={{ scale: 0.95 }}
+                  className="px-12 py-4 bg-gradient-to-r from-emerald-600 to-cyan-600 text-white text-lg rounded-full font-semibold hover:from-emerald-700 hover:to-cyan-700 transition-all shadow-xl"
+                >
+                  Request Custom Quote
+                </motion.button>
+              </Link>
+            </motion.div>
           </div>
         </div>
       </section>
