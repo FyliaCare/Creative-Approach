@@ -299,8 +299,8 @@ export default function Contact() {
               >
                 <div className={`absolute top-0 right-0 w-24 h-24 bg-gradient-to-br ${info.color} opacity-10 rounded-bl-full`}></div>
                 <div className="relative z-10">
-                  <div className="text-4xl sm:text-5xl md:text-5xl mb-4">{info.icon}</div>
-                                          <h3 className="text-xl sm:text-2xl md:text-3xl font-bold mb-4">{item.question}</h3>
+                  <div className="text-4xl mb-4">{info.icon}</div>
+                  <h3 className="font-bold text-gray-900 mb-2">{info.title}</h3>
                   {info.action ? (
                     <a href={info.action} className="block group">
                       <div className="text-drone-600 font-semibold mb-1 group-hover:text-drone-700">
@@ -552,21 +552,35 @@ export default function Contact() {
                         </div>
                       </div>
 
-                      <div>
-                        <label className="block text-sm font-bold mb-2 text-gray-700">Timeline</label>
-                        <select
-                          name="timeline"
-                          value={formData.timeline}
-                          onChange={handleChange}
-                          className="w-full px-4 py-3 rounded-xl border-2 border-gray-200 focus:border-drone-500 outline-none transition-all"
-                        >
-                          <option value="">Select timeline</option>
-                          {timelines.map((time) => (
-                            <option key={time} value={time}>
-                              {time}
-                            </option>
-                          ))}
-                        </select>
+                      <div className="grid md:grid-cols-2 gap-6">
+                        <div>
+                          <label className="block text-sm font-bold mb-2 text-gray-700">Timeline</label>
+                          <select
+                            name="timeline"
+                            value={formData.timeline}
+                            onChange={handleChange}
+                            className="w-full px-4 py-3 rounded-xl border-2 border-gray-200 focus:border-drone-500 outline-none transition-all"
+                          >
+                            <option value="">Select timeline</option>
+                            {timelines.map((time) => (
+                              <option key={time} value={time}>
+                                {time}
+                              </option>
+                            ))}
+                          </select>
+                        </div>
+
+                        <div>
+                          <label className="block text-sm font-bold mb-2 text-gray-700">Project Location</label>
+                          <input
+                            type="text"
+                            name="location"
+                            value={formData.location}
+                            onChange={handleChange}
+                            className="w-full px-4 py-3 rounded-xl border-2 border-gray-200 focus:border-drone-500 outline-none transition-all"
+                            placeholder="City or Region in Ghana"
+                          />
+                        </div>
                       </div>
 
                       <div>
