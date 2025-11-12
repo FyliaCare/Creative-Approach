@@ -385,24 +385,15 @@ export default function Home() {
                     whileHover={{ y: -8, scale: 1.02 }}
                     className="group relative h-full bg-white rounded-2xl overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-300"
                   >
-                    {/* Image Background Header */}
-                    <div className="relative h-48 overflow-hidden">
+                    {/* Full Image Background */}
+                    <div className="relative h-64 overflow-hidden">
                       <img 
                         src={service.image} 
                         alt={service.title}
                         className="absolute inset-0 w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
                       />
-                      <div className="absolute inset-0 bg-gradient-to-br from-black/40 to-black/60"></div>
-                      <div className="relative z-10 text-center text-white h-full flex flex-col items-center justify-center">
-                        <div className="text-5xl mb-2 drop-shadow-lg">
-                          {service.icon}
-                        </div>
-                        <div className="text-xs font-semibold uppercase tracking-wider opacity-90 bg-white/20 px-3 py-1 rounded-full backdrop-blur-sm">
-                          {service.duration}
-                        </div>
-                      </div>
-                      {/* Animated overlay on hover */}
-                      <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+                      {/* Minimal gradient overlay on hover */}
+                      <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
                     </div>
 
                     {/* Content */}
