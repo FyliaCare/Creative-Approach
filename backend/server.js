@@ -36,9 +36,16 @@ app.set('trust proxy', 1);
 const httpServer = createServer(app);
 const io = new Server(httpServer, {
   cors: {
-    origin: [process.env.CLIENT_URL, process.env.ADMIN_URL],
-    methods: ['GET', 'POST'],
-    credentials: true
+    origin: [
+      process.env.CLIENT_URL, 
+      process.env.ADMIN_URL,
+      'https://caghana.com',
+      'https://www.caghana.com',
+      'https://admin.caghana.com'
+    ],
+    methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH'],
+    credentials: true,
+    allowedHeaders: ['Content-Type', 'Authorization']
   }
 });
 
@@ -52,8 +59,16 @@ app.use(helmet()); // Security headers
 app.use(compression()); // Compress responses
 app.use(morgan('dev')); // Logging
 app.use(cors({
-  origin: [process.env.CLIENT_URL, process.env.ADMIN_URL],
-  credentials: true
+  origin: [
+    process.env.CLIENT_URL, 
+    process.env.ADMIN_URL,
+    'https://caghana.com',
+    'https://www.caghana.com',
+    'https://admin.caghana.com'
+  ],
+  credentials: true,
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH'],
+  allowedHeaders: ['Content-Type', 'Authorization']
 }));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));

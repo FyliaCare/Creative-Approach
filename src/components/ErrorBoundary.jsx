@@ -139,10 +139,10 @@ class ErrorBoundary extends React.Component {
                 <p className="text-sm text-gray-600">
                   Need help? Contact us at{' '}
                   <a 
-                    href="mailto:support@creativeapproach.com.gh" 
+                    href="mailto:sales@caghana.com" 
                     className="text-blue-600 hover:text-blue-700 font-semibold"
                   >
-                    support@creativeapproach.com.gh
+                    sales@caghana.com
                   </a>
                 </p>
               </div>

@@ -81,8 +81,40 @@ export const quotationAPI = {
   },
 };
 
+// Portfolio API
+export const portfolioAPI = {
+  getAll: async () => {
+    return apiRequest('/portfolio');
+  },
+  
+  getById: async (id) => {
+    return apiRequest(`/portfolio/${id}`);
+  },
+  
+  create: async (portfolioData) => {
+    return apiRequest('/portfolio', {
+      method: 'POST',
+      body: JSON.stringify(portfolioData),
+    });
+  },
+  
+  update: async (id, portfolioData) => {
+    return apiRequest(`/portfolio/${id}`, {
+      method: 'PUT',
+      body: JSON.stringify(portfolioData),
+    });
+  },
+  
+  delete: async (id) => {
+    return apiRequest(`/portfolio/${id}`, {
+      method: 'DELETE',
+    });
+  },
+};
+
 export default {
   newsletterAPI,
   blogAPI,
   quotationAPI,
+  portfolioAPI,
 };

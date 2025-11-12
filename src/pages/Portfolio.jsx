@@ -1,13 +1,11 @@
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import axios from 'axios';
 import {
   Camera, X, ArrowRight, Play, Award, MapPin, Calendar, 
   ExternalLink, ChevronLeft, ChevronRight, Heart, Eye
 } from 'lucide-react';
 import SEO, { seoPresets } from '../components/SEO';
-
-const API_URL = import.meta.env.VITE_API_URL;
+import { portfolioAPI } from '../services/api';
 
 export default function Portfolio() {
   const [portfolios, setPortfolios] = useState([]);
@@ -40,8 +38,8 @@ export default function Portfolio() {
   const fetchPortfolios = async () => {
     try {
       setLoading(true);
-      const response = await axios.get(API_URL + '/api/portfolio');
-      setPortfolios(response.data);
+      const data = await portfolioAPI.getAll();
+      setPortfolios(data);
     } catch (error) {
       console.error('Error fetching portfolios:', error);
       setPortfolios([]);
