@@ -16,7 +16,7 @@ const Quotations = lazy(() => import('./pages/Quotations').then(m => ({ default:
 const QuotationDetail = lazy(() => import('./pages/QuotationDetail').then(m => ({ default: m.QuotationDetail })));
 const PortfolioAdvanced = lazy(() => import('./pages/PortfolioAdvanced').then(m => ({ default: m.PortfolioAdvanced })));
 const AdvancedAdminChat = lazy(() => import('./pages/AdvancedAdminChat'));
-const QuotationGenerator = lazy(() => import('../../src/pages/QuotationGenerator'));
+const QuotationGenerator = lazy(() => import('./pages/QuotationGenerator'));
 const Settings = lazy(() => import('./pages/Settings').then(m => ({ default: m.Settings })));
 
 // Loading component
