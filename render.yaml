@@ -52,7 +52,7 @@ services:
     runtime: static
     region: oregon
     rootDir: admin
-    buildCommand: npm install --legacy-peer-deps && npm run build
+    buildCommand: rm -rf node_modules/.vite && npm install --legacy-peer-deps && npm run build
     staticPublishPath: ./admin/dist
     pullRequestPreviewsEnabled: true
     headers:
