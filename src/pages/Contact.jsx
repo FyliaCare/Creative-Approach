@@ -204,37 +204,6 @@ export default function Contact() {
         />
         <div className="absolute inset-0 bg-gradient-to-br from-drone-900/85 via-sky-900/75 to-purple-950/85"></div>
         
-        {/* Floating Drones */}
-        <motion.div
-          animate={{
-            x: [0, 100, 0],
-            y: [0, -50, 0],
-          }}
-          transition={{
-            duration: 20,
-            repeat: Infinity,
-            ease: "easeInOut"
-          }}
-          className="absolute top-20 left-10 w-32 h-32 opacity-10"
-        >
-          <img src="/drone-animated.svg" alt="Drone" className="w-full h-full" />
-        </motion.div>
-        <motion.div
-          animate={{
-            x: [0, -80, 0],
-            y: [0, 60, 0],
-          }}
-          transition={{
-            duration: 25,
-            repeat: Infinity,
-            ease: "easeInOut",
-            delay: 2
-          }}
-          className="absolute bottom-20 right-10 w-40 h-40 opacity-10"
-        >
-          <img src="/drone-animated.svg" alt="Drone" className="w-full h-full" />
-        </motion.div>
-        
         <div className="container-custom relative z-10">
           <motion.div
             initial={{ opacity: 0, y: 30 }}
