@@ -1,21 +1,12 @@
-# Render.com Configuration# Render.com configuration for SPA routing
-
-# Deploy Creative Approach platform with three services# Using Web Service with serve package for proper SPA routing
+# Render.com Configuration
+# Deploy Creative Approach platform with three services
 
 services:
-
-services:  - type: web
-
-  # Backend API Service    name: creative-approach
-
-  - type: web    env: node
-
-    name: creative-approach-api    buildCommand: npm ci && npm run build
-
-    runtime: node    startCommand: npm run serve
-
-    region: oregon    pullRequestPreviewsEnabled: true
-
+  # Backend API Service
+  - type: web
+    name: creative-approach-api
+    runtime: node
+    region: oregon
     plan: starter
     rootDir: backend
     buildCommand: npm install
@@ -61,7 +52,7 @@ services:  - type: web
     runtime: static
     region: oregon
     rootDir: admin
-    buildCommand: npm install && npm run build
+    buildCommand: npm install --legacy-peer-deps && npm run build
     staticPublishPath: ./admin/dist
     pullRequestPreviewsEnabled: true
     headers:
@@ -80,3 +71,4 @@ services:  - type: web
         destination: /index.html
     # Add in Render Dashboard:
     # VITE_API_URL, VITE_SOCKET_URL
+
