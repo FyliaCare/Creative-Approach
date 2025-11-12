@@ -53,52 +53,112 @@ export default function Home() {
 
   const services = [
     {
-      title: 'Construction Site Monitoring',
-      description: 'Track and monitor construction progress with monthly photo & video updates, collect valuable data, and showcase your completed work.',
-      icon: '🏗️',
-      image: '🏗️',
-      link: '/industries',
-      gradient: 'from-orange-500 to-red-500'
+      id: 1,
+      title: 'Aerial Photography & Videography',
+      slug: 'aerial-photography',
+      shortDesc: 'Stunning aerial visuals that tell your story',
+      description: 'Professional high-resolution aerial imagery for commercial properties, real estate showcases, infrastructure documentation, corporate event coverage, and cinematic documentary storytelling.',
+      icon: '📸',
+      features: [
+        '4K/8K ultra high-resolution capture',
+        'Professional color grading & editing',
+        'Real estate marketing packages'
+      ],
+      useCases: ['Real Estate', 'Events', 'Marketing'],
+      link: '/services/aerial-photography',
+      gradient: 'from-blue-500 via-cyan-500 to-teal-500',
+      iconBg: 'bg-blue-100',
+      duration: '1-3 days'
     },
     {
-      title: 'Real Estate Photography',
-      description: 'Sell your listings faster with click-worthy aerial imagery. Showcase your property from beautiful angles and attract premium buyers.',
-      icon: '🏘️',
-      image: '🏘️',
-      link: '/services',
-      gradient: 'from-blue-500 to-cyan-500'
-    },
-    {
-      title: 'Commercial Real Estate',
-      description: 'Present to clients, investors, or tenants with compelling aerial imagery. Highlight property locations and nearby amenities.',
-      icon: '🏢',
-      image: '🏢',
-      link: '/services',
-      gradient: 'from-purple-500 to-pink-500'
-    },
-    {
-      title: 'Drone Inspection Services',
-      description: 'Get detail-rich aerial photos to make informed & actionable decisions. Insightful, easy, and reliable drone services on-demand.',
+      id: 2,
+      title: 'Drone Inspection & Monitoring',
+      slug: 'drone-inspection',
+      shortDesc: 'Safe, efficient infrastructure assessments',
+      description: 'Comprehensive inspection services for infrastructure, construction sites, roofs, utilities, towers, and agricultural monitoring with detailed progress tracking and reporting.',
       icon: '🔍',
-      image: '🔍',
-      link: '/services',
-      gradient: 'from-green-500 to-teal-500'
+      features: [
+        'Infrastructure health assessments',
+        'Construction progress monitoring',
+        'Thermal imaging capabilities'
+      ],
+      useCases: ['Construction', 'Agriculture', 'Energy'],
+      link: '/services/drone-inspection',
+      gradient: 'from-purple-500 via-pink-500 to-rose-500',
+      iconBg: 'bg-purple-100',
+      duration: '2-5 days'
     },
     {
-      title: 'Orthomosaics & Aerial Survey',
-      description: 'Capture hundred-acre properties with precision, detail, & accuracy. Calculate area, volume, and distances with high quality maps.',
+      id: 3,
+      title: 'Mapping, Surveying & 3D Modelling',
+      slug: 'mapping-surveying',
+      shortDesc: 'Precision geospatial data & 3D models',
+      description: 'Advanced mapping solutions including orthomosaic generation, digital elevation models (DEMs), contour mapping, 3D site reconstructions, volumetric analysis, and comprehensive GIS data processing.',
       icon: '🗺️',
-      image: '🗺️',
-      link: '/services',
-      gradient: 'from-indigo-500 to-purple-500'
+      features: [
+        'High-precision orthomosaic maps',
+        'Digital elevation models (DEMs)',
+        'Photorealistic 3D models'
+      ],
+      useCases: ['Mining', 'Construction', 'Agriculture'],
+      link: '/services/mapping-surveying',
+      gradient: 'from-emerald-500 via-teal-500 to-cyan-500',
+      iconBg: 'bg-emerald-100',
+      duration: '3-7 days'
     },
     {
-      title: 'Data Capture & Analysis',
-      description: 'Produce interactive 3D models of construction sites and commercial properties. Make valuable measurements for data-driven decisions.',
+      id: 4,
+      title: 'Documentary Films & Photography',
+      slug: 'documentary-films',
+      shortDesc: 'Compelling visual storytelling',
+      description: 'Full-service documentary production from concept development to post-production, combining professional photography, aerial cinematography, and ground footage to tell powerful stories.',
+      icon: '🎬',
+      features: [
+        'Concept development & scripting',
+        'Multi-camera production',
+        'Post-production & editing'
+      ],
+      useCases: ['Corporate', 'Cultural', 'Tourism'],
+      link: '/services/documentary-films',
+      gradient: 'from-orange-500 via-red-500 to-pink-500',
+      iconBg: 'bg-orange-100',
+      duration: '2-6 weeks'
+    },
+    {
+      id: 5,
+      title: 'Custom Data Services & Training',
+      slug: 'custom-training',
+      shortDesc: 'Specialized solutions & expert guidance',
+      description: 'Tailored data collection, analysis, and reporting services combined with comprehensive training programs for drone operations, data interpretation, and workflow integration.',
       icon: '📊',
-      image: '📊',
-      link: '/services',
-      gradient: 'from-yellow-500 to-orange-500'
+      features: [
+        'Custom data collection protocols',
+        'Advanced data analysis',
+        'Operator training programs'
+      ],
+      useCases: ['Enterprise', 'Government', 'Education'],
+      link: '/services/custom-training',
+      gradient: 'from-indigo-500 via-purple-500 to-pink-500',
+      iconBg: 'bg-indigo-100',
+      duration: 'Variable'
+    },
+    {
+      id: 6,
+      title: 'Emergency Response & Surveillance',
+      slug: 'emergency-response',
+      shortDesc: 'Rapid deployment for critical situations',
+      description: 'Quick-response drone services for emergency situations, disaster assessment, search and rescue support, security surveillance, and real-time monitoring of critical events.',
+      icon: '🚨',
+      features: [
+        'Rapid deployment capabilities',
+        'Real-time video streaming',
+        'Thermal imaging'
+      ],
+      useCases: ['Emergency Services', 'Security', 'Disaster Relief'],
+      link: '/services/emergency-response',
+      gradient: 'from-red-500 via-orange-500 to-yellow-500',
+      iconBg: 'bg-red-100',
+      duration: 'Immediate'
     }
   ];
 
@@ -305,35 +365,62 @@ export default function Home() {
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
             {services.map((service, index) => (
               <motion.div
-                key={service.title}
+                key={service.id}
                 initial={{ opacity: 0, y: 30 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
                 transition={{ delay: index * 0.1 }}
+                whileHover={{ y: -8 }}
+                className="group bg-white rounded-3xl shadow-lg hover:shadow-2xl transition-all duration-300 overflow-hidden border border-gray-100"
               >
-                <Link to={service.link}>
-                  <motion.div
-                    whileHover={{ y: -8, scale: 1.02 }}
-                    className="group h-full bg-white rounded-lg overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-300 border border-gray-100"
-                  >
-                    {/* Image Placeholder */}
-                    <div className={`relative h-56 bg-gradient-to-br ${service.gradient} flex items-center justify-center overflow-hidden`}>
-                      <div className="text-8xl opacity-30 group-hover:scale-110 transition-transform duration-500">
-                        {service.image}
-                      </div>
-                      <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+                <Link to={service.link} className="block">
+                  {/* Card Header */}
+                  <div className={`h-2 bg-gradient-to-r ${service.gradient}`}></div>
+                  
+                  <div className="p-8">
+                    {/* Icon */}
+                    <div className={`inline-flex items-center justify-center w-16 h-16 ${service.iconBg} rounded-2xl mb-6 text-3xl group-hover:scale-110 transition-transform duration-300`}>
+                      {service.icon}
                     </div>
 
-                    {/* Content */}
-                    <div className="p-6">
-                      <h3 className="text-2xl font-bold text-gray-900 mb-3 group-hover:text-drone-600 transition-colors">
-                        {service.title}
-                      </h3>
-                      <p className="text-gray-600 leading-relaxed">
-                        {service.description}
-                      </p>
+                    {/* Title & Description */}
+                    <h3 className="text-2xl font-bold mb-3 text-gray-900">{service.title}</h3>
+                    <p className="text-gray-600 mb-6 leading-relaxed">{service.shortDesc}</p>
+
+                    {/* Key Features */}
+                    <div className="space-y-2 mb-6">
+                      {service.features.map((feature, i) => (
+                        <div key={i} className="flex items-start gap-2">
+                          <span className="text-green-500 mt-1">✓</span>
+                          <span className="text-sm text-gray-700">{feature}</span>
+                        </div>
+                      ))}
                     </div>
-                  </motion.div>
+
+                    {/* Use Cases Tags */}
+                    <div className="flex flex-wrap gap-2 mb-6">
+                      {service.useCases.map((useCase) => (
+                        <span key={useCase} className="px-3 py-1 bg-gray-100 text-gray-700 text-xs rounded-full">
+                          {useCase}
+                        </span>
+                      ))}
+                    </div>
+
+                    {/* Footer */}
+                    <div className="flex items-center justify-between pt-6 border-t border-gray-100">
+                      <div>
+                        <div className="text-sm text-gray-500">Duration</div>
+                        <div className="font-semibold text-gray-900">{service.duration}</div>
+                      </div>
+                      <motion.div
+                        whileHover={{ scale: 1.05 }}
+                        whileTap={{ scale: 0.95 }}
+                        className={`px-6 py-2 bg-gradient-to-r ${service.gradient} text-white rounded-full font-semibold text-sm`}
+                      >
+                        Learn More
+                      </motion.div>
+                    </div>
+                  </div>
                 </Link>
               </motion.div>
             ))}

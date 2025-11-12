@@ -35,10 +35,8 @@ export default function SEO({
       addressCountry: 'Ghana'
     },
     sameAs: [
-      'https://facebook.com/creativeapproachgh',
-      'https://instagram.com/creativeapproachgh',
-      'https://linkedin.com/company/creative-approach',
-      'https://twitter.com/creativeapproachgh'
+      'https://www.instagram.com/creativeapproachgh',
+      'https://www.linkedin.com/company/creativeapproachgh/'
     ],
     areaServed: {
       '@type': 'Country',
