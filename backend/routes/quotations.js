@@ -263,6 +263,46 @@ router.get('/stats/overview', protect, authorize('admin'), async (req, res, next
   }
 });
 
+// @route   POST /api/quotations/save-detailed
+// @desc    Save detailed quotation with items
+// @access  Private/Admin
+router.post('/save-detailed', protect, authorize('admin'), async (req, res, next) => {
+  try {
+    const quotationData = {
+      name: req.body.clientInfo.name,
+      email: req.body.clientInfo.email || 'noemail@provided.com',
+      phone: req.body.clientInfo.phone || 'No phone',
+      company: req.body.clientInfo.company,
+      service: 'Custom Quotation',
+      message: `Detailed quotation with ${req.body.items.length} items`,
+      quotedAmount: req.body.total,
+      status: 'quoted',
+      quotedAt: new Date(),
+      detailedQuote: {
+        clientInfo: req.body.clientInfo,
+        invoiceInfo: req.body.invoiceInfo,
+        items: req.body.items,
+        imageProcessing: req.body.imageProcessing,
+        transport: req.body.transport,
+        terms: req.body.terms,
+        language: req.body.language,
+        subtotal: req.body.subtotal,
+        total: req.body.total
+      }
+    };
+    
+    const quotation = await Quotation.create(quotationData);
+    
+    res.status(201).json({
+      success: true,
+      message: 'Detailed quotation saved successfully',
+      data: quotation
+    });
+  } catch (error) {
+    next(error);
+  }
+});
+
 // @route   DELETE /api/quotations/:id
 // @desc    Delete quotation
 // @access  Private/Admin

@@ -13,6 +13,7 @@ import { Quotations } from './pages/Quotations';
 import { QuotationDetail } from './pages/QuotationDetail';
 import { PortfolioAdvanced } from './pages/PortfolioAdvanced';
 import AdvancedAdminChat from './pages/AdvancedAdminChat';
+import QuotationGenerator from '../../src/pages/QuotationGenerator';
 import { Settings } from './pages/Settings';
 
 function App() {
@@ -100,6 +101,16 @@ function App() {
               <ProtectedRoute>
                 <DashboardLayout>
                   <QuotationDetail />
+                </DashboardLayout>
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/quotations/create"
+            element={
+              <ProtectedRoute>
+                <DashboardLayout>
+                  <QuotationGenerator />
                 </DashboardLayout>
               </ProtectedRoute>
             }

@@ -133,6 +133,11 @@ const quotationSchema = new mongoose.Schema({
   
   followUpDate: {
     type: Date
+  },
+  
+  // Detailed Quote Data (for comprehensive quotations)
+  detailedQuote: {
+    type: mongoose.Schema.Types.Mixed
   }
 }, {
   timestamps: true
