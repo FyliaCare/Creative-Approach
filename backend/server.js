@@ -18,6 +18,8 @@ import quotationRoutes from './routes/quotations.js';
 import analyticsRoutes from './routes/analytics.js';
 import uploadRoutes from './routes/upload.js';
 import portfolioRoutes from './routes/portfolio.js';
+import contactRoutes from './routes/contact.js';
+import quoteBotRoutes from './routes/quoteBot.js';
 
 // Import middleware
 import errorHandler from './middleware/errorHandler.js';
@@ -106,6 +108,8 @@ app.use('/api/quotations', quotationRoutes);
 app.use('/api/analytics', analyticsRoutes);
 app.use('/api/upload', uploadRoutes);
 app.use('/api/portfolio', portfolioRoutes);
+app.use('/api/contact', contactRoutes);
+app.use('/api/quote-bot', quoteBotRoutes);
 
 // Initialize Socket.io for live chat
 initializeChat(io);

@@ -59,12 +59,30 @@ export default function Contact() {
       setSubmitError('');
       
       try {
-        // Submit to backend API
-        const response = await quotationAPI.submitQuote(formData);
+        // Submit to contact API (sends emails to both sales and client)
+        const response = await fetch(`${import.meta.env.VITE_API_URL || 'http://localhost:5000'}/api/contact`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            name: formData.name,
+            email: formData.email,
+            phone: formData.phone,
+            location: formData.location,
+            service: formData.service,
+            message: formData.message,
+          }),
+        });
+
+        const data = await response.json();
+        
+        if (!response.ok) {
+          throw new Error(data.message || 'Failed to send message');
+        }
         
         setSubmitted(true);
         setIsSubmitting(false);
-        console.log('Quote submitted:', response);
         
         // Reset form after 5 seconds
         setTimeout(() => {
@@ -84,8 +102,8 @@ export default function Contact() {
         }, 5000);
       } catch (error) {
         setIsSubmitting(false);
-        setSubmitError(error.message || 'Failed to submit quote request. Please try again.');
-        console.error('Quote submission error:', error);
+        setSubmitError(error.message || 'Failed to submit. Please try again or contact sales@caghana.com');
+        console.error('Contact form error:', error);
       }
     } else {
       setErrors(newErrors);
