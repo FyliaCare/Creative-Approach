@@ -59,6 +59,7 @@ export default function Home() {
       shortDesc: 'Stunning aerial visuals that tell your story',
       description: 'Professional high-resolution aerial imagery for commercial properties, real estate showcases, infrastructure documentation, corporate event coverage, and cinematic documentary storytelling.',
       icon: '📸',
+      image: '/Homepage service cards/Aerial Photography and Videography.jpg',
       features: [
         '4K/8K ultra high-resolution capture',
         'Professional color grading & editing',
@@ -77,6 +78,7 @@ export default function Home() {
       shortDesc: 'Safe, efficient infrastructure assessments',
       description: 'Comprehensive inspection services for infrastructure, construction sites, roofs, utilities, towers, and agricultural monitoring with detailed progress tracking and reporting.',
       icon: '🔍',
+      image: '/Homepage service cards/Drone Inspection and Monitoring.jpg',
       features: [
         'Infrastructure health assessments',
         'Construction progress monitoring',
@@ -95,6 +97,7 @@ export default function Home() {
       shortDesc: 'Precision geospatial data & 3D models',
       description: 'Advanced mapping solutions including orthomosaic generation, digital elevation models (DEMs), contour mapping, 3D site reconstructions, volumetric analysis, and comprehensive GIS data processing.',
       icon: '🗺️',
+      image: '/Homepage service cards/Mapping Surveying and 3D Modelling.jpg',
       features: [
         'High-precision orthomosaic maps',
         'Digital elevation models (DEMs)',
@@ -113,6 +116,7 @@ export default function Home() {
       shortDesc: 'Compelling visual storytelling',
       description: 'Full-service documentary production from concept development to post-production, combining professional photography, aerial cinematography, and ground footage to tell powerful stories.',
       icon: '🎬',
+      image: '/Homepage service cards/Documentary Films and Photography.jpg',
       features: [
         'Concept development & scripting',
         'Multi-camera production',
@@ -131,6 +135,7 @@ export default function Home() {
       shortDesc: 'Specialized solutions & expert guidance',
       description: 'Tailored data collection, analysis, and reporting services combined with comprehensive training programs for drone operations, data interpretation, and workflow integration.',
       icon: '📊',
+      image: '/Homepage service cards/Custom Data Services and Training.png',
       features: [
         'Custom data collection protocols',
         'Advanced data analysis',
@@ -149,6 +154,7 @@ export default function Home() {
       shortDesc: 'Rapid deployment for critical situations',
       description: 'Quick-response drone services for emergency situations, disaster assessment, search and rescue support, security surveillance, and real-time monitoring of critical events.',
       icon: '🚨',
+      image: '/Homepage service cards/Emergency and Response Survelliance.png',
       features: [
         'Rapid deployment capabilities',
         'Real-time video streaming',
@@ -379,19 +385,24 @@ export default function Home() {
                     whileHover={{ y: -8, scale: 1.02 }}
                     className="group relative h-full bg-white rounded-2xl overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-300"
                   >
-                    {/* Gradient Background Header */}
-                    <div className={`relative h-48 bg-gradient-to-br ${service.gradient} flex items-center justify-center overflow-hidden`}>
-                      <div className="absolute inset-0 bg-black/20"></div>
-                      <div className="relative z-10 text-center text-white">
-                        <div className="text-6xl mb-3 group-hover:scale-110 transition-transform duration-300">
+                    {/* Image Background Header */}
+                    <div className="relative h-48 overflow-hidden">
+                      <img 
+                        src={service.image} 
+                        alt={service.title}
+                        className="absolute inset-0 w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
+                      />
+                      <div className="absolute inset-0 bg-gradient-to-br from-black/40 to-black/60"></div>
+                      <div className="relative z-10 text-center text-white h-full flex flex-col items-center justify-center">
+                        <div className="text-5xl mb-2 drop-shadow-lg">
                           {service.icon}
                         </div>
-                        <div className="text-xs font-semibold uppercase tracking-wider opacity-90">
+                        <div className="text-xs font-semibold uppercase tracking-wider opacity-90 bg-white/20 px-3 py-1 rounded-full backdrop-blur-sm">
                           {service.duration}
                         </div>
                       </div>
                       {/* Animated overlay on hover */}
-                      <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+                      <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
                     </div>
 
                     {/* Content */}
