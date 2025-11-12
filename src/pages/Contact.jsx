@@ -200,8 +200,11 @@ export default function Contact() {
         <img 
           src="/AERIAL PHOTOGRAPHY AND VIDEOGRAPHY/Atlantic.jpg" 
           alt="Contact Us" 
-          className="absolute inset-0 w-full h-full object-cover opacity-30"
+          className="absolute inset-0 w-full h-full object-cover"
         />
+        
+        {/* Dark Overlay for Text Readability */}
+        <div className="absolute inset-0 bg-black/50 z-10"></div>
         
         <div className="container-custom relative z-10">
           <motion.div

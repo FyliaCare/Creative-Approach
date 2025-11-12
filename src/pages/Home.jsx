@@ -236,11 +236,11 @@ export default function Home() {
           autoPlay
           loop
           muted
-          playsInline
+          playsInLine
           preload="metadata"
           disablePictureInPicture
           controlsList="nodownload"
-          className="absolute inset-0 w-full h-full object-cover pointer-events-none opacity-40"
+          className="absolute inset-0 w-full h-full object-cover pointer-events-none"
           src={heroVideo}
           onContextMenu={(e) => e.preventDefault()}
           onError={(e) => {
@@ -249,6 +249,9 @@ export default function Home() {
         >
           Your browser does not support the video tag.
         </video>
+        
+        {/* Dark Overlay for Text Readability */}
+        <div className="absolute inset-0 bg-black/50 z-10"></div>
 
         <motion.div
           style={{ opacity: heroOpacity, scale: heroScale }}
