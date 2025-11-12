@@ -195,8 +195,16 @@ export default function Contact() {
       <SEO {...seoPresets.contact} />
       <div className="min-h-screen pt-20">
         {/* Hero Section */}
-        <section className="relative bg-gradient-to-br from-drone-900 via-sky-900 to-purple-950 text-white section-padding overflow-hidden">
-        {/* Animated Background */}
+        <section className="relative text-white section-padding overflow-hidden min-h-[60vh] flex items-center">
+        {/* Background Image */}
+        <img 
+          src="/AERIAL PHOTOGRAPHY AND VIDEOGRAPHY/Atlantic.jpg" 
+          alt="Contact Us" 
+          className="absolute inset-0 w-full h-full object-cover"
+        />
+        <div className="absolute inset-0 bg-gradient-to-br from-drone-900/85 via-sky-900/75 to-purple-950/85"></div>
+        
+        {/* Animated Pattern Overlay */}
         <div className="absolute inset-0">
           <motion.div
             animate={{ 
@@ -204,7 +212,7 @@ export default function Contact() {
               scale: [1, 1.1, 1]
             }}
             transition={{ duration: 30, repeat: Infinity, ease: "linear" }}
-            className="absolute inset-0 opacity-20 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjAiIGhlaWdodD0iNjAiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PGRlZnM+PHBhdHRlcm4gaWQ9ImdyaWQiIHdpZHRoPSI2MCIgaGVpZ2h0PSI2MCIgcGF0dGVyblVuaXRzPSJ1c2VyU3BhY2VPblVzZSI+PHBhdGggZD0iTSA2MCAwIEwgMCAwIDAgNjAiIGZpbGw9Im5vbmUiIHN0cm9rZT0id2hpdGUiIHN0cm9rZS13aWR0aD0iMSIvPjwvcGF0dGVybj48L2RlZnM+PHJlY3Qgd2lkdGg9IjEwMCUiIGhlaWdodD0iMTAwJSIgZmlsbD0idXJsKCNncmlkKSIvPjwvc3ZnPg==')]"
+            className="absolute inset-0 opacity-10 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjAiIGhlaWdodD0iNjAiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PGRlZnM+PHBhdHRlcm4gaWQ9ImdyaWQiIHdpZHRoPSI2MCIgaGVpZ2h0PSI2MCIgcGF0dGVyblVuaXRzPSJ1c2VyU3BhY2VPblVzZSI+PHBhdGggZD0iTSA2MCAwIEwgMCAwIDAgNjAiIGZpbGw9Im5vbmUiIHN0cm9rZT0id2hpdGUiIHN0cm9rZS13aWR0aD0iMSIvPjwvcGF0dGVybj48L2RlZnM+PHJlY3Qgd2lkdGg9IjEwMCUiIGhlaWdodD0iMTAwJSIgZmlsbD0idXJsKCNncmlkKSIvPjwvc3ZnPg==')]"
             style={{ backgroundSize: '60px 60px' }}
           />
         </div>

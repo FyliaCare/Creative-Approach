@@ -110,7 +110,16 @@ export default function Blog() {
       <SEO {...seoPresets.blog} />
       <div className="min-h-screen pt-20">
       {/* Hero Section */}
-      <section className="relative bg-gradient-to-br from-indigo-900 via-drone-900 to-sky-950 text-white section-padding overflow-hidden">
+      <section className="relative text-white section-padding overflow-hidden min-h-[60vh] flex items-center">
+        {/* Background Image */}
+        <img 
+          src="/SURVEY AND MAPPING/Orthomosaic-Detail-v2-2-1.jpg" 
+          alt="Blog" 
+          className="absolute inset-0 w-full h-full object-cover"
+        />
+        <div className="absolute inset-0 bg-gradient-to-br from-indigo-900/85 via-drone-900/80 to-sky-950/85"></div>
+        
+        {/* Animated Gradient Overlays */}
         <div className="absolute inset-0 opacity-20">
           <motion.div
             animate={{ rotate: [0, 360], scale: [1, 1.2, 1], x: [0, 50, 0] }}
