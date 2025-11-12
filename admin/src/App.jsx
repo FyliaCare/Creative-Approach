@@ -96,21 +96,21 @@ function App() {
             }
           />
           <Route
-            path="/quotations/:id"
-            element={
-              <ProtectedRoute>
-                <DashboardLayout>
-                  <QuotationDetail />
-                </DashboardLayout>
-              </ProtectedRoute>
-            }
-          />
-          <Route
             path="/quotations/create"
             element={
               <ProtectedRoute>
                 <DashboardLayout>
                   <QuotationGenerator />
+                </DashboardLayout>
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/quotations/:id"
+            element={
+              <ProtectedRoute>
+                <DashboardLayout>
+                  <QuotationDetail />
                 </DashboardLayout>
               </ProtectedRoute>
             }

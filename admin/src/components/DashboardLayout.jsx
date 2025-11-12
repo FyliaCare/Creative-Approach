@@ -14,6 +14,8 @@ import {
   Bell,
   ChevronDown,
   Briefcase,
+  FileEdit,
+  List,
 } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 
@@ -23,7 +25,14 @@ const navigation = [
   { name: 'Newsletter', href: '/newsletter', icon: Users },
   { name: 'Blog Posts', href: '/blog', icon: FileText },
   { name: 'Portfolio', href: '/portfolio', icon: Briefcase },
-  { name: 'Quotations', href: '/quotations', icon: ClipboardList },
+  { 
+    name: 'Quotations', 
+    icon: ClipboardList,
+    subItems: [
+      { name: 'All Quotations', href: '/quotations', icon: List },
+      { name: 'Create New', href: '/quotations/create', icon: FileEdit },
+    ]
+  },
   { name: 'Live Chat', href: '/chat', icon: MessageSquare },
   { name: 'Settings', href: '/settings', icon: Settings },
 ];
@@ -31,6 +40,7 @@ const navigation = [
 export const DashboardLayout = ({ children }) => {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [userMenuOpen, setUserMenuOpen] = useState(false);
+  const [expandedItems, setExpandedItems] = useState({});
   const location = useLocation();
   const navigate = useNavigate();
   const { user, logout } = useAuth();
@@ -38,6 +48,13 @@ export const DashboardLayout = ({ children }) => {
   const handleLogout = () => {
     logout();
     navigate('/login');
+  };
+
+  const toggleExpanded = (itemName) => {
+    setExpandedItems(prev => ({
+      ...prev,
+      [itemName]: !prev[itemName]
+    }));
   };
 
   return (
@@ -76,7 +93,75 @@ export const DashboardLayout = ({ children }) => {
           {/* Navigation */}
           <nav className="flex-1 px-4 py-6 space-y-1 overflow-y-auto">
             {navigation.map((item) => {
-              const isActive = location.pathname === item.href;
+              const hasSubItems = item.subItems && item.subItems.length > 0;
+              const isExpanded = expandedItems[item.name];
+              const isActive = hasSubItems 
+                ? item.subItems.some(sub => location.pathname === sub.href)
+                : location.pathname === item.href;
+
+              if (hasSubItems) {
+                return (
+                  <div key={item.name}>
+                    <button
+                      onClick={() => toggleExpanded(item.name)}
+                      className={`
+                        w-full flex items-center justify-between px-4 py-3 text-sm font-medium rounded-lg
+                        transition-colors duration-150
+                        ${
+                          isActive
+                            ? 'bg-primary-50 text-primary-700'
+                            : 'text-gray-700 hover:bg-gray-100'
+                        }
+                      `}
+                    >
+                      <div className="flex items-center">
+                        <item.icon
+                          className={`mr-3 h-5 w-5 ${
+                            isActive ? 'text-primary-600' : 'text-gray-500'
+                          }`}
+                        />
+                        {item.name}
+                      </div>
+                      <ChevronDown
+                        className={`h-4 w-4 transition-transform duration-200 ${
+                          isExpanded ? 'transform rotate-180' : ''
+                        }`}
+                      />
+                    </button>
+                    {isExpanded && (
+                      <div className="mt-1 ml-4 space-y-1">
+                        {item.subItems.map((subItem) => {
+                          const isSubActive = location.pathname === subItem.href;
+                          return (
+                            <Link
+                              key={subItem.name}
+                              to={subItem.href}
+                              className={`
+                                flex items-center px-4 py-2 text-sm font-medium rounded-lg
+                                transition-colors duration-150
+                                ${
+                                  isSubActive
+                                    ? 'bg-primary-100 text-primary-700'
+                                    : 'text-gray-600 hover:bg-gray-50'
+                                }
+                              `}
+                              onClick={() => setSidebarOpen(false)}
+                            >
+                              <subItem.icon
+                                className={`mr-3 h-4 w-4 ${
+                                  isSubActive ? 'text-primary-600' : 'text-gray-400'
+                                }`}
+                              />
+                              {subItem.name}
+                            </Link>
+                          );
+                        })}
+                      </div>
+                    )}
+                  </div>
+                );
+              }
+
               return (
                 <Link
                   key={item.name}
@@ -143,8 +228,21 @@ export const DashboardLayout = ({ children }) => {
             {/* Page title */}
             <div className="flex-1 lg:flex-none">
               <h2 className="text-lg font-semibold text-gray-900">
-                {navigation.find((item) => item.href === location.pathname)
-                  ?.name || 'Dashboard'}
+                {(() => {
+                  // Check regular navigation items
+                  const mainItem = navigation.find((item) => item.href === location.pathname);
+                  if (mainItem) return mainItem.name;
+                  
+                  // Check subitems
+                  for (const item of navigation) {
+                    if (item.subItems) {
+                      const subItem = item.subItems.find(sub => sub.href === location.pathname);
+                      if (subItem) return subItem.name;
+                    }
+                  }
+                  
+                  return 'Dashboard';
+                })()}
               </h2>
             </div>
 
