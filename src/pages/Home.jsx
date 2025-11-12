@@ -370,57 +370,59 @@ export default function Home() {
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
                 transition={{ delay: index * 0.1 }}
-                whileHover={{ y: -8 }}
-                className="group bg-white rounded-3xl shadow-lg hover:shadow-2xl transition-all duration-300 overflow-hidden border border-gray-100"
               >
-                <Link to={service.link} className="block">
-                  {/* Card Header */}
-                  <div className={`h-2 bg-gradient-to-r ${service.gradient}`}></div>
-                  
-                  <div className="p-8">
-                    {/* Icon */}
-                    <div className={`inline-flex items-center justify-center w-16 h-16 ${service.iconBg} rounded-2xl mb-6 text-3xl group-hover:scale-110 transition-transform duration-300`}>
-                      {service.icon}
-                    </div>
-
-                    {/* Title & Description */}
-                    <h3 className="text-2xl font-bold mb-3 text-gray-900">{service.title}</h3>
-                    <p className="text-gray-600 mb-6 leading-relaxed">{service.shortDesc}</p>
-
-                    {/* Key Features */}
-                    <div className="space-y-2 mb-6">
-                      {service.features.map((feature, i) => (
-                        <div key={i} className="flex items-start gap-2">
-                          <span className="text-green-500 mt-1">✓</span>
-                          <span className="text-sm text-gray-700">{feature}</span>
+                <Link to={service.link}>
+                  <motion.div
+                    whileHover={{ y: -8, scale: 1.02 }}
+                    className="group relative h-full bg-white rounded-2xl overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-300"
+                  >
+                    {/* Gradient Background Header */}
+                    <div className={`relative h-48 bg-gradient-to-br ${service.gradient} flex items-center justify-center overflow-hidden`}>
+                      <div className="absolute inset-0 bg-black/20"></div>
+                      <div className="relative z-10 text-center text-white">
+                        <div className="text-6xl mb-3 group-hover:scale-110 transition-transform duration-300">
+                          {service.icon}
                         </div>
-                      ))}
-                    </div>
-
-                    {/* Use Cases Tags */}
-                    <div className="flex flex-wrap gap-2 mb-6">
-                      {service.useCases.map((useCase) => (
-                        <span key={useCase} className="px-3 py-1 bg-gray-100 text-gray-700 text-xs rounded-full">
-                          {useCase}
-                        </span>
-                      ))}
-                    </div>
-
-                    {/* Footer */}
-                    <div className="flex items-center justify-between pt-6 border-t border-gray-100">
-                      <div>
-                        <div className="text-sm text-gray-500">Duration</div>
-                        <div className="font-semibold text-gray-900">{service.duration}</div>
+                        <div className="text-xs font-semibold uppercase tracking-wider opacity-90">
+                          {service.duration}
+                        </div>
                       </div>
-                      <motion.div
-                        whileHover={{ scale: 1.05 }}
-                        whileTap={{ scale: 0.95 }}
-                        className={`px-6 py-2 bg-gradient-to-r ${service.gradient} text-white rounded-full font-semibold text-sm`}
-                      >
-                        Learn More
-                      </motion.div>
+                      {/* Animated overlay on hover */}
+                      <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
                     </div>
-                  </div>
+
+                    {/* Content */}
+                    <div className="p-6">
+                      <h3 className="text-xl font-bold text-gray-900 mb-2 group-hover:text-transparent group-hover:bg-clip-text group-hover:bg-gradient-to-r group-hover:from-drone-600 group-hover:to-sky-600 transition-all">
+                        {service.title}
+                      </h3>
+                      <p className="text-gray-600 text-sm mb-4 leading-relaxed">
+                        {service.shortDesc}
+                      </p>
+
+                      {/* Use Cases Pills */}
+                      <div className="flex flex-wrap gap-2 mb-4">
+                        {service.useCases.map((useCase) => (
+                          <span key={useCase} className={`px-2.5 py-1 bg-gradient-to-r ${service.gradient} bg-opacity-10 text-xs font-medium rounded-full`}>
+                            {useCase}
+                          </span>
+                        ))}
+                      </div>
+
+                      {/* CTA */}
+                      <div className="flex items-center justify-between pt-4 border-t border-gray-100">
+                        <span className="text-sm text-gray-500 font-medium">View Details</span>
+                        <motion.div
+                          whileHover={{ x: 5 }}
+                          className="text-drone-600 group-hover:text-sky-600 transition-colors"
+                        >
+                          <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" />
+                          </svg>
+                        </motion.div>
+                      </div>
+                    </div>
+                  </motion.div>
                 </Link>
               </motion.div>
             ))}
