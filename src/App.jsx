@@ -1,10 +1,9 @@
-import React, { useEffect, lazy, Suspense, useState } from 'react';
+import React, { useEffect, lazy, Suspense } from 'react';
 import { Routes, Route, useLocation } from 'react-router-dom';
 import { AnimatePresence } from 'framer-motion';
 import Navbar from './components/Navbar';
 import Footer from './components/Footer';
-import QuoteBot from './components/QuoteBot';
-import { MessageCircle } from 'lucide-react';
+import LiveChat from './components/chat/LiveChat';
 
 // Lazy load pages for code splitting
 const Home = lazy(() => import('./pages/Home'));
@@ -46,7 +45,6 @@ function ScrollToTop() {
 
 function App() {
   const location = useLocation();
-  const [isQuoteBotOpen, setIsQuoteBotOpen] = useState(false);
   
   return (
     <div className="min-h-screen flex flex-col">
@@ -78,20 +76,8 @@ function App() {
       </main>
       <Footer />
       
-      {/* Floating Get Quote Button */}
-      <button
-        onClick={() => setIsQuoteBotOpen(true)}
-        className="fixed bottom-6 right-6 z-40 bg-gradient-to-r from-drone-600 to-sky-600 text-white p-4 rounded-full shadow-2xl hover:shadow-3xl hover:scale-110 transition-all duration-300 flex items-center gap-2 group"
-        aria-label="Get Quote"
-      >
-        <MessageCircle className="w-6 h-6" />
-        <span className="font-semibold pr-2 max-w-0 overflow-hidden group-hover:max-w-xs transition-all duration-300">
-          Get Quote
-        </span>
-      </button>
-
-      {/* Quote Bot Modal */}
-      <QuoteBot isOpen={isQuoteBotOpen} onClose={() => setIsQuoteBotOpen(false)} />
+      {/* Live Chat */}
+      <LiveChat />
     </div>
   );
 }
