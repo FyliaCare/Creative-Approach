@@ -113,7 +113,7 @@ export default function Blog() {
       <section className="relative text-white section-padding overflow-hidden min-h-[60vh] flex items-center">
         {/* Background Image */}
         <img 
-          src="/SURVEY AND MAPPING/Orthomosaic-Detail-v2-2-1.jpg" 
+          src="/Our Blog.png" 
           alt="Blog" 
           className="absolute inset-0 w-full h-full object-cover"
         />
