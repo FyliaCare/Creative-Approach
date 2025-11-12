@@ -69,5 +69,10 @@ export default defineConfig({
   },
   optimizeDeps: {
     include: ['react', 'react-dom', 'react-router-dom', 'axios', 'recharts', 'react-quill'],
+    exclude: [],
+    force: true
   },
+  resolve: {
+    dedupe: ['react', 'react-dom']
+  }
 })
