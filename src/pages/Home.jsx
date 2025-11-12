@@ -408,7 +408,7 @@ export default function Home() {
                       {/* Use Cases Pills */}
                       <div className="flex flex-wrap gap-2 mb-4">
                         {service.useCases.map((useCase) => (
-                          <span key={useCase} className={`px-2.5 py-1 bg-gradient-to-r ${service.gradient} bg-opacity-10 text-xs font-medium rounded-full`}>
+                          <span key={useCase} className="px-2.5 py-1 bg-white border border-gray-200 text-gray-900 text-xs font-medium rounded-full shadow-sm">
                             {useCase}
                           </span>
                         ))}
