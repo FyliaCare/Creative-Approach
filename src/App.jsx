@@ -14,6 +14,7 @@ const About = lazy(() => import('./pages/About'));
 const Contact = lazy(() => import('./pages/Contact'));
 const Blog = lazy(() => import('./pages/Blog'));
 const Industries = lazy(() => import('./pages/Industries'));
+const FAQ = lazy(() => import('./pages/FAQ'));
 const PrivacyPolicy = lazy(() => import('./pages/PrivacyPolicyLegal').then(module => ({ default: module.PrivacyPolicy })));
 const TermsOfService = lazy(() => import('./pages/TermsOfServiceLegal').then(module => ({ default: module.TermsOfService })));
 const AerialPhotography = lazy(() => import('./pages/services/AerialPhotography'));
@@ -69,6 +70,7 @@ function App() {
             <Route path="/industries" element={<Industries />} />
             <Route path="/blog" element={<Blog />} />
             <Route path="/contact" element={<Contact />} />
+            <Route path="/faq" element={<FAQ />} />
             <Route path="/privacy" element={<PrivacyPolicy />} />
             <Route path="/terms" element={<TermsOfService />} />
             <Route path="*" element={<NotFound />} />

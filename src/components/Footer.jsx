@@ -19,7 +19,7 @@ export default function Footer() {
       { name: 'Blog', path: '/blog' },
     ],
     Support: [
-      { name: 'FAQ', path: '/contact' },
+      { name: 'FAQ', path: '/faq' },
       { name: 'Privacy Policy', path: '/privacy' },
       { name: 'Terms of Service', path: '/terms' },
     ],
