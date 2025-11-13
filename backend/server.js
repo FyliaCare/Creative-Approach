@@ -39,15 +39,17 @@ const httpServer = createServer(app);
 const io = new Server(httpServer, {
   cors: {
     origin: [
-      process.env.CLIENT_URL, 
-      process.env.ADMIN_URL,
+      process.env.CLIENT_URL || 'https://creative-approach.onrender.com',
+      process.env.ADMIN_URL || 'https://creative-approach-admin.onrender.com',
       'https://caghana.com',
       'https://www.caghana.com',
-      'https://admin.caghana.com'
+      'https://admin.caghana.com',
+      'http://localhost:3000',
+      'http://localhost:3001'
     ],
-    methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH'],
+    methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
     credentials: true,
-    allowedHeaders: ['Content-Type', 'Authorization']
+    allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With']
   }
 });
 
@@ -62,15 +64,19 @@ app.use(compression()); // Compress responses
 app.use(morgan('dev')); // Logging
 app.use(cors({
   origin: [
-    process.env.CLIENT_URL, 
-    process.env.ADMIN_URL,
+    process.env.CLIENT_URL || 'https://creative-approach.onrender.com',
+    process.env.ADMIN_URL || 'https://creative-approach-admin.onrender.com',
     'https://caghana.com',
     'https://www.caghana.com',
-    'https://admin.caghana.com'
+    'https://admin.caghana.com',
+    'http://localhost:3000',
+    'http://localhost:3001'
   ],
   credentials: true,
-  methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH'],
-  allowedHeaders: ['Content-Type', 'Authorization']
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With'],
+  preflightContinue: false,
+  optionsSuccessStatus: 204
 }));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
