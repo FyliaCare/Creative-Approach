@@ -20,6 +20,7 @@ import uploadRoutes from './routes/upload.js';
 import portfolioRoutes from './routes/portfolio.js';
 import contactRoutes from './routes/contact.js';
 import quoteBotRoutes from './routes/quoteBot.js';
+import settingsRoutes from './routes/settings.js';
 
 // Import middleware
 import errorHandler from './middleware/errorHandler.js';
@@ -134,6 +135,7 @@ app.use('/api/upload', uploadRoutes);
 app.use('/api/portfolio', portfolioRoutes);
 app.use('/api/contact', contactRoutes);
 app.use('/api/quote-bot', quoteBotRoutes);
+app.use('/api/settings', settingsRoutes);
 
 // Initialize Socket.io for live chat
 initializeChat(io);
