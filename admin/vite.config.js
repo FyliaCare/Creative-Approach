@@ -1,15 +1,13 @@
 import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
+import path from 'path'
 
 // https://vitejs.dev/config/
 export default defineConfig({
   plugins: [
     react({
       jsxRuntime: 'automatic',
-      jsxImportSource: 'react',
-      babel: {
-        plugins: []
-      }
+      fastRefresh: true,
     })
   ],
   server: {
@@ -32,28 +30,14 @@ export default defineConfig({
     },
     rollupOptions: {
       output: {
-        manualChunks: (id) => {
-          if (id.includes('node_modules')) {
-            if (id.includes('react') || id.includes('react-dom') || id.includes('react-router')) {
-              return 'vendor-react';
-            }
-            if (id.includes('recharts')) {
-              return 'vendor-charts';
-            }
-            if (id.includes('react-quill')) {
-              return 'vendor-editor';
-            }
-            if (id.includes('socket.io')) {
-              return 'vendor-socket';
-            }
-            if (id.includes('jspdf')) {
-              return 'vendor-pdf';
-            }
-            if (id.includes('axios')) {
-              return 'vendor-axios';
-            }
-            return 'vendor';
-          }
+        manualChunks: {
+          'react-vendor': ['react', 'react-dom', 'react/jsx-runtime'],
+          'react-router': ['react-router-dom'],
+          'charts': ['recharts'],
+          'editor': ['react-quill'],
+          'socket': ['socket.io-client'],
+          'pdf': ['jspdf', 'jspdf-autotable'],
+          'http': ['axios'],
         },
         assetFileNames: (assetInfo) => {
           const info = assetInfo.name.split('.');
@@ -76,14 +60,30 @@ export default defineConfig({
     host: true,
   },
   optimizeDeps: {
-    include: ['react', 'react-dom', 'react-router-dom', 'axios', 'recharts', 'react-quill', 'react/jsx-runtime'],
-    exclude: [],
+    include: [
+      'react',
+      'react-dom',
+      'react/jsx-runtime',
+      'react-router-dom',
+      'axios',
+      'recharts',
+      'react-quill',
+      'socket.io-client',
+      'framer-motion',
+      'lucide-react',
+      'react-hot-toast',
+      'date-fns',
+      'browser-image-compression'
+    ],
+    esbuildOptions: {
+      target: 'es2020',
+    }
   },
   resolve: {
-    dedupe: ['react', 'react-dom'],
-    alias: {
-      'react': 'react',
-      'react-dom': 'react-dom'
-    }
+    dedupe: ['react', 'react-dom', 'react/jsx-runtime'],
+    extensions: ['.mjs', '.js', '.jsx', '.json']
+  },
+  esbuild: {
+    logOverride: { 'this-is-undefined-in-esm': 'silent' }
   }
 })

@@ -5,9 +5,10 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "vite build",
+    "build": "vite build --logLevel info",
     "preview": "vite preview",
-    "serve": "vite preview --port 3001 --host"
+    "serve": "vite preview --port 3001 --host",
+    "postinstall": "node -e \"console.log('React version:', require('react').version)\""
   },
   "dependencies": {
     "axios": "^1.13.2",
@@ -34,5 +35,9 @@
     "tailwindcss": "^3.4.17",
     "terser": "^5.44.1",
     "vite": "^5.4.11"
+  },
+  "resolutions": {
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1"
   }
 }
