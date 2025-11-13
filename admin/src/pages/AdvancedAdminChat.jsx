@@ -8,7 +8,16 @@ import {
   User, Mail, Calendar, MapPin, Monitor
 } from 'lucide-react';
 
-const SOCKET_URL = import.meta.env.VITE_API_URL?.replace('/api', '') || 'http://localhost:5000';
+// Construct socket URL properly
+const getSocketURL = () => {
+  const apiUrl = import.meta.env.VITE_API_URL || import.meta.env.VITE_SOCKET_URL || 'http://localhost:5000';
+  // Remove /api if it exists, and any trailing slashes
+  return apiUrl.replace(/\/api\/?$/, '').replace(/\/$/, '');
+};
+
+const SOCKET_URL = getSocketURL();
+
+console.log('🔌 Admin socket connecting to:', SOCKET_URL);
 
 export default function AdvancedAdminChat() {
   const [socket, setSocket] = useState(null);
@@ -84,7 +93,12 @@ export default function AdvancedAdminChat() {
 
       // Update messages if this conversation is active
       if (activeConversation?.conversationId === conversationId) {
-        setMessages(prev => [...prev, message]);
+        setMessages(prev => {
+          // Check if message already exists to prevent duplicates
+          const exists = prev.some(msg => msg._id === message._id || msg.tempId === message.tempId);
+          if (exists) return prev;
+          return [...prev, message];
+        });
         scrollToBottom();
         
         // Mark as read
@@ -96,8 +110,16 @@ export default function AdvancedAdminChat() {
     });
 
     newSocket.on('new-message', (message) => {
-      if (activeConversation && message.conversationId === activeConversation.conversationId) {
-        setMessages(prev => [...prev, message]);
+      // Only add message if it's from a visitor (not our own admin messages)
+      if (activeConversation && 
+          message.conversationId === activeConversation.conversationId &&
+          message.senderType === 'visitor') {
+        setMessages(prev => {
+          // Check if message already exists
+          const exists = prev.some(msg => msg._id === message._id);
+          if (exists) return prev;
+          return [...prev, message];
+        });
         scrollToBottom();
       }
     });

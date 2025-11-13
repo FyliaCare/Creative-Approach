@@ -7,7 +7,7 @@
 ## 🔴 Backend Service: `creative-approach-backend`
 
 **Service URL:** `https://creative-approach-api.onrender.com`  
-**Internal URL:** `creative-approach-backend:5000`
+**Custom Domain:** `https://api.caghana.com`
 
 ### Environment Variables:
 
@@ -26,9 +26,9 @@ SESSION_SECRET=65ae535da8dd89b68aaf999f9949091017e7035ff24371b14be10d36a7b5d52
 ADMIN_EMAIL=admin@creativeapproach.gh
 ADMIN_PASSWORD=CreativeAdmin2025!
 
-# CORS URLs (CRITICAL!)
-ADMIN_URL=https://creative-approach-admin.onrender.com
-CLIENT_URL=https://creative-approach.onrender.com
+# CORS URLs (CRITICAL!) - Use custom domains
+ADMIN_URL=https://admin.caghana.com
+CLIENT_URL=https://caghana.com
 
 # Email Configuration
 EMAIL_HOST=smtp.gmail.com
@@ -47,28 +47,30 @@ RATE_LIMIT_WINDOW_MS=900000
 
 ---
 
-## 🟢 Frontend Service: `creative-approach`
+## 🟢 Frontend Service: `creative-approach-web`
 
-**Service URL:** `https://creative-approach.onrender.com`
+**Service URL:** `https://creative-approach.onrender.com`  
+**Custom Domain:** `https://caghana.com`
 
 ### Environment Variables:
 
 ```bash
-VITE_API_URL=https://creative-approach-api.onrender.com
-VITE_SOCKET_URL=https://creative-approach-api.onrender.com
+VITE_API_URL=https://api.caghana.com
+VITE_SOCKET_URL=https://api.caghana.com
 ```
 
 ---
 
 ## 🟡 Admin Service: `creative-approach-admin`
 
-**Service URL:** `https://creative-approach-admin.onrender.com`
+**Service URL:** `https://creative-approach-admin.onrender.com`  
+**Custom Domain:** `https://admin.caghana.com`
 
 ### Environment Variables:
 
 ```bash
-VITE_API_URL=https://creative-approach-api.onrender.com
-VITE_SOCKET_URL=https://creative-approach-api.onrender.com
+VITE_API_URL=https://api.caghana.com
+VITE_SOCKET_URL=https://api.caghana.com
 ```
 
 ---
@@ -176,9 +178,8 @@ Expected: Should see `Access-Control-Allow-Origin` header
 
 ## 🔗 Service URLs Summary
 
-- **Backend API:** `https://creative-approach-api.onrender.com`
-- **Frontend:** `https://creative-approach.onrender.com`
-- **Admin Panel:** `https://creative-approach-admin.onrender.com`
-- **Custom Domain:** `https://caghana.com`
+- **Backend API:** `https://api.caghana.com` (also: `https://creative-approach-api.onrender.com`)
+- **Frontend:** `https://caghana.com` (also: `https://creative-approach.onrender.com`)
+- **Admin Panel:** `https://admin.caghana.com` (also: `https://creative-approach-admin.onrender.com`)
 
 All services are connected and CORS-enabled once environment variables are properly set!

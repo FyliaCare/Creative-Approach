@@ -64,27 +64,36 @@ const AdvancedLiveChat = () => {
     });
 
     socketRef.current.on('new-message', (message) => {
-      setMessages((prev) => [...prev, message]);
-      
-      // If chat is closed and message is from admin, increment unread count
-      if (!isOpen && message.senderType === 'admin') {
-        setUnreadCount((prev) => prev + 1);
+      // Don't add our own messages again (they're already added optimistically)
+      // Only add messages from others (admin)
+      if (message.senderType === 'admin') {
+        setMessages((prev) => {
+          // Check if message already exists
+          const exists = prev.some(msg => msg._id === message._id);
+          if (exists) return prev;
+          return [...prev, message];
+        });
         
-        // Show browser notification
-        if ('Notification' in window && Notification.permission === 'granted') {
-          new Notification('New message from Creative Approach', {
-            body: message.message,
-            icon: '/logo.png'
-          });
+        // If chat is closed and message is from admin, increment unread count
+        if (!isOpen) {
+          setUnreadCount((prev) => prev + 1);
+          
+          // Show browser notification
+          if ('Notification' in window && Notification.permission === 'granted') {
+            new Notification('New message from Creative Approach', {
+              body: message.message,
+              icon: '/logo.png'
+            });
+          }
         }
+        
+        // Mark as read if chat is open and message is from admin
+        if (isOpen && !isMinimized) {
+          markMessagesAsRead([message._id]);
+        }
+        
+        scrollToBottom();
       }
-      
-      // Mark as read if chat is open and message is from admin
-      if (isOpen && !isMinimized && message.senderType === 'admin') {
-        markMessagesAsRead([message._id]);
-      }
-      
-      scrollToBottom();
     });
 
     socketRef.current.on('message-delivered', ({ messageId, tempId }) => {
