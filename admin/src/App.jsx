@@ -8,7 +8,7 @@ import { Login } from './pages/Login';
 
 // Lazy load admin pages for better performance
 const Dashboard = lazy(() => import('./pages/Dashboard').then(m => ({ default: m.Dashboard })));
-const Analytics = lazy(() => import('./pages/Analytics').then(m => ({ default: m.Analytics })));
+const Analytics = lazy(() => import('./pages/Analytics'));
 const Newsletter = lazy(() => import('./pages/Newsletter').then(m => ({ default: m.Newsletter })));
 const Blog = lazy(() => import('./pages/Blog').then(m => ({ default: m.Blog })));
 const BlogEditor = lazy(() => import('./pages/BlogEditor').then(m => ({ default: m.BlogEditor })));
