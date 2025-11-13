@@ -56,8 +56,8 @@ services:
       echo "=== Aggressive cache clearing ===" &&
       npm cache clean --force &&
       rm -rf node_modules .vite dist .npm package-lock.json &&
-      echo "=== Installing dependencies ===" &&
-      npm install --no-optional --no-audit &&
+      echo "=== Installing dependencies (including dev) ===" &&
+      npm install &&
       echo "=== Building application ===" &&
       npm run build &&
       echo "=== Build complete ==="
