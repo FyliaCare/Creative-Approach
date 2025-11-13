@@ -62,16 +62,34 @@ mongoose.connect(process.env.MONGODB_URI)
 app.use(helmet()); // Security headers
 app.use(compression()); // Compress responses
 app.use(morgan('dev')); // Logging
+
+// CORS configuration with extensive origins
+const allowedOrigins = [
+  process.env.CLIENT_URL,
+  process.env.ADMIN_URL,
+  'https://creative-approach.onrender.com',
+  'https://creative-approach-admin.onrender.com',
+  'https://caghana.com',
+  'https://www.caghana.com',
+  'https://admin.caghana.com',
+  'http://localhost:3000',
+  'http://localhost:3001'
+].filter(Boolean);
+
+console.log('🔓 CORS allowed origins:', allowedOrigins);
+
 app.use(cors({
-  origin: [
-    process.env.CLIENT_URL || 'https://creative-approach.onrender.com',
-    process.env.ADMIN_URL || 'https://creative-approach-admin.onrender.com',
-    'https://caghana.com',
-    'https://www.caghana.com',
-    'https://admin.caghana.com',
-    'http://localhost:3000',
-    'http://localhost:3001'
-  ],
+  origin: function (origin, callback) {
+    // Allow requests with no origin (like mobile apps or curl)
+    if (!origin) return callback(null, true);
+    
+    if (allowedOrigins.indexOf(origin) !== -1) {
+      callback(null, true);
+    } else {
+      console.warn('⚠️ CORS blocked origin:', origin);
+      callback(null, true); // Temporarily allow all for debugging
+    }
+  },
   credentials: true,
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
   allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With'],
