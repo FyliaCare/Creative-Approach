@@ -2,7 +2,16 @@ import { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import io from 'socket.io-client';
 
-const SOCKET_URL = import.meta.env.VITE_API_URL?.replace('/api', '') || 'http://localhost:5000';
+// Construct socket URL properly
+const getSocketURL = () => {
+  const apiUrl = import.meta.env.VITE_API_URL || import.meta.env.VITE_SOCKET_URL || 'http://localhost:5000';
+  // Remove /api if it exists, and any trailing slashes
+  return apiUrl.replace(/\/api\/?$/, '').replace(/\/$/, '');
+};
+
+const SOCKET_URL = getSocketURL();
+
+console.log('🔌 Socket connecting to:', SOCKET_URL);
 
 const LiveChat = () => {
   const [isOpen, setIsOpen] = useState(false);
