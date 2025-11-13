@@ -26,7 +26,7 @@ services:
     name: creative-approach-web
     runtime: static
     region: oregon
-    buildCommand: npm install && npm run build
+    buildCommand: rm -rf node_modules .vite dist && npm ci && npm run build
     staticPublishPath: ./dist
     pullRequestPreviewsEnabled: true
     headers:
@@ -52,7 +52,7 @@ services:
     runtime: static
     region: oregon
     rootDir: admin
-    buildCommand: rm -rf node_modules/.vite && npm install && npm run build
+    buildCommand: rm -rf node_modules .vite dist && npm ci && npm run build
     staticPublishPath: ./admin/dist
     pullRequestPreviewsEnabled: true
     headers:
