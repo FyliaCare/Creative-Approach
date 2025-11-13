@@ -52,7 +52,7 @@ services:
     runtime: static
     region: oregon
     rootDir: admin
-    buildCommand: rm -rf node_modules .vite dist && npm ci && npm run build
+    buildCommand: npm cache clean --force && rm -rf node_modules .vite dist package-lock.json && npm install && npm run build
     staticPublishPath: ./admin/dist
     pullRequestPreviewsEnabled: true
     headers:

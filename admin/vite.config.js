@@ -3,7 +3,15 @@ import react from '@vitejs/plugin-react'
 
 // https://vitejs.dev/config/
 export default defineConfig({
-  plugins: [react()],
+  plugins: [
+    react({
+      jsxRuntime: 'automatic',
+      jsxImportSource: 'react',
+      babel: {
+        plugins: []
+      }
+    })
+  ],
   server: {
     port: 3001,
     open: true,
@@ -68,11 +76,14 @@ export default defineConfig({
     host: true,
   },
   optimizeDeps: {
-    include: ['react', 'react-dom', 'react-router-dom', 'axios', 'recharts', 'react-quill'],
+    include: ['react', 'react-dom', 'react-router-dom', 'axios', 'recharts', 'react-quill', 'react/jsx-runtime'],
     exclude: [],
-    force: true
   },
   resolve: {
-    dedupe: ['react', 'react-dom']
+    dedupe: ['react', 'react-dom'],
+    alias: {
+      'react': 'react',
+      'react-dom': 'react-dom'
+    }
   }
 })
