@@ -60,9 +60,10 @@ services:
       npm install --no-optional --no-audit &&
       echo "=== Building application ===" &&
       npm run build &&
-      echo "=== Build complete ===" &&
-      ls -la dist/
-    staticPublishPath: ./admin/dist
+      echo "=== Verifying _redirects ===" &&
+      ls -la dist/ | grep -E "_redirects|index.html" &&
+      echo "=== Build complete ==="
+    staticPublishPath: dist
     pullRequestPreviewsEnabled: true
     headers:
       - path: /*
