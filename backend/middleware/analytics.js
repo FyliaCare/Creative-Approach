@@ -52,6 +52,28 @@ const getUTMParams = (query) => {
 
 export const trackVisitor = async (req, res, next) => {
   try {
+    // Skip tracking for admin routes, API calls, and static assets
+    const skipPaths = [
+      '/api/',
+      '/admin',
+      '/socket.io',
+      '/uploads/',
+      '/assets/',
+      '/favicon',
+      '/_redirects',
+      '/manifest.json',
+      '/robots.txt',
+      '/sitemap.xml',
+      '/sw.js',
+      '/service-worker.js'
+    ];
+
+    const shouldSkip = skipPaths.some(path => req.originalUrl.startsWith(path));
+    
+    if (shouldSkip) {
+      return next();
+    }
+
     // Get IP address (handle proxies)
     const ipAddress = req.headers['x-forwarded-for']?.split(',')[0].trim() || 
                      req.headers['x-real-ip'] || 
@@ -94,13 +116,34 @@ export const trackVisitor = async (req, res, next) => {
       referrer: referrer || null
     };
     
-    // Find or create visitor record
-    let visitor = await Visitor.findOne({ sessionId });
+    // Find existing visitor by sessionId OR by IP (to handle cookie clearing)
+    let visitor = await Visitor.findOne({ 
+      $or: [
+        { sessionId },
+        { 
+          ipAddress: cleanIP,
+          lastActivity: { $gte: new Date(Date.now() - 30 * 60 * 1000) } // Active in last 30 mins
+        }
+      ]
+    }).sort({ lastActivity: -1 }).limit(1);
     
     if (visitor) {
       // Update existing session
-      visitor.pages.push(currentPage);
-      visitor.totalPageViews += 1;
+      
+      // Check if this exact page was just visited (within last 5 seconds) to prevent duplicates
+      const lastPage = visitor.pages[visitor.pages.length - 1];
+      const isDuplicate = lastPage && 
+                         lastPage.url === currentPage.url && 
+                         (new Date() - new Date(lastPage.visitedAt)) < 5000;
+      
+      if (!isDuplicate) {
+        // Only add page if it's not a duplicate refresh
+        visitor.pages.push(currentPage);
+        visitor.totalPageViews += 1;
+      }
+      
+      // Update session tracking
+      visitor.sessionId = sessionId; // Update to latest sessionId
       visitor.lastActivity = new Date();
       visitor.exitPage = currentPage.url;
       visitor.isActive = true;

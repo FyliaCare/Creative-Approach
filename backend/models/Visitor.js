@@ -136,6 +136,8 @@ const visitorSchema = new mongoose.Schema({
 });
 
 // Indexes
+visitorSchema.index({ sessionId: 1 });
+visitorSchema.index({ ipAddress: 1, lastActivity: -1 });
 visitorSchema.index({ country: 1 });
 visitorSchema.index({ createdAt: -1 });
 visitorSchema.index({ lastActivity: -1 });
