@@ -531,4 +531,157 @@ router.post('/portfolio/update-scores', protect, authorize('admin'), async (req,
   }
 });
 
+// @route   GET /api/analytics/visitor-map
+// @desc    Get visitor locations for map visualization with real-time tracking
+// @access  Private/Admin
+router.get('/visitor-map', protect, authorize('admin'), async (req, res, next) => {
+  try {
+    const { period = '24h', activeOnly = 'false' } = req.query;
+    
+    let query = {};
+    
+    if (activeOnly === 'true') {
+      // Only active visitors (last 30 minutes)
+      const thirtyMinutesAgo = new Date(Date.now() - 30 * 60 * 1000);
+      query.isActive = true;
+      query.lastActivity = { $gte: thirtyMinutesAgo };
+    } else {
+      // Filter by period
+      let startDate;
+      switch(period) {
+        case '1h':
+          startDate = new Date(Date.now() - 60 * 60 * 1000);
+          break;
+        case '24h':
+          startDate = new Date(Date.now() - 24 * 60 * 60 * 1000);
+          break;
+        case '7d':
+          startDate = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000);
+          break;
+        case '30d':
+          startDate = new Date(Date.now() - 30 * 24 * 60 * 60 * 1000);
+          break;
+        default:
+          startDate = new Date(Date.now() - 24 * 60 * 60 * 1000);
+      }
+      query.createdAt = { $gte: startDate };
+    }
+    
+    // Fetch visitors with valid coordinates
+    const visitors = await Visitor.find({
+      ...query,
+      'coordinates.latitude': { $exists: true, $ne: null },
+      'coordinates.longitude': { $exists: true, $ne: null }
+    })
+    .select('sessionId country city coordinates device browser os isActive lastActivity pages entryPage totalPageViews')
+    .sort({ lastActivity: -1 })
+    .limit(1000)
+    .lean();
+    
+    // Transform data for map markers
+    const mapData = visitors.map(visitor => ({
+      id: visitor.sessionId,
+      lat: visitor.coordinates.latitude,
+      lng: visitor.coordinates.longitude,
+      country: visitor.country,
+      city: visitor.city,
+      device: visitor.device,
+      browser: visitor.browser,
+      os: visitor.os,
+      isActive: visitor.isActive,
+      lastActivity: visitor.lastActivity,
+      currentPage: visitor.pages && visitor.pages.length > 0 
+        ? visitor.pages[visitor.pages.length - 1].url 
+        : visitor.entryPage,
+      pageViews: visitor.totalPageViews,
+      duration: Math.floor((new Date(visitor.lastActivity) - new Date(visitor.createdAt || visitor.lastActivity)) / 1000)
+    }));
+    
+    // Get summary statistics
+    const stats = {
+      totalVisitors: visitors.length,
+      activeVisitors: visitors.filter(v => v.isActive).length,
+      countries: [...new Set(visitors.map(v => v.country))].length,
+      devices: {
+        desktop: visitors.filter(v => v.device === 'desktop').length,
+        mobile: visitors.filter(v => v.device === 'mobile').length,
+        tablet: visitors.filter(v => v.device === 'tablet').length
+      }
+    };
+    
+    res.json({
+      success: true,
+      data: {
+        visitors: mapData,
+        stats
+      }
+    });
+  } catch (error) {
+    next(error);
+  }
+});
+
+// @route   GET /api/analytics/visitor-heatmap
+// @desc    Get visitor density data for heatmap visualization
+// @access  Private/Admin
+router.get('/visitor-heatmap', protect, authorize('admin'), async (req, res, next) => {
+  try {
+    const { period = '7d' } = req.query;
+    
+    let startDate;
+    switch(period) {
+      case '24h':
+        startDate = new Date(Date.now() - 24 * 60 * 60 * 1000);
+        break;
+      case '7d':
+        startDate = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000);
+        break;
+      case '30d':
+        startDate = new Date(Date.now() - 30 * 24 * 60 * 60 * 1000);
+        break;
+      default:
+        startDate = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000);
+    }
+    
+    // Aggregate visitor density by coordinates
+    const heatmapData = await Visitor.aggregate([
+      {
+        $match: {
+          createdAt: { $gte: startDate },
+          'coordinates.latitude': { $exists: true, $ne: null },
+          'coordinates.longitude': { $exists: true, $ne: null }
+        }
+      },
+      {
+        $group: {
+          _id: {
+            lat: { $round: ['$coordinates.latitude', 1] },
+            lng: { $round: ['$coordinates.longitude', 1] }
+          },
+          count: { $sum: 1 },
+          avgDuration: { $avg: '$sessionDuration' },
+          pageViews: { $sum: '$totalPageViews' }
+        }
+      },
+      { $sort: { count: -1 } },
+      { $limit: 500 }
+    ]);
+    
+    const formattedData = heatmapData.map(point => ({
+      lat: point._id.lat,
+      lng: point._id.lng,
+      intensity: point.count,
+      avgDuration: Math.round(point.avgDuration),
+      pageViews: point.pageViews
+    }));
+    
+    res.json({
+      success: true,
+      data: formattedData
+    });
+  } catch (error) {
+    next(error);
+  }
+});
+
 export default router;

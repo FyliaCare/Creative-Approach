@@ -54,6 +54,7 @@ import {
 import toast from 'react-hot-toast';
 import { format, formatDistance } from 'date-fns';
 import { analyticsAPI } from '../services/api';
+import VisitorMap from '../components/VisitorMap';
 
 export const Analytics = () => {
   const [loading, setLoading] = useState(true);
@@ -261,6 +262,7 @@ export const Analytics = () => {
   const tabs = [
     { id: 'overview', label: 'Overview', icon: BarChart3 },
     { id: 'live', label: 'Live Visitors', icon: Radio },
+    { id: 'map', label: 'Visitor Map', icon: MapPin },
     { id: 'geo', label: 'Geography', icon: Globe },
     { id: 'behavior', label: 'Behavior', icon: MousePointerClick },
     { id: 'technology', label: 'Technology', icon: Monitor },
@@ -391,6 +393,10 @@ export const Analytics = () => {
             visitors={liveVisitors}
             activeCount={overview.activeVisitors}
           />
+        )}
+
+        {activeTab === 'map' && (
+          <VisitorMap />
         )}
 
         {activeTab === 'geo' && (
