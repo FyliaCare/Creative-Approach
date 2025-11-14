@@ -274,12 +274,6 @@ export const Analytics = () => {
     tablet: Tablet,
   };
 
-  const browserIcons = {
-    Chrome: Chrome,
-    Firefox: Firefox,
-    Safari: Safari,
-  };
-
   return (
     <div className="space-y-6 pb-8">
       {/* Header */}
