@@ -1,4 +1,7 @@
 import { useState, useEffect, useRef } from 'react';
+import { MapContainer, TileLayer, Marker, Popup, useMap } from 'react-leaflet';
+import L from 'leaflet';
+import 'leaflet/dist/leaflet.css';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
   MapPin,
@@ -14,9 +17,56 @@ import {
   Maximize2,
   Minimize2,
   RefreshCw,
+  Chrome,
 } from 'lucide-react';
 import { analyticsAPI } from '../services/api';
 import toast from 'react-hot-toast';
+import { formatDistance } from 'date-fns';
+
+// Fix Leaflet default marker icon issue with webpack
+delete L.Icon.Default.prototype._getIconUrl;
+L.Icon.Default.mergeOptions({
+  iconRetinaUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-icon-2x.png',
+  iconUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-icon.png',
+  shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-shadow.png',
+});
+
+// Create custom marker icons
+const createCustomIcon = (color, isActive) => {
+  const pulseClass = isActive ? 'animate-pulse' : '';
+  return L.divIcon({
+    className: 'custom-marker',
+    html: `
+      <div class="relative ${pulseClass}">
+        ${isActive ? `
+          <div class="absolute inset-0 rounded-full animate-ping" style="background-color: ${color}; opacity: 0.4;"></div>
+          <div class="absolute inset-0 rounded-full animate-pulse" style="background-color: ${color}; opacity: 0.3;"></div>
+        ` : ''}
+        <div class="relative w-6 h-6 rounded-full border-2 border-white shadow-lg" style="background-color: ${color};">
+          <div class="absolute inset-0 flex items-center justify-center">
+            <div class="w-2 h-2 rounded-full bg-white"></div>
+          </div>
+        </div>
+      </div>
+    `,
+    iconSize: [24, 24],
+    iconAnchor: [12, 12],
+  });
+};
+
+// Component to update map view when data changes
+const MapUpdater = ({ visitors }) => {
+  const map = useMap();
+  
+  useEffect(() => {
+    if (visitors.length > 0) {
+      const bounds = visitors.map(v => [v.lat, v.lng]);
+      map.fitBounds(bounds, { padding: [50, 50], maxZoom: 6 });
+    }
+  }, [visitors, map]);
+  
+  return null;
+};
 
 const VisitorMap = () => {
   const [visitors, setVisitors] = useState([]);
@@ -27,12 +77,10 @@ const VisitorMap = () => {
     devices: { desktop: 0, mobile: 0, tablet: 0 }
   });
   const [loading, setLoading] = useState(true);
-  const [selectedVisitor, setSelectedVisitor] = useState(null);
   const [isFullscreen, setIsFullscreen] = useState(false);
   const [autoRefresh, setAutoRefresh] = useState(true);
   const [period, setPeriod] = useState('24h');
   const [showActiveOnly, setShowActiveOnly] = useState(false);
-  const mapRef = useRef(null);
   const refreshIntervalRef = useRef(null);
 
   useEffect(() => {
@@ -82,6 +130,13 @@ const VisitorMap = () => {
     );
   };
 
+  const getMarkerColor = (visitor) => {
+    if (!visitor.isActive) return '#94a3b8'; // gray
+    if (visitor.device === 'mobile') return '#10b981'; // green
+    if (visitor.device === 'tablet') return '#f59e0b'; // orange
+    return '#3b82f6'; // blue
+  };
+
   const getDeviceIcon = (device) => {
     switch(device) {
       case 'mobile': return Smartphone;
@@ -90,38 +145,8 @@ const VisitorMap = () => {
     }
   };
 
-  const getMarkerColor = (visitor) => {
-    if (!visitor.isActive) return '#94a3b8'; // gray
-    if (visitor.device === 'mobile') return '#10b981'; // green
-    if (visitor.device === 'tablet') return '#f59e0b'; // orange
-    return '#3b82f6'; // blue
-  };
-
-  // Simple world map using SVG
-  const worldMap = `
-    <svg viewBox="0 0 2000 1000" xmlns="http://www.w3.org/2000/svg">
-      <rect width="2000" height="1000" fill="#f8fafc"/>
-      <path d="M 0 500 Q 500 300 1000 500 T 2000 500" stroke="#cbd5e1" stroke-width="1" fill="none"/>
-      <path d="M 0 600 Q 500 400 1000 600 T 2000 600" stroke="#cbd5e1" stroke-width="1" fill="none"/>
-      <path d="M 0 400 Q 500 200 1000 400 T 2000 400" stroke="#cbd5e1" stroke-width="1" fill="none"/>
-      <!-- Continents simplified -->
-      <ellipse cx="300" cy="300" rx="200" ry="150" fill="#e2e8f0" opacity="0.5"/>
-      <ellipse cx="600" cy="400" rx="180" ry="120" fill="#e2e8f0" opacity="0.5"/>
-      <ellipse cx="1000" cy="500" rx="220" ry="140" fill="#e2e8f0" opacity="0.5"/>
-      <ellipse cx="1400" cy="350" rx="250" ry="180" fill="#e2e8f0" opacity="0.5"/>
-      <ellipse cx="1700" cy="600" rx="180" ry="140" fill="#e2e8f0" opacity="0.5"/>
-    </svg>
-  `;
-
-  // Convert lat/lng to SVG coordinates
-  const latLngToPoint = (lat, lng) => {
-    const x = ((lng + 180) / 360) * 2000;
-    const y = ((90 - lat) / 180) * 1000;
-    return { x, y };
-  };
-
   return (
-    <div className={`${isFullscreen ? 'fixed inset-0 z-50 bg-white' : ''}`}>
+    <div className={`${isFullscreen ? 'fixed inset-0 z-50 bg-white p-6' : ''}`}>
       <div className="space-y-6">
         {/* Header Controls */}
         <div className="flex items-center justify-between">
@@ -240,185 +265,132 @@ const VisitorMap = () => {
                 <p className="text-gray-600">Loading visitor map...</p>
               </div>
             </div>
+          ) : visitors.length === 0 ? (
+            <div className="h-[600px] flex items-center justify-center bg-gray-50">
+              <div className="text-center">
+                <Globe className="w-16 h-16 text-gray-400 mx-auto mb-4" />
+                <h3 className="text-xl font-bold text-gray-700 mb-2">No Visitors Yet</h3>
+                <p className="text-gray-600">Visitor locations will appear here once traffic starts</p>
+              </div>
+            </div>
           ) : (
-            <div ref={mapRef} className="relative h-[600px] bg-gradient-to-br from-blue-50 to-indigo-50">
-              {/* SVG Map */}
-              <svg viewBox="0 0 2000 1000" className="w-full h-full">
-                {/* Background */}
-                <rect width="2000" height="1000" fill="url(#oceanGradient)" />
+            <div className="h-[600px] relative">
+              <MapContainer
+                center={[20, 0]}
+                zoom={2}
+                style={{ height: '100%', width: '100%' }}
+                className="z-0"
+              >
+                {/* OpenStreetMap Tiles - Free and Real */}
+                <TileLayer
+                  attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+                  url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+                />
                 
-                <defs>
-                  <linearGradient id="oceanGradient" x1="0%" y1="0%" x2="0%" y2="100%">
-                    <stop offset="0%" style={{stopColor: '#e0f2fe', stopOpacity: 1}} />
-                    <stop offset="100%" style={{stopColor: '#bfdbfe', stopOpacity: 1}} />
-                  </linearGradient>
-                  <filter id="glow">
-                    <feGaussianBlur stdDeviation="2" result="coloredBlur"/>
-                    <feMerge>
-                      <feMergeNode in="coloredBlur"/>
-                      <feMergeNode in="SourceGraphic"/>
-                    </feMerge>
-                  </filter>
-                </defs>
-
-                {/* Simplified continents */}
-                <g opacity="0.4">
-                  {/* North America */}
-                  <ellipse cx="300" cy="250" rx="180" ry="140" fill="#94a3b8" />
-                  {/* South America */}
-                  <ellipse cx="400" cy="550" rx="120" ry="180" fill="#94a3b8" />
-                  {/* Europe */}
-                  <ellipse cx="900" cy="200" rx="150" ry="100" fill="#94a3b8" />
-                  {/* Africa */}
-                  <ellipse cx="950" cy="500" rx="140" ry="200" fill="#94a3b8" />
-                  {/* Asia */}
-                  <ellipse cx="1400" cy="300" rx="280" ry="200" fill="#94a3b8" />
-                  {/* Australia */}
-                  <ellipse cx="1600" cy="650" rx="120" ry="100" fill="#94a3b8" />
-                </g>
-
-                {/* Grid lines */}
-                <g stroke="#cbd5e1" strokeWidth="1" opacity="0.3">
-                  {[...Array(10)].map((_, i) => (
-                    <line key={`v${i}`} x1={i * 200} y1="0" x2={i * 200} y2="1000" />
-                  ))}
-                  {[...Array(5)].map((_, i) => (
-                    <line key={`h${i}`} x1="0" y1={i * 200} x2="2000" y2={i * 200} />
-                  ))}
-                </g>
-
-                {/* Visitor markers */}
+                {/* Auto-adjust view to show all markers */}
+                <MapUpdater visitors={visitors} />
+                
+                {/* Visitor Markers */}
                 {visitors.map((visitor) => {
-                  const point = latLngToPoint(visitor.lat, visitor.lng);
-                  const DeviceIcon = getDeviceIcon(visitor.device);
+                  if (!visitor.lat || !visitor.lng) return null;
+                  
                   const color = getMarkerColor(visitor);
+                  const DeviceIcon = getDeviceIcon(visitor.device);
                   
                   return (
-                    <g
+                    <Marker
                       key={visitor.id}
-                      transform={`translate(${point.x}, ${point.y})`}
-                      onClick={() => setSelectedVisitor(visitor)}
-                      className="cursor-pointer hover:opacity-80 transition-opacity"
-                      filter={visitor.isActive ? "url(#glow)" : ""}
+                      position={[visitor.lat, visitor.lng]}
+                      icon={createCustomIcon(color, visitor.isActive)}
                     >
-                      {/* Pulse animation for active visitors */}
-                      {visitor.isActive && (
-                        <>
-                          <circle r="15" fill={color} opacity="0.3">
-                            <animate attributeName="r" from="8" to="25" dur="2s" repeatCount="indefinite" />
-                            <animate attributeName="opacity" from="0.5" to="0" dur="2s" repeatCount="indefinite" />
-                          </circle>
-                          <circle r="12" fill={color} opacity="0.4">
-                            <animate attributeName="r" from="8" to="20" dur="2s" repeatCount="indefinite" />
-                            <animate attributeName="opacity" from="0.6" to="0" dur="2s" repeatCount="indefinite" />
-                          </circle>
-                        </>
-                      )}
-                      
-                      {/* Main marker */}
-                      <circle r="8" fill={color} stroke="white" strokeWidth="2" />
-                      <circle r="3" fill="white" />
-                    </g>
+                      <Popup className="custom-popup">
+                        <div className="p-2 min-w-[250px]">
+                          <div className="flex items-center gap-2 mb-3 pb-2 border-b border-gray-200">
+                            <MapPin className="w-5 h-5 text-blue-600" />
+                            <h3 className="font-bold text-lg">Visitor Details</h3>
+                            {visitor.isActive && (
+                              <span className="ml-auto inline-flex items-center gap-1 px-2 py-1 bg-green-100 text-green-700 rounded-full text-xs font-semibold">
+                                <Radio className="w-3 h-3 animate-pulse" />
+                                Active
+                              </span>
+                            )}
+                          </div>
+
+                          <div className="space-y-2 text-sm">
+                            <div className="flex items-start gap-2">
+                              <Globe className="w-4 h-4 text-gray-400 mt-0.5 flex-shrink-0" />
+                              <div>
+                                <span className="font-semibold text-gray-700">Location:</span>
+                                <p className="text-gray-900">{visitor.city}, {visitor.country}</p>
+                              </div>
+                            </div>
+
+                            <div className="flex items-center gap-2">
+                              <DeviceIcon className="w-4 h-4 text-gray-400" />
+                              <span className="font-semibold text-gray-700">Device:</span>
+                              <span className="capitalize text-gray-900">{visitor.device}</span>
+                            </div>
+
+                            <div className="flex items-center gap-2">
+                              <Chrome className="w-4 h-4 text-gray-400" />
+                              <span className="font-semibold text-gray-700">Browser:</span>
+                              <span className="text-gray-900">{visitor.browser} ({visitor.os})</span>
+                            </div>
+
+                            <div className="flex items-center gap-2">
+                              <Eye className="w-4 h-4 text-gray-400" />
+                              <span className="font-semibold text-gray-700">Page Views:</span>
+                              <span className="text-gray-900">{visitor.pageViews}</span>
+                            </div>
+
+                            <div className="flex items-center gap-2">
+                              <Clock className="w-4 h-4 text-gray-400" />
+                              <span className="font-semibold text-gray-700">Duration:</span>
+                              <span className="text-gray-900">
+                                {Math.floor(visitor.duration / 60)}m {visitor.duration % 60}s
+                              </span>
+                            </div>
+
+                            {visitor.currentPage && (
+                              <div className="pt-2 border-t border-gray-200 mt-2">
+                                <p className="font-semibold text-gray-700 mb-1">Current Page:</p>
+                                <p className="text-xs text-gray-600 bg-gray-50 px-2 py-1 rounded break-all">
+                                  {visitor.currentPage}
+                                </p>
+                              </div>
+                            )}
+
+                            <div className="pt-2 border-t border-gray-200 mt-2">
+                              <p className="text-xs text-gray-500">
+                                Last activity: {formatDistance(new Date(visitor.lastActivity), new Date(), { addSuffix: true })}
+                              </p>
+                            </div>
+                          </div>
+                        </div>
+                      </Popup>
+                    </Marker>
                   );
                 })}
-              </svg>
+              </MapContainer>
 
-              {/* Visitor Details Popup */}
-              <AnimatePresence>
-                {selectedVisitor && (
-                  <motion.div
-                    initial={{ opacity: 0, scale: 0.9 }}
-                    animate={{ opacity: 1, scale: 1 }}
-                    exit={{ opacity: 0, scale: 0.9 }}
-                    className="absolute top-4 right-4 bg-white rounded-xl shadow-2xl p-6 w-80 border-2 border-gray-200"
-                  >
-                    <button
-                      onClick={() => setSelectedVisitor(null)}
-                      className="absolute top-2 right-2 text-gray-400 hover:text-gray-600"
-                    >
-                      ✕
-                    </button>
-                    
-                    <div className="space-y-4">
-                      <div>
-                        <div className="flex items-center gap-2 mb-2">
-                          <MapPin className="w-5 h-5 text-blue-600" />
-                          <h3 className="font-bold text-lg">Visitor Details</h3>
-                        </div>
-                        {selectedVisitor.isActive && (
-                          <span className="inline-flex items-center gap-1 px-2 py-1 bg-green-100 text-green-700 rounded-full text-xs font-semibold">
-                            <Radio className="w-3 h-3 animate-pulse" />
-                            Active Now
-                          </span>
-                        )}
-                      </div>
-
-                      <div className="space-y-3 text-sm">
-                        <div className="flex items-center gap-2">
-                          <Globe className="w-4 h-4 text-gray-400" />
-                          <span className="font-semibold">Location:</span>
-                          <span>{selectedVisitor.city}, {selectedVisitor.country}</span>
-                        </div>
-
-                        <div className="flex items-center gap-2">
-                          {(() => {
-                            const DeviceIcon = getDeviceIcon(selectedVisitor.device);
-                            return <DeviceIcon className="w-4 h-4 text-gray-400" />;
-                          })()}
-                          <span className="font-semibold">Device:</span>
-                          <span className="capitalize">{selectedVisitor.device}</span>
-                        </div>
-
-                        <div className="flex items-center gap-2">
-                          <Monitor className="w-4 h-4 text-gray-400" />
-                          <span className="font-semibold">Browser:</span>
-                          <span>{selectedVisitor.browser} ({selectedVisitor.os})</span>
-                        </div>
-
-                        <div className="flex items-center gap-2">
-                          <Eye className="w-4 h-4 text-gray-400" />
-                          <span className="font-semibold">Page Views:</span>
-                          <span>{selectedVisitor.pageViews}</span>
-                        </div>
-
-                        <div className="flex items-center gap-2">
-                          <Clock className="w-4 h-4 text-gray-400" />
-                          <span className="font-semibold">Duration:</span>
-                          <span>{Math.floor(selectedVisitor.duration / 60)}m {selectedVisitor.duration % 60}s</span>
-                        </div>
-
-                        {selectedVisitor.currentPage && (
-                          <div className="pt-3 border-t border-gray-200">
-                            <p className="font-semibold text-gray-700 mb-1">Current Page:</p>
-                            <p className="text-xs text-gray-600 bg-gray-50 px-2 py-1 rounded truncate">
-                              {selectedVisitor.currentPage}
-                            </p>
-                          </div>
-                        )}
-                      </div>
-                    </div>
-                  </motion.div>
-                )}
-              </AnimatePresence>
-
-              {/* Legend */}
-              <div className="absolute bottom-4 left-4 bg-white rounded-xl shadow-lg p-4 border-2 border-gray-200">
+              {/* Legend Overlay */}
+              <div className="absolute bottom-4 left-4 bg-white rounded-xl shadow-lg p-4 border-2 border-gray-200 z-[1000]">
                 <h4 className="font-bold text-sm mb-3">Legend</h4>
                 <div className="space-y-2 text-xs">
                   <div className="flex items-center gap-2">
-                    <div className="w-4 h-4 rounded-full bg-blue-500"></div>
+                    <div className="w-4 h-4 rounded-full bg-blue-500 border-2 border-white"></div>
                     <span>Desktop (Active)</span>
                   </div>
                   <div className="flex items-center gap-2">
-                    <div className="w-4 h-4 rounded-full bg-green-500"></div>
+                    <div className="w-4 h-4 rounded-full bg-green-500 border-2 border-white"></div>
                     <span>Mobile (Active)</span>
                   </div>
                   <div className="flex items-center gap-2">
-                    <div className="w-4 h-4 rounded-full bg-orange-500"></div>
+                    <div className="w-4 h-4 rounded-full bg-orange-500 border-2 border-white"></div>
                     <span>Tablet (Active)</span>
                   </div>
                   <div className="flex items-center gap-2">
-                    <div className="w-4 h-4 rounded-full bg-gray-400"></div>
+                    <div className="w-4 h-4 rounded-full bg-gray-400 border-2 border-white"></div>
                     <span>Inactive</span>
                   </div>
                 </div>
