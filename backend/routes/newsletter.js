@@ -2,7 +2,9 @@ import express from 'express';
 import { body, validationResult } from 'express-validator';
 import Newsletter from '../models/Newsletter.js';
 import EmailCampaign from '../models/EmailCampaign.js';
+import User from '../models/User.js';
 import { protect, authorize } from '../middleware/auth.js';
+import NotificationService from '../utils/notificationService.js';
 
 const router = express.Router();
 
@@ -59,6 +61,16 @@ router.post('/subscribe', [
       ipAddress,
       country
     });
+    
+    // Send notification to all admins
+    try {
+      const admins = await User.find({ role: 'admin' });
+      for (const admin of admins) {
+        await NotificationService.notifyNewSubscriber(admin._id, subscription);
+      }
+    } catch (notifError) {
+      console.error('Error sending notification:', notifError);
+    }
     
     res.status(201).json({
       success: true,

@@ -10,6 +10,13 @@ export const initializeChat = (io) => {
   io.on('connection', (socket) => {
     console.log('New client connected:', socket.id);
     
+    // Join admin notification room
+    socket.on('join_admin', (adminId) => {
+      const adminRoom = `admin_${adminId}`;
+      socket.join(adminRoom);
+      console.log(`Admin ${adminId} joined notification room: ${adminRoom}`);
+    });
+    
     // Join conversation
     socket.on('join', async ({ conversationId, user }) => {
       try {

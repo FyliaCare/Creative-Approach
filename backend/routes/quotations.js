@@ -1,7 +1,9 @@
 import express from 'express';
 import { body, validationResult } from 'express-validator';
 import Quotation from '../models/Quotation.js';
+import User from '../models/User.js';
 import { protect, authorize } from '../middleware/auth.js';
+import NotificationService from '../utils/notificationService.js';
 
 const router = express.Router();
 
@@ -38,6 +40,16 @@ router.post('/', [
         quotationId: quotation._id,
         service: quotation.service
       });
+    }
+    
+    // Send notification to all admins
+    try {
+      const admins = await User.find({ role: 'admin' });
+      for (const admin of admins) {
+        await NotificationService.notifyNewQuotation(admin._id, quotation);
+      }
+    } catch (notifError) {
+      console.error('Error sending notification:', notifError);
     }
     
     // TODO: Send email notification to admin

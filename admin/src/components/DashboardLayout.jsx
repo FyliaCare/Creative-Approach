@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import {
   LayoutDashboard,
@@ -18,6 +18,9 @@ import {
   List,
 } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
+import { NotificationPanel } from './NotificationPanel';
+import { notificationAPI } from '../services/api';
+import io from 'socket.io-client';
 
 const navigation = [
   { name: 'Dashboard', href: '/', icon: LayoutDashboard },
@@ -41,9 +44,62 @@ export const DashboardLayout = ({ children }) => {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [userMenuOpen, setUserMenuOpen] = useState(false);
   const [expandedItems, setExpandedItems] = useState({});
+  const [notificationPanelOpen, setNotificationPanelOpen] = useState(false);
+  const [unreadCount, setUnreadCount] = useState(0);
   const location = useLocation();
   const navigate = useNavigate();
   const { user, logout } = useAuth();
+
+  // Fetch initial unread count
+  useEffect(() => {
+    fetchUnreadCount();
+  }, []);
+
+  // Setup Socket.IO for real-time notifications
+  useEffect(() => {
+    const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000';
+    const socket = io(API_URL, {
+      transports: ['websocket', 'polling'],
+      withCredentials: true
+    });
+
+    socket.on('connect', () => {
+      console.log('📡 Connected to notification socket');
+      // Join admin room for notifications
+      if (user?._id) {
+        socket.emit('join_admin', user._id);
+      }
+    });
+
+    socket.on('new_notification', (notification) => {
+      console.log('🔔 New notification received:', notification);
+      setUnreadCount(prev => prev + 1);
+      
+      // Optional: Show toast notification
+      // toast.info(notification.title, {
+      //   description: notification.message
+      // });
+    });
+
+    socket.on('disconnect', () => {
+      console.log('📡 Disconnected from notification socket');
+    });
+
+    return () => {
+      socket.disconnect();
+    };
+  }, [user]);
+
+  const fetchUnreadCount = async () => {
+    try {
+      const response = await notificationAPI.getUnreadCount();
+      if (response.data.success) {
+        setUnreadCount(response.data.data.count);
+      }
+    } catch (error) {
+      console.error('Error fetching unread count:', error);
+    }
+  };
 
   const handleLogout = () => {
     logout();
@@ -248,13 +304,31 @@ export const DashboardLayout = ({ children }) => {
 
             {/* Right side */}
             <div className="flex items-center space-x-4">
-              <button className="relative p-2 text-gray-500 hover:text-gray-700 rounded-lg hover:bg-gray-100">
+              <button 
+                onClick={() => setNotificationPanelOpen(true)}
+                className="relative p-2 text-gray-500 hover:text-gray-700 rounded-lg hover:bg-gray-100 transition-colors"
+              >
                 <Bell className="h-5 w-5" />
-                <span className="absolute top-1 right-1 h-2 w-2 bg-red-500 rounded-full"></span>
+                {unreadCount > 0 && (
+                  <span className="absolute top-1 right-1 h-2 w-2 bg-red-500 rounded-full animate-pulse"></span>
+                )}
+                {unreadCount > 0 && (
+                  <span className="absolute -top-1 -right-1 h-5 w-5 bg-red-500 text-white text-xs font-bold rounded-full flex items-center justify-center">
+                    {unreadCount > 9 ? '9+' : unreadCount}
+                  </span>
+                )}
               </button>
             </div>
           </div>
         </header>
+
+        {/* Notification Panel */}
+        <NotificationPanel
+          isOpen={notificationPanelOpen}
+          onClose={() => setNotificationPanelOpen(false)}
+          unreadCount={unreadCount}
+          onCountUpdate={setUnreadCount}
+        />
 
         {/* Page content */}
         <main className="p-4 sm:p-6 lg:p-8">

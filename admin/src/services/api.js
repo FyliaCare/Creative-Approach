@@ -102,6 +102,18 @@ export const portfolioAPI = {
   getStats: () => api.get('/portfolio/stats'),
 };
 
+// Notification API
+export const notificationAPI = {
+  getAll: (params) => api.get('/notifications', { params }),
+  getById: (id) => api.get(`/notifications/${id}`),
+  getUnreadCount: () => api.get('/notifications/unread-count'),
+  markAsRead: (id) => api.put(`/notifications/${id}/read`),
+  markAllAsRead: () => api.put('/notifications/mark-all-read'),
+  delete: (id) => api.delete(`/notifications/${id}`),
+  clearAll: () => api.delete('/notifications/clear-all'),
+  createTest: () => api.post('/notifications/test'),
+};
+
 // Upload API
 export const uploadAPI = {
   uploadImage: (file) => {

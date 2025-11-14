@@ -21,6 +21,7 @@ import portfolioRoutes from './routes/portfolio.js';
 import contactRoutes from './routes/contact.js';
 import quoteBotRoutes from './routes/quoteBot.js';
 import settingsRoutes from './routes/settings.js';
+import notificationRoutes from './routes/notifications.js';
 
 // Import middleware
 import errorHandler from './middleware/errorHandler.js';
@@ -58,6 +59,9 @@ const io = new Server(httpServer, {
 mongoose.connect(process.env.MONGODB_URI)
   .then(() => console.log('✅ MongoDB connected successfully'))
   .catch((err) => console.error('❌ MongoDB connection error:', err));
+
+// Make io instance globally available for notifications
+global.io = io;
 
 // Middleware
 app.use(helmet()); // Security headers
@@ -136,6 +140,7 @@ app.use('/api/portfolio', portfolioRoutes);
 app.use('/api/contact', contactRoutes);
 app.use('/api/quote-bot', quoteBotRoutes);
 app.use('/api/settings', settingsRoutes);
+app.use('/api/notifications', notificationRoutes);
 
 // Initialize Socket.io for live chat
 initializeChat(io);
