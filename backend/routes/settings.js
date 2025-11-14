@@ -11,14 +11,21 @@ router.get('/', protect, authorize('admin'), async (req, res) => {
     
     // Don't send sensitive data like passwords
     const safeSettings = settings.toObject();
-    if (safeSettings.email) {
-      delete safeSettings.email.smtpPassword;
+    if (safeSettings.email && safeSettings.email.smtpPassword) {
+      safeSettings.email.smtpPassword = '********';
     }
     
-    res.json(safeSettings);
+    res.json({
+      success: true,
+      data: safeSettings
+    });
   } catch (error) {
     console.error('Get settings error:', error);
-    res.status(500).json({ message: 'Failed to fetch settings' });
+    res.status(500).json({ 
+      success: false,
+      message: 'Failed to fetch settings',
+      error: error.message 
+    });
   }
 });
 
