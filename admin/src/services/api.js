@@ -88,6 +88,8 @@ export const analyticsAPI = {
   getTimeline: (period = '7d') => api.get('/analytics/timeline', { params: { period } }),
   getVisitorMap: (period = '24h', activeOnly = false) => api.get('/analytics/visitor-map', { params: { period, activeOnly } }),
   getVisitorHeatmap: (period = '7d') => api.get('/analytics/visitor-heatmap', { params: { period } }),
+  getPortfolioOverview: () => api.get('/analytics/portfolio/overview'),
+  trackPortfolioView: (portfolioId, data) => api.post('/analytics/portfolio/track-view', { portfolioId, ...data }),
 };
 
 // Portfolio API
