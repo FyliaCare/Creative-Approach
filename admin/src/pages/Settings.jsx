@@ -1,3 +1,7 @@
+// Redirect to enhanced settings
+export { SettingsEnhanced as Settings } from './SettingsEnhanced';
+
+// Old Settings component kept for reference
 import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import axios from 'axios';
@@ -6,7 +10,7 @@ import { notificationAPI } from '../services/api';
 
 const API_URL = import.meta.env.VITE_API_URL;
 
-export const Settings = () => {
+export const SettingsOld = () => {
   const [activeTab, setActiveTab] = useState('profile');
   const [loading, setLoading] = useState(false);
   const [testingEmail, setTestingEmail] = useState(false);
