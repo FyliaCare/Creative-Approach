@@ -51,11 +51,9 @@ import {
   PolarRadiusAxis,
   Radar,
 } from 'recharts';
-import axios from 'axios';
 import toast from 'react-hot-toast';
 import { format, formatDistance } from 'date-fns';
-
-const API_URL = import.meta.env.VITE_API_URL;
+import { analyticsAPI } from '../services/api';
 
 export const Analytics = () => {
   const [loading, setLoading] = useState(true);
@@ -121,11 +119,7 @@ export const Analytics = () => {
 
   const fetchOverview = async () => {
     try {
-      const token = localStorage.getItem('token');
-      const response = await axios.get(`${API_URL}/api/analytics/overview`, {
-        headers: { Authorization: `Bearer ${token}` },
-        params: { period: timeRange }
-      });
+      const response = await analyticsAPI.getOverview(timeRange);
       if (response.data.success) {
         setOverview(response.data.data);
       }
@@ -136,10 +130,7 @@ export const Analytics = () => {
 
   const fetchLiveVisitors = async () => {
     try {
-      const token = localStorage.getItem('token');
-      const response = await axios.get(`${API_URL}/api/analytics/realtime`, {
-        headers: { Authorization: `Bearer ${token}` }
-      });
+      const response = await analyticsAPI.getRealtime();
       if (response.data.success) {
         setLiveVisitors(response.data.data.visitors);
         // Update active visitors count
@@ -152,11 +143,7 @@ export const Analytics = () => {
 
   const fetchTimeline = async () => {
     try {
-      const token = localStorage.getItem('token');
-      const response = await axios.get(`${API_URL}/api/analytics/timeline`, {
-        headers: { Authorization: `Bearer ${token}` },
-        params: { period: timeRange }
-      });
+      const response = await analyticsAPI.getTimeline(timeRange);
       if (response.data.success) {
         setTimeline(response.data.data);
       }
@@ -167,11 +154,7 @@ export const Analytics = () => {
 
   const fetchCountries = async () => {
     try {
-      const token = localStorage.getItem('token');
-      const response = await axios.get(`${API_URL}/api/analytics/countries`, {
-        headers: { Authorization: `Bearer ${token}` },
-        params: { period: timeRange, limit: 10 }
-      });
+      const response = await analyticsAPI.getCountries();
       if (response.data.success) {
         setCountries(response.data.data);
       }
@@ -182,11 +165,7 @@ export const Analytics = () => {
 
   const fetchTopPages = async () => {
     try {
-      const token = localStorage.getItem('token');
-      const response = await axios.get(`${API_URL}/api/analytics/pages`, {
-        headers: { Authorization: `Bearer ${token}` },
-        params: { period: timeRange, limit: 10 }
-      });
+      const response = await analyticsAPI.getPages();
       if (response.data.success) {
         setTopPages(response.data.data);
       }
@@ -197,11 +176,7 @@ export const Analytics = () => {
 
   const fetchReferrers = async () => {
     try {
-      const token = localStorage.getItem('token');
-      const response = await axios.get(`${API_URL}/api/analytics/referrers`, {
-        headers: { Authorization: `Bearer ${token}` },
-        params: { period: timeRange, limit: 10 }
-      });
+      const response = await analyticsAPI.getReferrers();
       if (response.data.success) {
         setReferrers(response.data.data);
       }
@@ -212,11 +187,7 @@ export const Analytics = () => {
 
   const fetchDevices = async () => {
     try {
-      const token = localStorage.getItem('token');
-      const response = await axios.get(`${API_URL}/api/analytics/devices`, {
-        headers: { Authorization: `Bearer ${token}` },
-        params: { period: timeRange }
-      });
+      const response = await analyticsAPI.getDevices();
       if (response.data.success) {
         setDevices(response.data.data);
       }
