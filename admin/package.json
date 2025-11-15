@@ -12,6 +12,7 @@
     "postinstall": "node -e \"console.log('React version:', require('react').version)\""
   },
   "dependencies": {
+    "@heroicons/react": "^2.2.0",
     "@vitejs/plugin-react": "^4.3.4",
     "autoprefixer": "^10.4.17",
     "axios": "^1.13.2",
