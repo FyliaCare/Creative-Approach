@@ -40,64 +40,25 @@ export default function About() {
   const [selectedMember, setSelectedMember] = useState(null);
 
   const stats = [
-    { number: 11, suffix: '', label: 'Projects Completed', icon: '📊' },
-    { number: 50, suffix: '+', label: 'Happy Clients', icon: '😊' },
-    { number: 420, suffix: '+', label: 'Flight Hours', icon: '⏱️' },
-    { number: 99, suffix: '%', label: 'Safety Record', icon: '🛡️' }
+    { number: 50, suffix: '+', label: 'Projects Completed', icon: '📊' },
+    { number: 30, suffix: '+', label: 'Happy Clients', icon: '😊' },
+    { number: 200, suffix: '+', label: 'Flight Hours', icon: '⏱️' },
+    { number: 100, suffix: '%', label: 'Safety Record', icon: '🛡️' }
   ];
 
   const team = [
     {
-      name: 'Kwame Mensah',
-      role: 'CEO & Lead Pilot',
-      bio: '10+ years in aviation, certified drone instructor with GCAA credentials',
+      name: 'Benjamin Ampah',
+      role: 'Lead Pilot',
+      bio: 'Experienced drone pilot with GCAA credentials, specializing in aerial cinematography and precision flight operations',
       image: '👨‍✈️',
       achievements: [
         'GCAA Certified Drone Pilot',
-        '10,000+ successful flight hours',
-        'Aviation Safety Award 2023',
-        'Lead Instructor for drone training'
+        '1,000+ successful flight hours',
+        'Lead Instructor for drone training',
+        'Commercial aerial operations specialist'
       ],
-      specialties: ['Flight Operations', 'Safety Management', 'Team Leadership', 'Client Relations']
-    },
-    {
-      name: 'Ama Owusu',
-      role: 'Creative Director',
-      bio: 'Award-winning cinematographer and visual storyteller',
-      image: '🎬',
-      achievements: [
-        'National Film Award Winner',
-        '50+ documentary projects',
-        'International recognition',
-        'Creative excellence in media'
-      ],
-      specialties: ['Cinematography', 'Visual Storytelling', 'Post-Production', 'Art Direction']
-    },
-    {
-      name: 'Kofi Asante',
-      role: 'Technical Director',
-      bio: 'Engineering expert in drone technology and systems',
-      image: '👨‍💻',
-      achievements: [
-        'Masters in Aerospace Engineering',
-        'Drone systems specialist',
-        'GIS & mapping expert',
-        'Technology innovation leader'
-      ],
-      specialties: ['Drone Technology', 'GIS Mapping', '3D Modeling', 'Data Processing']
-    },
-    {
-      name: 'Akua Boateng',
-      role: 'Operations Manager',
-      bio: 'Logistics specialist ensuring smooth project execution',
-      image: '👩‍💼',
-      achievements: [
-        'PMP Certified',
-        '100+ successful projects',
-        'Operations excellence',
-        'Client satisfaction expert'
-      ],
-      specialties: ['Project Management', 'Logistics', 'Quality Control', 'Client Coordination']
+      specialties: ['Flight Operations', 'Safety Management', 'Aerial Photography', 'Team Leadership']
     }
   ];
 
@@ -340,7 +301,6 @@ export default function About() {
           <div className="flex flex-wrap justify-center gap-4 mb-12">
             {[
               { id: 'story', label: 'Our Story', icon: '📖' },
-              { id: 'journey', label: 'Our Journey', icon: '🛤️' },
               { id: 'services', label: 'What We Do', icon: '⚙️' }
             ].map((tab) => (
               <motion.button
@@ -383,37 +343,6 @@ export default function About() {
                   <p className="text-lg leading-relaxed">
                     Creative Approach follows Ghana Civil Aviation Authority (GCAA) standards and maintains strong safety and quality procedures in every operation. Our goal is to become a trusted provider of both geospatial and media solutions, helping clients improve project outcomes, visibility, and communication through accurate data and compelling imagery.
                   </p>
-                </div>
-              </motion.div>
-            )}
-
-            {activeTab === 'journey' && (
-              <motion.div
-                key="journey"
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: -20 }}
-              >
-                <div className="space-y-8">
-                  {timeline.map((item, index) => (
-                    <motion.div
-                      key={item.year}
-                      initial={{ opacity: 0, x: index % 2 === 0 ? -50 : 50 }}
-                      animate={{ opacity: 1, x: 0 }}
-                      transition={{ delay: index * 0.1 }}
-                      className="flex items-start gap-6"
-                    >
-                      <div className="flex-shrink-0 w-24 h-24 bg-gradient-to-br from-drone-600 to-sky-600 rounded-2xl flex flex-col items-center justify-center text-white shadow-xl">
-                        <div className="text-3xl mb-1">{item.icon}</div>
-                        <div className="text-sm font-bold">{item.year}</div>
-                      </div>
-                      <div className="flex-1 bg-gradient-to-br from-gray-50 to-white rounded-2xl p-8 shadow-lg hover:shadow-xl transition-shadow">
-                        <h3 className="text-2xl font-bold mb-3 text-gray-900">{item.event}</h3>
-                        <p className="text-gray-600 mb-3 text-lg">{item.description}</p>
-                        <p className="text-gray-500">{item.details}</p>
-                      </div>
-                    </motion.div>
-                  ))}
                 </div>
               </motion.div>
             )}
@@ -463,30 +392,27 @@ export default function About() {
             <p className="text-xl text-gray-600">Passionate professionals driving aerial innovation</p>
           </motion.div>
 
-          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
-            {team.map((member, index) => (
-              <motion.div
-                key={member.name}
-                initial={{ opacity: 0, y: 30 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ delay: index * 0.1 }}
-                whileHover={{ y: -10 }}
-                onClick={() => setSelectedMember(member)}
-                className="bg-white rounded-3xl p-8 shadow-lg hover:shadow-2xl transition-all cursor-pointer group"
-              >
-                <div className="text-5xl sm:text-6xl md:text-7xl mb-6 group-hover:scale-110 transition-transform">
-                  {member.image}
-                </div>
-                <h3 className="text-xl font-bold mb-2 text-gray-900">{member.name}</h3>
-                <p className="text-drone-600 font-semibold mb-4">{member.role}</p>
-                <p className="text-gray-600 text-sm mb-4">{member.bio}</p>
-                <button className="text-drone-600 font-semibold text-sm hover:text-drone-700 flex items-center gap-2">
-                  View Profile
-                  <span className="group-hover:translate-x-1 transition-transform">→</span>
-                </button>
-              </motion.div>
-            ))}
+          <div className="flex justify-center">
+            <motion.div
+              initial={{ opacity: 0, y: 30 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ delay: 0.1 }}
+              whileHover={{ y: -10 }}
+              onClick={() => setSelectedMember(team[0])}
+              className="bg-white rounded-3xl p-8 shadow-lg hover:shadow-2xl transition-all cursor-pointer group max-w-md"
+            >
+              <div className="text-5xl sm:text-6xl md:text-7xl mb-6 group-hover:scale-110 transition-transform">
+                {team[0].image}
+              </div>
+              <h3 className="text-xl font-bold mb-2 text-gray-900">{team[0].name}</h3>
+              <p className="text-drone-600 font-semibold mb-4">{team[0].role}</p>
+              <p className="text-gray-600 text-sm mb-4">{team[0].bio}</p>
+              <button className="text-drone-600 font-semibold text-sm hover:text-drone-700 flex items-center gap-2">
+                View Profile
+                <span className="group-hover:translate-x-1 transition-transform">→</span>
+              </button>
+            </motion.div>
           </div>
         </div>
       </section>
@@ -667,7 +593,7 @@ export default function About() {
             <div className="mt-12 flex flex-col sm:flex-row items-center justify-center gap-8 text-white/80">
               <div className="flex items-center gap-2">
                 <span className="text-2xl">📧</span>
-                <span>sales@caghana.com</span>
+                <span>visuals@caghana.com</span>
               </div>
               <div className="flex items-center gap-2">
                 <span className="text-2xl">📍</span>

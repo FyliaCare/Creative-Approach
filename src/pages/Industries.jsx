@@ -708,7 +708,7 @@ export default function Industries() {
             <div className="mt-12 flex flex-col sm:flex-row items-center justify-center gap-8 text-white/80">
               <div className="flex items-center gap-2">
                 <span className="text-2xl">📧</span>
-                <span>sales@caghana.com</span>
+                <span>visuals@caghana.com</span>
               </div>
               <div className="flex items-center gap-2">
                 <span className="text-2xl">📍</span>

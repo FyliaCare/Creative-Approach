@@ -206,7 +206,7 @@ export default function QuoteBot({ isOpen, onClose }) {
         ...prev,
         {
           type: 'bot',
-          text: `❌ Oops! Something went wrong. Please try again or contact us directly at sales@caghana.com or call +233 541 500 716.`,
+          text: `❌ Oops! Something went wrong. Please try again or contact us directly at visuals@caghana.com or call +233 541 500 716.`,
         },
       ]);
     } finally {

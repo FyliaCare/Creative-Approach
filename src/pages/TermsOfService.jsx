@@ -513,7 +513,7 @@ You confirm you are at least 18 years of age and legally competent to enter into
 
 **Contact for Questions:**
 If you have questions about these Terms, contact us before engaging our services:
-• Email: sales@caghana.com
+• Email: visuals@caghana.com
 • Phone: +233 541 500 716
 • Website: https://caghana.com
 

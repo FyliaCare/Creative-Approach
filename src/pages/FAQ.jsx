@@ -383,11 +383,11 @@ export default function FAQ() {
 
                 <div className="mt-8 pt-8 border-t border-white/20">
                   <a 
-                    href="mailto:sales@caghana.com"
+                    href="mailto:visuals@caghana.com"
                     className="inline-flex items-center gap-2 text-white/90 hover:text-white transition-colors"
                   >
                     <Mail className="w-5 h-5" />
-                    <span>sales@caghana.com</span>
+                    <span>visuals@caghana.com</span>
                   </a>
                 </div>
               </div>

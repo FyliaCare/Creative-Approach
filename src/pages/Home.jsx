@@ -690,10 +690,10 @@ export default function Home({ onOpenQuoteBot }) {
         <div className="container mx-auto px-4 max-w-7xl">
           <div className="grid grid-cols-2 lg:grid-cols-4 gap-8">
             {[
-              { number: 11, label: 'Projects Delivered', suffix: '' },
-              { number: 50, label: 'Happy Clients', suffix: '+' },
-              { number: 420, label: 'Flight Hours', suffix: '+' },
-              { number: 95, label: 'Success Rate', suffix: '%' }
+              { number: 50, label: 'Projects Delivered', suffix: '+' },
+              { number: 30, label: 'Happy Clients', suffix: '+' },
+              { number: 200, label: 'Flight Hours', suffix: '+' },
+              { number: 100, label: 'Success Rate', suffix: '%' }
             ].map((stat, index) => (
               <motion.div
                 key={stat.label}
@@ -795,7 +795,7 @@ export default function Home({ onOpenQuoteBot }) {
               <div className="hidden md:block text-white/40">|</div>
               <div className="flex items-center gap-2 justify-center">
                 <span>📧</span>
-                <span className="font-semibold">sales@caghana.com</span>
+                <span className="font-semibold">visuals@caghana.com</span>
               </div>
               <div className="hidden md:block text-white/40">|</div>
               <div className="flex items-center gap-2 justify-center">

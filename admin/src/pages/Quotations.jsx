@@ -1,6 +1,8 @@
 import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import axios from 'axios';
+import { jsPDF } from 'jspdf';
+import 'jspdf-autotable';
 
 const API_URL = import.meta.env.VITE_API_URL;
 
@@ -60,6 +62,88 @@ export const Quotations = () => {
     } catch (error) {
       console.error('Error deleting quote:', error);
     }
+  };
+
+  const generateQuotePDF = (quote) => {
+    const doc = new jsPDF();
+    const pageWidth = doc.internal.pageSize.width;
+    
+    // Header
+    doc.setFontSize(20);
+    doc.setFont('helvetica', 'bold');
+    doc.text('Creative Approach', 14, 20);
+    doc.setFontSize(10);
+    doc.setFont('helvetica', 'normal');
+    doc.text('Professional Drone Services', 14, 27);
+    doc.text('Contact: +233 54 150 0716', 14, 33);
+    doc.text('Email: visuals@caghana.com', 14, 39);
+    
+    // Quote Title
+    doc.setFontSize(16);
+    doc.setFont('helvetica', 'bold');
+    doc.text('QUOTATION REQUEST', pageWidth - 70, 20);
+    
+    // Quote Info
+    doc.setFontSize(10);
+    doc.setFont('helvetica', 'normal');
+    doc.text(`Date: ${new Date(quote.createdAt).toLocaleDateString()}`, pageWidth - 70, 27);
+    doc.text(`Status: ${quote.status.toUpperCase()}`, pageWidth - 70, 33);
+    
+    // Client Information
+    doc.setFontSize(12);
+    doc.setFont('helvetica', 'bold');
+    doc.text('CLIENT INFORMATION', 14, 55);
+    
+    doc.setFontSize(10);
+    doc.setFont('helvetica', 'normal');
+    doc.text(`Name: ${quote.name}`, 14, 63);
+    doc.text(`Email: ${quote.email}`, 14, 69);
+    doc.text(`Phone: ${quote.phone}`, 14, 75);
+    if (quote.company) {
+      doc.text(`Company: ${quote.company}`, 14, 81);
+    }
+    
+    // Project Details
+    doc.setFontSize(12);
+    doc.setFont('helvetica', 'bold');
+    doc.text('PROJECT DETAILS', 14, quote.company ? 95 : 89);
+    
+    doc.setFontSize(10);
+    doc.setFont('helvetica', 'normal');
+    const projectY = quote.company ? 103 : 97;
+    doc.text(`Service Type: ${quote.serviceType}`, 14, projectY);
+    doc.text(`Project Type: ${quote.projectType}`, 14, projectY + 6);
+    doc.text(`Budget: $${quote.budget}`, 14, projectY + 12);
+    doc.text(`Timeline: ${quote.timeline}`, 14, projectY + 18);
+    
+    // Project Description
+    doc.setFontSize(12);
+    doc.setFont('helvetica', 'bold');
+    doc.text('PROJECT DESCRIPTION', 14, projectY + 32);
+    
+    doc.setFontSize(10);
+    doc.setFont('helvetica', 'normal');
+    const splitDescription = doc.splitTextToSize(quote.projectDescription, pageWidth - 28);
+    doc.text(splitDescription, 14, projectY + 40);
+    
+    // Footer
+    const footerY = doc.internal.pageSize.height - 20;
+    doc.setFontSize(8);
+    doc.setTextColor(128, 128, 128);
+    doc.text('Creative Approach - Ghana-Wide Drone Services', pageWidth / 2, footerY, { align: 'center' });
+    doc.text('Takoradi, Ghana | visuals@caghana.com', pageWidth / 2, footerY + 5, { align: 'center' });
+    
+    return doc;
+  };
+
+  const downloadQuotePDF = (quote) => {
+    const doc = generateQuotePDF(quote);
+    doc.save(`Quote_${quote.name}_${new Date(quote.createdAt).toISOString().split('T')[0]}.pdf`);
+  };
+
+  const previewQuotePDF = (quote) => {
+    const doc = generateQuotePDF(quote);
+    window.open(doc.output('bloburl'), '_blank');
   };
 
   const filteredQuotes = quotes.filter(quote => {
@@ -283,6 +367,25 @@ export const Quotations = () => {
                 </div>
 
                 <div className="flex gap-2 pt-4 border-t">
+                  <button
+                    onClick={() => previewQuotePDF(selectedQuote)}
+                    className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 flex items-center gap-2"
+                  >
+                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                    </svg>
+                    Preview PDF
+                  </button>
+                  <button
+                    onClick={() => downloadQuotePDF(selectedQuote)}
+                    className="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 flex items-center gap-2"
+                  >
+                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+                    </svg>
+                    Download PDF
+                  </button>
                   <button
                     onClick={() => deleteQuote(selectedQuote._id)}
                     className="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700"

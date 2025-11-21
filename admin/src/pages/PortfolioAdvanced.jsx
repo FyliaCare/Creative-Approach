@@ -166,8 +166,8 @@ export const PortfolioAdvanced = () => {
     const file = e.target.files[0];
     if (!file) return;
 
-    if (file.size > 100 * 1024 * 1024) {
-      toast.error('Video file too large. Maximum size is 100MB.');
+    if (file.size > 150 * 1024 * 1024) {
+      toast.error('Video file too large. Maximum size is 150MB.');
       return;
     }
 
@@ -578,7 +578,7 @@ export const PortfolioAdvanced = () => {
                         <div className="text-4xl mb-2">🎥</div>
                         <p className="text-sm font-semibold text-gray-700 mb-1">Upload Video</p>
                         <p className="text-xs text-gray-500">Click to select video file</p>
-                        <p className="text-xs text-gray-400 mt-1">MP4, MOV, WebM (Max 100MB)</p>
+                        <p className="text-xs text-gray-400 mt-1">MP4, MOV, WebM (Max 150MB)</p>
                       </div>
 
                       {/* Video Preview */}

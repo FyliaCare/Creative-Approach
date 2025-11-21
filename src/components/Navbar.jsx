@@ -193,8 +193,8 @@ export default function Navbar({ onOpenQuoteBot }) {
                     <a href="tel:+233541500716" className="block text-gray-700 hover:text-drone-600">
                       📞 +233 541 500 716
                     </a>
-                    <a href="mailto:sales@caghana.com" className="block text-gray-700 hover:text-drone-600">
-                      ✉️ sales@caghana.com
+                    <a href="mailto:visuals@caghana.com" className="block text-gray-700 hover:text-drone-600">
+                      ✉️ visuals@caghana.com
                     </a>
                   </div>
                 </motion.div>

@@ -102,7 +102,7 @@ export default function Contact() {
         }, 5000);
       } catch (error) {
         setIsSubmitting(false);
-        setSubmitError(error.message || 'Failed to submit. Please try again or contact sales@caghana.com');
+        setSubmitError(error.message || 'Failed to submit. Please try again or contact visuals@caghana.com');
         console.error('Contact form error:', error);
       }
     } else {
