@@ -136,21 +136,21 @@ export const Dashboard = () => {
         { name: 'Tablet', value: 15, icon: Tablet, color: '#F59E0B' },
       ];
 
-      // Drone service distribution
+      // Drone service distribution - will be calculated from real projects
       const droneServices = {
-        aerial: Math.floor(Math.random() * 50) + 30,
-        inspection: Math.floor(Math.random() * 40) + 25,
-        surveying: Math.floor(Math.random() * 35) + 20,
-        mapping: Math.floor(Math.random() * 30) + 15,
+        aerial: 0,
+        inspection: 0,
+        surveying: 0,
+        mapping: 0,
       };
 
-      // Projects by industry
+      // Projects by industry - will be calculated from real projects
       const projectsByIndustry = [
-        { name: 'Real Estate', value: 35, color: '#3B82F6' },
-        { name: 'Construction', value: 28, color: '#10B981' },
-        { name: 'Agriculture', value: 18, color: '#F59E0B' },
-        { name: 'Infrastructure', value: 12, color: '#EF4444' },
-        { name: 'Media & Film', value: 7, color: '#8B5CF6' },
+        { name: 'Real Estate', value: 0, color: '#3B82F6' },
+        { name: 'Construction', value: 0, color: '#10B981' },
+        { name: 'Agriculture', value: 0, color: '#F59E0B' },
+        { name: 'Infrastructure', value: 0, color: '#EF4444' },
+        { name: 'Media & Film', value: 0, color: '#8B5CF6' },
       ];
 
       // Revenue data
@@ -175,12 +175,12 @@ export const Dashboard = () => {
       ].sort((a, b) => new Date(b.time) - new Date(a.time)).slice(0, 10);
 
       setStats({
-        totalVisitors: Math.floor(Math.random() * 5000) + 1000,
-        totalPageViews: Math.floor(Math.random() * 20000) + 5000,
+        totalVisitors: 0, // Will be populated from real analytics
+        totalPageViews: 0, // Will be populated from real analytics
         totalQuotes: quotes.length,
         totalSubscribers: subscribers.length,
         pendingQuotes,
-        activeChats: Math.floor(Math.random() * 5),
+        activeChats: 0, // Will be populated from real chat data,
         recentQuotes,
         recentSubscribers,
         deviceStats,
@@ -188,16 +188,10 @@ export const Dashboard = () => {
         droneServices,
         projectsByIndustry,
         revenueData,
-        flightHours: Math.floor(Math.random() * 500) + 200,
-        projectsCompleted: Math.floor(Math.random() * 150) + 50,
-        clientSatisfaction: 4.8,
-        topPages: [
-          { page: '/services', views: 1243, bounce: '32%' },
-          { page: '/portfolio', views: 987, bounce: '28%' },
-          { page: '/contact', views: 765, bounce: '41%' },
-          { page: '/about', views: 543, bounce: '35%' },
-          { page: '/blog', views: 432, bounce: '45%' },
-        ],
+        flightHours: 0, // Will be updated from real project data
+        projectsCompleted: 0, // Will be calculated from completed projects
+        clientSatisfaction: 0, // Will be calculated from client reviews,
+        topPages: [], // Will be populated from real analytics
       });
 
       setChartData(chartData);
@@ -211,25 +205,27 @@ export const Dashboard = () => {
 
   const generateChartData = (range) => {
     const days = range === '7d' ? 7 : range === '30d' ? 30 : 90;
+    // Will be populated from real analytics data
     return Array.from({ length: days }, (_, i) => {
       const date = subDays(new Date(), days - i - 1);
       return {
         date: format(date, 'MMM dd'),
-        visitors: Math.floor(Math.random() * 200) + 50,
-        pageViews: Math.floor(Math.random() * 600) + 150,
-        quotes: Math.floor(Math.random() * 15) + 1,
+        visitors: 0,
+        pageViews: 0,
+        quotes: 0,
       };
     });
   };
 
   const generateRevenueData = (range) => {
     const days = range === '7d' ? 7 : range === '30d' ? 30 : 90;
+    // Will be populated from real project revenue data
     return Array.from({ length: days }, (_, i) => {
       const date = subDays(new Date(), days - i - 1);
       return {
         date: format(date, 'MMM dd'),
-        revenue: Math.floor(Math.random() * 5000) + 1000,
-        projects: Math.floor(Math.random() * 10) + 2,
+        revenue: 0,
+        projects: 0,
       };
     });
   };
@@ -270,10 +266,10 @@ export const Dashboard = () => {
     },
     {
       name: 'Client Satisfaction',
-      value: stats.clientSatisfaction,
-      suffix: '/5.0',
-      change: '+0.2 this month',
-      trend: 'up',
+      value: stats.clientSatisfaction || 0,
+      suffix: stats.clientSatisfaction > 0 ? '/5.0' : '',
+      change: stats.clientSatisfaction > 0 ? '+0.2 this month' : 'No data yet',
+      trend: stats.clientSatisfaction > 0 ? 'up' : 'neutral',
       icon: Star,
       color: 'bg-amber-500',
       lightColor: 'bg-amber-50',
@@ -522,8 +518,12 @@ export const Dashboard = () => {
                       <p className="text-xs text-gray-500 mt-1">Projects</p>
                     </div>
                     <div className="text-right">
-                      <p className="text-sm font-semibold text-green-600">+{Math.floor(Math.random() * 20 + 5)}%</p>
-                      <p className="text-xs text-gray-500">vs last month</p>
+                      <p className="text-sm font-semibold text-green-600">
+                        {service.value > 0 ? `+${Math.floor(Math.random() * 20 + 5)}%` : 'No data'}
+                      </p>
+                      <p className="text-xs text-gray-500">
+                        {service.value > 0 ? 'vs last month' : 'Start tracking'}
+                      </p>
                     </div>
                   </div>
                 </div>
