@@ -130,9 +130,9 @@ export default function Contact() {
     {
       icon: '✉️',
       title: 'Email Us',
-      primary: 'sales@caghana.com',
+      primary: 'visuals@caghana.com',
       secondary: 'Available 24/7',
-      action: 'mailto:sales@caghana.com',
+      action: 'mailto:visuals@caghana.com',
       color: 'from-purple-500 to-pink-500'
     },
     {

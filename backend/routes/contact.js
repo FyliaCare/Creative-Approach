@@ -44,7 +44,7 @@ router.post('/', async (req, res) => {
     console.error('Contact form error:', error);
     res.status(500).json({
       success: false,
-      message: 'Failed to send message. Please try again or contact us directly at sales@caghana.com',
+      message: 'Failed to send message. Please try again or contact us directly at visuals@caghana.com',
     });
   }
 });

@@ -18,10 +18,10 @@ export const sendContactFormEmails = async (formData) => {
   const transporter = createTransporter();
   const { name, email, phone, location, service, message } = formData;
 
-  // Email to sales@caghana.com
+  // Email to visuals@caghana.com
   const salesEmail = {
     from: `"CA Ghana Website" <${process.env.EMAIL_USER}>`,
-    to: 'sales@caghana.com',
+    to: 'visuals@caghana.com',
     subject: `New Contact Form Submission - ${service || 'General Inquiry'}`,
     html: `
       <!DOCTYPE html>
@@ -115,7 +115,7 @@ export const sendContactFormEmails = async (formData) => {
               <h3 style="margin-top: 0; color: #10b981;">⚡ What Happens Next?</h3>
               <ul style="margin: 10px 0; padding-left: 20px;">
                 <li><strong>Within 2 hours:</strong> Our team will review your request</li>
-                <li><strong>Same day:</strong> You'll receive a personalized response from sales@caghana.com</li>
+                <li><strong>Same day:</strong> You'll receive a personalized response from visuals@caghana.com</li>
                 <li><strong>Custom quote:</strong> If needed, we'll prepare a detailed proposal for your project</li>
               </ul>
             </div>
@@ -133,7 +133,7 @@ export const sendContactFormEmails = async (formData) => {
           </div>
           <div class="footer">
             <p><strong>CA Ghana - Professional Drone Services</strong></p>
-            <p>📧 sales@caghana.com | 📱 +233 541 500 716</p>
+            <p>📧 visuals@caghana.com | 📱 +233 541 500 716</p>
             <p>Based in Takoradi, Serving All of Ghana</p>
           </div>
         </div>
@@ -172,10 +172,10 @@ export const sendQuoteRequestEmails = async (quoteData) => {
     additionalInfo 
   } = quoteData;
 
-  // Email to sales@caghana.com
+  // Email to visuals@caghana.com
   const salesEmail = {
     from: `"CA Ghana Website" <${process.env.EMAIL_USER}>`,
-    to: 'sales@caghana.com',
+    to: 'visuals@caghana.com',
     subject: `🎯 New Quote Request - ${service}`,
     html: `
       <!DOCTYPE html>
@@ -290,7 +290,7 @@ export const sendQuoteRequestEmails = async (quoteData) => {
               <h3 style="margin-top: 0; color: #10b981;">⚡ What Happens Next?</h3>
               <ul style="margin: 10px 0; padding-left: 20px;">
                 <li><strong>Within 2 hours:</strong> Our team will review your project requirements in detail</li>
-                <li><strong>Same day:</strong> You'll receive a personalized custom quote from sales@caghana.com</li>
+                <li><strong>Same day:</strong> You'll receive a personalized custom quote from visuals@caghana.com</li>
                 <li><strong>Free consultation:</strong> We'll schedule a call to discuss your project if needed</li>
                 <li><strong>Site assessment:</strong> If required, we can visit your location for accurate pricing</li>
               </ul>
@@ -314,7 +314,7 @@ export const sendQuoteRequestEmails = async (quoteData) => {
           </div>
           <div class="footer">
             <p><strong>CA Ghana - Professional Drone Services</strong></p>
-            <p>📧 sales@caghana.com | 📱 +233 541 500 716</p>
+            <p>📧 visuals@caghana.com | 📱 +233 541 500 716</p>
             <p>Based in Takoradi, Serving All of Ghana</p>
             <p style="margin-top: 10px; font-size: 11px;">GCAA Certified | 500+ Projects Completed</p>
           </div>

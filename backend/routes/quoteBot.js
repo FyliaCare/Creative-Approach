@@ -77,7 +77,7 @@ router.post('/', async (req, res) => {
     console.error('Quote bot error:', error);
     res.status(500).json({
       success: false,
-      message: 'Failed to submit quote request. Please try again or contact sales@caghana.com',
+      message: 'Failed to submit quote request. Please try again or contact visuals@caghana.com',
     });
   }
 });
