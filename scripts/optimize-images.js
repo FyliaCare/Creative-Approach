@@ -5,9 +5,13 @@
  * Run: node scripts/optimize-images.js
  */
 
-const fs = require('fs');
-const path = require('path');
-const sharp = require('sharp');
+import fs from 'fs';
+import path from 'path';
+import sharp from 'sharp';
+import { fileURLToPath } from 'url';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 // Directories to scan for images
 const imageDirs = [
@@ -122,7 +126,7 @@ async function optimizeImages() {
   
   // Check if sharp is installed
   try {
-    require.resolve('sharp');
+    await import('sharp');
   } catch (e) {
     console.error('❌ Sharp is not installed. Run: npm install --save-dev sharp');
     process.exit(1);
