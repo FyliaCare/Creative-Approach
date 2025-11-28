@@ -37,18 +37,30 @@ router.post('/', async (req, res) => {
       });
     }
 
+    // Map service names from quote bot to model enum values
+    const serviceMapping = {
+      'Aerial Photography & Videography': 'Aerial Photography',
+      'Drone Inspection & Monitoring': 'Drone Inspection',
+      'Mapping, Surveying & 3D Modelling': 'Mapping & Surveying',
+      'Documentary Films & Photography': 'Documentary Production',
+      'Custom Data Services & Training': 'Training',
+      'Emergency Response & Surveillance': 'Other'
+    };
+    
+    const mappedService = serviceMapping[service] || service;
+
     // Create quotation in database
     const quotation = await Quotation.create({
       name,
       email,
-      phone,
+      phone: phone || 'Not provided',
       company,
       location,
-      service,
-      projectDetails,
+      service: mappedService,
+      projectType: 'Other', // Default since quote bot doesn't ask for this
       budget,
       timeline,
-      additionalInfo,
+      message: projectDetails, // Map projectDetails to message field
       status: 'new',
       priority: 'high', // Quote bot leads are high priority
     });
