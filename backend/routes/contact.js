@@ -26,13 +26,16 @@ router.post('/', async (req, res) => {
     }
 
     // Send emails
-    await sendContactFormEmails({
+    sendContactFormEmails({
       name,
       email,
       phone,
       location,
       service,
       message,
+    }).catch(err => {
+      console.error('Failed to send contact form emails:', err);
+      // Continue anyway - user will see success message
     });
 
     res.status(200).json({

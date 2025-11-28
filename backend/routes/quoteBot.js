@@ -53,8 +53,8 @@ router.post('/', async (req, res) => {
       priority: 'high', // Quote bot leads are high priority
     });
 
-    // Send emails to sales and client
-    await sendQuoteRequestEmails({
+    // Send emails to sales and client (non-blocking - don't fail if email fails)
+    sendQuoteRequestEmails({
       name,
       email,
       phone,
@@ -65,6 +65,9 @@ router.post('/', async (req, res) => {
       budget,
       timeline,
       additionalInfo,
+    }).catch(err => {
+      console.error('Failed to send quote request emails:', err);
+      // Continue anyway - quotation is saved in database
     });
 
     res.status(201).json({
