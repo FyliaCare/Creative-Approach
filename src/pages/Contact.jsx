@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { quotationAPI } from '../services/api';
+import { contactAPI } from '../services/api';
 import SEO, { seoPresets } from '../components/SEO';
 
 export default function Contact() {
@@ -60,26 +60,14 @@ export default function Contact() {
       
       try {
         // Submit to contact API (sends emails to both sales and client)
-        const response = await fetch(`${import.meta.env.VITE_API_URL || 'http://localhost:5000'}/api/contact`, {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({
-            name: formData.name,
-            email: formData.email,
-            phone: formData.phone,
-            location: formData.location,
-            service: formData.service,
-            message: formData.message,
-          }),
+        const response = await contactAPI.submit({
+          name: formData.name,
+          email: formData.email,
+          phone: formData.phone,
+          location: formData.location,
+          service: formData.service,
+          message: formData.message,
         });
-
-        const data = await response.json();
-        
-        if (!response.ok) {
-          throw new Error(data.message || 'Failed to send message');
-        }
         
         setSubmitted(true);
         setIsSubmitting(false);

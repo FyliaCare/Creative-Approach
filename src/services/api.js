@@ -1,5 +1,15 @@
 // API Configuration
-const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000/api';
+const getApiBaseUrl = () => {
+  const envUrl = import.meta.env.VITE_API_URL;
+  if (!envUrl) {
+    return 'http://localhost:5000/api';
+  }
+  // If the URL already ends with /api, use it as is
+  // Otherwise, append /api
+  return envUrl.endsWith('/api') ? envUrl : `${envUrl}/api`;
+};
+
+const API_BASE_URL = getApiBaseUrl();
 
 // Generic API request handler
 const apiRequest = async (endpoint, options = {}) => {
@@ -31,17 +41,27 @@ const apiRequest = async (endpoint, options = {}) => {
 // Newsletter API
 export const newsletterAPI = {
   subscribe: async (email, name = '') => {
-    return apiRequest('/newsletter/subscribe', {
-      method: 'POST',
-      body: JSON.stringify({ email, name }),
-    });
+    try {
+      return await apiRequest('/newsletter/subscribe', {
+        method: 'POST',
+        body: JSON.stringify({ email, name }),
+      });
+    } catch (error) {
+      console.error('Newsletter subscription error:', error);
+      throw new Error(error.message || 'Failed to subscribe to newsletter. Please try again.');
+    }
   },
   
   unsubscribe: async (email) => {
-    return apiRequest('/newsletter/unsubscribe', {
-      method: 'POST',
-      body: JSON.stringify({ email }),
-    });
+    try {
+      return await apiRequest('/newsletter/unsubscribe', {
+        method: 'POST',
+        body: JSON.stringify({ email }),
+      });
+    } catch (error) {
+      console.error('Newsletter unsubscribe error:', error);
+      throw new Error(error.message || 'Failed to unsubscribe. Please try again.');
+    }
   },
 };
 
@@ -112,9 +132,41 @@ export const portfolioAPI = {
   },
 };
 
+// Contact API
+export const contactAPI = {
+  submit: async (contactData) => {
+    try {
+      return await apiRequest('/contact', {
+        method: 'POST',
+        body: JSON.stringify(contactData),
+      });
+    } catch (error) {
+      console.error('Contact form error:', error);
+      throw new Error(error.message || 'Failed to send message. Please try again.');
+    }
+  },
+};
+
+// Quote Bot API
+export const quoteBotAPI = {
+  submit: async (quoteData) => {
+    try {
+      return await apiRequest('/quote-bot', {
+        method: 'POST',
+        body: JSON.stringify(quoteData),
+      });
+    } catch (error) {
+      console.error('Quote bot error:', error);
+      throw new Error(error.message || 'Failed to submit quote. Please try again.');
+    }
+  },
+};
+
 export default {
   newsletterAPI,
   blogAPI,
   quotationAPI,
   portfolioAPI,
+  contactAPI,
+  quoteBotAPI,
 };

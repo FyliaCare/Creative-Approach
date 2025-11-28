@@ -1,9 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { X, Send, Loader, CheckCircle } from 'lucide-react';
-import axios from 'axios';
-
-const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000';
+import { quoteBotAPI } from '../services/api';
 
 export default function QuoteBot({ isOpen, onClose }) {
   const [step, setStep] = useState(0);
@@ -185,7 +183,7 @@ export default function QuoteBot({ isOpen, onClose }) {
     ]);
 
     try {
-      const response = await axios.post(`${API_URL}/api/quote-bot`, data);
+      await quoteBotAPI.submit(data);
 
       setMessages((prev) => [
         ...prev,

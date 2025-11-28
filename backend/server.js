@@ -47,7 +47,9 @@ const io = new Server(httpServer, {
       'https://www.caghana.com',
       'https://admin.caghana.com',
       'http://localhost:3000',
-      'http://localhost:3001'
+      'http://localhost:3001',
+      'http://localhost:5173',
+      'http://localhost:5174'
     ],
     methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
     credentials: true,
@@ -78,7 +80,9 @@ const allowedOrigins = [
   'https://www.caghana.com',
   'https://admin.caghana.com',
   'http://localhost:3000',
-  'http://localhost:3001'
+  'http://localhost:3001',
+  'http://localhost:5173',
+  'http://localhost:5174'
 ].filter(Boolean);
 
 console.log('🔓 CORS allowed origins:', allowedOrigins);
