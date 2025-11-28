@@ -28,7 +28,6 @@ self.addEventListener('install', (event) => {
   event.waitUntil(
     caches.open(CACHE_NAME)
       .then((cache) => {
-        console.log('📦 SW: Caching app shell');
         return cache.addAll(PRECACHE_ASSETS);
       })
       .then(() => self.skipWaiting())
@@ -42,10 +41,7 @@ self.addEventListener('activate', (event) => {
       return Promise.all(
         cacheNames
           .filter((name) => !name.includes(CACHE_VERSION))
-          .map((name) => {
-            console.log('🗑️  SW: Removing old cache:', name);
-            return caches.delete(name);
-          })
+          .map((name) => caches.delete(name))
       );
     }).then(() => self.clients.claim())
   );
@@ -153,7 +149,6 @@ self.addEventListener('sync', (event) => {
 });
 
 async function syncOfflineData() {
-  console.log('🔄 SW: Syncing offline data');
   // Implement offline data synchronization logic here
 }
 

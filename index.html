@@ -30,11 +30,22 @@
     <!-- Theme Color -->
     <meta name="theme-color" content="#1e40af" />
     
-    <!-- Preconnect to Important Domains -->
+    <!-- DNS Prefetch & Preconnect for Performance -->
+    <link rel="dns-prefetch" href="https://fonts.googleapis.com" />
+    <link rel="dns-prefetch" href="https://fonts.gstatic.com" />
+    <link rel="dns-prefetch" href="https://api.caghana.com" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link rel="preconnect" href="https://api.caghana.com" />
     
     <title>Creative Approach - Professional Drone Services in Ghana</title>
+    
+    <!-- Inline Critical CSS for faster first paint -->
+    <style>
+      body{margin:0;font-family:system-ui,-apple-system,sans-serif;-webkit-font-smoothing:antialiased}
+      #root{min-height:100vh}
+      .loading{display:flex;align-items:center;justify-content:center;min-height:100vh;background:linear-gradient(135deg,#667eea 0%,#764ba2 100%)}
+    </style>
   </head>
   <body>
     <div id="root"></div>

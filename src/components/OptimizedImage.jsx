@@ -102,8 +102,11 @@ const OptimizedImage = ({
           <img
             src={src}
             alt={alt}
+            width={width}
+            height={height}
             loading={priority ? 'eager' : lazy ? 'lazy' : 'auto'}
             decoding="async"
+            fetchpriority={priority ? 'high' : 'auto'}
             onLoad={handleLoad}
             onError={handleError}
             className={`w-full h-full transition-opacity duration-300 ${
@@ -131,6 +134,8 @@ export const ResponsiveImage = ({
   srcDesktop,
   alt,
   className = '',
+  width,
+  height,
   ...props
 }) => {
   return (
@@ -149,6 +154,8 @@ export const ResponsiveImage = ({
       <img
         src={srcDesktop}
         alt={alt}
+        width={width}
+        height={height}
         loading="lazy"
         decoding="async"
         className="w-full h-full object-cover"

@@ -86,6 +86,9 @@ export default function Navbar({ onOpenQuoteBot }) {
           <button
             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
             className="lg:hidden p-2 z-50"
+            aria-label={mobileMenuOpen ? "Close navigation menu" : "Open navigation menu"}
+            aria-expanded={mobileMenuOpen}
+            aria-controls="mobile-menu"
           >
             <motion.div 
               className="w-6 h-5 flex flex-col justify-between"
@@ -137,6 +140,9 @@ export default function Navbar({ onOpenQuoteBot }) {
               exit={{ x: '100%' }}
               transition={{ type: 'spring', damping: 30, stiffness: 300 }}
               className="fixed top-0 right-0 bottom-0 w-80 max-w-[85vw] bg-white shadow-2xl z-50 lg:hidden overflow-y-auto"
+              id="mobile-menu"
+              role="navigation"
+              aria-label="Mobile navigation"
             >
               <div className="p-6 pt-20">
                 {/* Mobile Navigation Links */}
@@ -176,6 +182,7 @@ export default function Navbar({ onOpenQuoteBot }) {
                       onOpenQuoteBot();
                     }}
                     className="w-full py-4 bg-gradient-to-r from-drone-500 to-sky-500 text-white rounded-xl font-semibold text-lg shadow-xl hover:shadow-2xl transition-all"
+                    aria-label="Get a free quote - opens quote request form"
                   >
                     Get a Free Quote
                   </button>
@@ -190,10 +197,18 @@ export default function Navbar({ onOpenQuoteBot }) {
                 >
                   <p className="text-sm text-gray-600 mb-4">Get in touch</p>
                   <div className="space-y-3 text-sm">
-                    <a href="tel:+233541500716" className="block text-gray-700 hover:text-drone-600">
+                    <a 
+                      href="tel:+233541500716" 
+                      className="block text-gray-700 hover:text-drone-600"
+                      aria-label="Call us at +233 541 500 716"
+                    >
                       📞 +233 541 500 716
                     </a>
-                    <a href="mailto:visuals@caghana.com" className="block text-gray-700 hover:text-drone-600">
+                    <a 
+                      href="mailto:visuals@caghana.com" 
+                      className="block text-gray-700 hover:text-drone-600"
+                      aria-label="Email us at visuals@caghana.com"
+                    >
                       ✉️ visuals@caghana.com
                     </a>
                   </div>
