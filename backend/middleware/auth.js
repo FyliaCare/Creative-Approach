@@ -39,7 +39,9 @@ export const protect = async (req, res, next) => {
     
     next();
   } catch (error) {
-    console.error('Auth middleware error:', error);
+    console.error('❌ Auth middleware error:', error.message);
+    console.error('Token received:', token ? token.substring(0, 20) + '...' : 'none');
+    console.error('JWT_SECRET configured:', process.env.JWT_SECRET ? 'Yes' : 'No');
     return res.status(401).json({
       success: false,
       message: 'Not authorized, invalid token'

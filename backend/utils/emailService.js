@@ -2,13 +2,27 @@ import nodemailer from 'nodemailer';
 
 // Create reusable transporter
 const createTransporter = () => {
+  // Check if email credentials are configured
+  const emailUser = process.env.EMAIL_USER;
+  const emailPassword = process.env.EMAIL_PASSWORD || process.env.EMAIL_PASS;
+  
+  if (!emailUser || !emailPassword) {
+    console.error('❌ Email credentials not configured! Please set EMAIL_USER and EMAIL_PASSWORD in .env file');
+    throw new Error('Email service not configured');
+  }
+  
+  if (emailUser === 'your-gmail@gmail.com' || emailPassword === 'your-app-specific-password') {
+    console.error('❌ Email credentials still using placeholder values! Please update .env file with real credentials');
+    throw new Error('Email service not configured with valid credentials');
+  }
+  
   return nodemailer.createTransport({
     host: process.env.EMAIL_HOST || 'smtp.gmail.com',
     port: process.env.EMAIL_PORT || 587,
     secure: false, // true for 465, false for other ports
     auth: {
-      user: process.env.EMAIL_USER,
-      pass: process.env.EMAIL_PASS,
+      user: emailUser,
+      pass: emailPassword,
     },
   });
 };

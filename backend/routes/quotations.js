@@ -4,6 +4,7 @@ import Quotation from '../models/Quotation.js';
 import User from '../models/User.js';
 import { protect, authorize } from '../middleware/auth.js';
 import NotificationService from '../utils/notificationService.js';
+import { sendQuoteRequestEmails } from '../utils/emailService.js';
 
 const router = express.Router();
 
@@ -52,8 +53,25 @@ router.post('/', [
       console.error('Error sending notification:', notifError);
     }
     
-    // TODO: Send email notification to admin
-    // TODO: Send confirmation email to customer
+    // Send email notification to admin and confirmation to customer
+    try {
+      await sendQuoteRequestEmails({
+        name: quotation.name,
+        email: quotation.email,
+        phone: quotation.phone,
+        company: quotation.company,
+        location: quotation.location,
+        service: quotation.service,
+        projectDetails: quotation.message,
+        budget: quotation.budget,
+        timeline: quotation.timeline,
+        additionalInfo: quotation.additionalInfo
+      });
+      console.log('✅ Quote request emails sent successfully to:', quotation.email);
+    } catch (emailError) {
+      console.error('❌ Failed to send quote request emails:', emailError.message);
+      // Continue - don't fail the request if email fails
+    }
     
     res.status(201).json({
       success: true,

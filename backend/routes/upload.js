@@ -72,7 +72,12 @@ const videoUpload = multer({
 // @access  Private/Admin
 router.post('/image', protect, authorize('admin'), upload.single('image'), async (req, res, next) => {
   try {
+    console.log('📤 Upload request received');
+    console.log('User:', req.user?.email);
+    console.log('File:', req.file);
+    
     if (!req.file) {
+      console.error('❌ No file in request');
       return res.status(400).json({
         success: false,
         message: 'No file uploaded'
@@ -185,6 +190,8 @@ router.post('/video', protect, authorize('admin'), videoUpload.single('video'), 
 
 // Error handling for multer
 router.use((error, req, res, next) => {
+  console.error('❌ Upload error:', error);
+  
   if (error instanceof multer.MulterError) {
     if (error.code === 'LIMIT_FILE_SIZE') {
       return res.status(400).json({
@@ -198,7 +205,23 @@ router.use((error, req, res, next) => {
         message: 'Too many files. Maximum is 10 files'
       });
     }
+    return res.status(400).json({
+      success: false,
+      message: `Upload error: ${error.message}`
+    });
   }
+  
+  if (error.message && error.message.includes('Invalid file type')) {
+    return res.status(400).json({
+      success: false,
+      message: error.message
+    });
+  }
+  
+  return res.status(500).json({
+    success: false,
+    message: error.message || 'Upload failed'
+  });
   next(error);
 });
 
