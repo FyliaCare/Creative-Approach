@@ -2,6 +2,7 @@ import express from 'express';
 import multer from 'multer';
 import path from 'path';
 import { fileURLToPath } from 'url';
+import { Readable } from 'stream';
 import { v2 as cloudinary } from 'cloudinary';
 import { protect, authorize } from '../middleware/auth.js';
 
@@ -114,7 +115,7 @@ router.post('/image', protect, authorize('admin'), upload.single('image'), async
     );
     
     // Pipe the buffer to Cloudinary
-    const bufferStream = require('stream').Readable.from(req.file.buffer);
+    const bufferStream = Readable.from(req.file.buffer);
     bufferStream.pipe(uploadStream);
     
   } catch (error) {
@@ -157,7 +158,7 @@ router.post('/images', protect, authorize('admin'), upload.array('images', 10), 
           }
         );
         
-        const bufferStream = require('stream').Readable.from(file.buffer);
+        const bufferStream = Readable.from(file.buffer);
         bufferStream.pipe(uploadStream);
       });
     });
@@ -213,7 +214,7 @@ router.post('/document', protect, authorize('admin'), upload.single('document'),
       }
     );
     
-    const bufferStream = require('stream').Readable.from(req.file.buffer);
+    const bufferStream = Readable.from(req.file.buffer);
     bufferStream.pipe(uploadStream);
     
   } catch (error) {
@@ -263,7 +264,7 @@ router.post('/video', protect, authorize('admin'), videoUpload.single('video'), 
       }
     );
     
-    const bufferStream = require('stream').Readable.from(req.file.buffer);
+    const bufferStream = Readable.from(req.file.buffer);
     bufferStream.pipe(uploadStream);
     
   } catch (error) {
