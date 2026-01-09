@@ -2,6 +2,7 @@ import express from 'express';
 import multer from 'multer';
 import path from 'path';
 import { fileURLToPath } from 'url';
+import { v2 as cloudinary } from 'cloudinary';
 import { protect, authorize } from '../middleware/auth.js';
 
 const __filename = fileURLToPath(import.meta.url);
@@ -9,17 +10,15 @@ const __dirname = path.dirname(__filename);
 
 const router = express.Router();
 
-// Configure multer storage
-const storage = multer.diskStorage({
-  destination: function (req, file, cb) {
-    const uploadDir = path.join(__dirname, '..', 'uploads');
-    cb(null, uploadDir);
-  },
-  filename: function (req, file, cb) {
-    const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
-    cb(null, file.fieldname + '-' + uniqueSuffix + path.extname(file.originalname));
-  }
+// Configure Cloudinary
+cloudinary.config({
+  cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
+  api_key: process.env.CLOUDINARY_API_KEY,
+  api_secret: process.env.CLOUDINARY_API_SECRET
 });
+
+// Configure multer to use memory storage for Cloudinary
+const storage = multer.memoryStorage();
 
 // File filter for images and documents
 const fileFilter = (req, file, cb) => {
@@ -84,18 +83,40 @@ router.post('/image', protect, authorize('admin'), upload.single('image'), async
       });
     }
     
-    const fileUrl = `/uploads/${req.file.filename}`;
-    
-    res.json({
-      success: true,
-      data: {
-        url: fileUrl,
-        filename: req.file.filename,
-        originalName: req.file.originalname,
-        size: req.file.size,
-        mimetype: req.file.mimetype
+    // Upload to Cloudinary
+    const uploadStream = cloudinary.uploader.upload_stream(
+      {
+        folder: 'creative-approach',
+        resource_type: 'auto'
+      },
+      (error, result) => {
+        if (error) {
+          console.error('❌ Cloudinary upload error:', error);
+          return res.status(500).json({
+            success: false,
+            message: 'Failed to upload image'
+          });
+        }
+        
+        console.log('✅ Image uploaded to Cloudinary:', result.secure_url);
+        
+        res.json({
+          success: true,
+          data: {
+            url: result.secure_url,
+            filename: result.public_id,
+            originalName: req.file.originalname,
+            size: req.file.size,
+            mimetype: req.file.mimetype
+          }
+        });
       }
-    });
+    );
+    
+    // Pipe the buffer to Cloudinary
+    const bufferStream = require('stream').Readable.from(req.file.buffer);
+    bufferStream.pipe(uploadStream);
+    
   } catch (error) {
     next(error);
   }
@@ -113,13 +134,35 @@ router.post('/images', protect, authorize('admin'), upload.array('images', 10), 
       });
     }
     
-    const files = req.files.map(file => ({
-      url: `/uploads/${file.filename}`,
-      filename: file.filename,
-      originalName: file.originalname,
-      size: file.size,
-      mimetype: file.mimetype
-    }));
+    // Upload all files to Cloudinary
+    const uploadPromises = req.files.map(file => {
+      return new Promise((resolve, reject) => {
+        const uploadStream = cloudinary.uploader.upload_stream(
+          {
+            folder: 'creative-approach',
+            resource_type: 'auto'
+          },
+          (error, result) => {
+            if (error) {
+              reject(error);
+            } else {
+              resolve({
+                url: result.secure_url,
+                filename: result.public_id,
+                originalName: file.originalname,
+                size: file.size,
+                mimetype: file.mimetype
+              });
+            }
+          }
+        );
+        
+        const bufferStream = require('stream').Readable.from(file.buffer);
+        bufferStream.pipe(uploadStream);
+      });
+    });
+    
+    const files = await Promise.all(uploadPromises);
     
     res.json({
       success: true,
@@ -142,18 +185,37 @@ router.post('/document', protect, authorize('admin'), upload.single('document'),
       });
     }
     
-    const fileUrl = `/uploads/${req.file.filename}`;
-    
-    res.json({
-      success: true,
-      data: {
-        url: fileUrl,
-        filename: req.file.filename,
-        originalName: req.file.originalname,
-        size: req.file.size,
-        mimetype: req.file.mimetype
+    // Upload to Cloudinary
+    const uploadStream = cloudinary.uploader.upload_stream(
+      {
+        folder: 'creative-approach/documents',
+        resource_type: 'raw'
+      },
+      (error, result) => {
+        if (error) {
+          console.error('❌ Cloudinary upload error:', error);
+          return res.status(500).json({
+            success: false,
+            message: 'Failed to upload document'
+          });
+        }
+        
+        res.json({
+          success: true,
+          data: {
+            url: result.secure_url,
+            filename: result.public_id,
+            originalName: req.file.originalname,
+            size: req.file.size,
+            mimetype: req.file.mimetype
+          }
+        });
       }
-    });
+    );
+    
+    const bufferStream = require('stream').Readable.from(req.file.buffer);
+    bufferStream.pipe(uploadStream);
+    
   } catch (error) {
     next(error);
   }
@@ -171,18 +233,39 @@ router.post('/video', protect, authorize('admin'), videoUpload.single('video'), 
       });
     }
     
-    const fileUrl = `/uploads/${req.file.filename}`;
-    
-    res.json({
-      success: true,
-      data: {
-        url: fileUrl,
-        filename: req.file.filename,
-        originalName: req.file.originalname,
-        size: req.file.size,
-        mimetype: req.file.mimetype
+    // Upload to Cloudinary
+    const uploadStream = cloudinary.uploader.upload_stream(
+      {
+        folder: 'creative-approach/videos',
+        resource_type: 'video',
+        chunk_size: 6000000 // 6MB chunks for large videos
+      },
+      (error, result) => {
+        if (error) {
+          console.error('❌ Cloudinary video upload error:', error);
+          return res.status(500).json({
+            success: false,
+            message: 'Failed to upload video'
+          });
+        }
+        
+        res.json({
+          success: true,
+          data: {
+            url: result.secure_url,
+            filename: result.public_id,
+            originalName: req.file.originalname,
+            size: req.file.size,
+            mimetype: req.file.mimetype,
+            duration: result.duration
+          }
+        });
       }
-    });
+    );
+    
+    const bufferStream = require('stream').Readable.from(req.file.buffer);
+    bufferStream.pipe(uploadStream);
+    
   } catch (error) {
     next(error);
   }
