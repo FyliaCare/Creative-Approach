@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from 'react';
-import { motion } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
 import {
   Download,
   Eye,
@@ -8,7 +8,26 @@ import {
   Trash2,
   FileText,
   CheckCircle2,
-  Loader2
+  Loader2,
+  ArrowRight,
+  ArrowLeft,
+  Send,
+  Copy,
+  Upload,
+  Image as ImageIcon,
+  Palette,
+  Users,
+  Mail,
+  Clock,
+  TrendingUp,
+  ChevronRight,
+  Building2,
+  MapPin,
+  Calendar,
+  DollarSign,
+  Percent,
+  Settings,
+  Sparkles
 } from 'lucide-react';
 import jsPDF from 'jspdf';
 import 'jspdf-autotable';
@@ -18,7 +37,57 @@ const API_URL =
   import.meta.env.VITE_API_URL ||
   'https://creative-approach-backend.onrender.com';
 
-const currencyOptions = ['GHS', 'USD', 'EUR', 'XOF'];
+const currencyOptions = [
+  { code: 'GHS', symbol: '₵', name: 'Ghana Cedi' },
+  { code: 'USD', symbol: '$', name: 'US Dollar' },
+  { code: 'EUR', symbol: '€', name: 'Euro' },
+  { code: 'XOF', symbol: 'CFA', name: 'West African CFA' },
+  { code: 'GBP', symbol: '£', name: 'British Pound' },
+  { code: 'NGN', symbol: '₦', name: 'Nigerian Naira' }
+];
+
+const quoteTemplates = [
+  {
+    id: 'aerial-photography',
+    name: 'Aerial Photography & Videography',
+    description: 'Professional aerial imaging services',
+    items: [
+      { title: 'Site survey and flight planning', description: 'Pre-flight site assessment, risk analysis, airspace clearance', quantity: 1, rate: 800, unit: 'project', category: 'Planning' },
+      { title: 'Aerial photography capture', description: '4K drone photography, multiple angles and perspectives', quantity: 2, rate: 1500, unit: 'day', category: 'Capture' },
+      { title: 'Post-processing and editing', description: 'Color grading, retouching, final delivery in multiple formats', quantity: 1, rate: 1200, unit: 'project', category: 'Processing' }
+    ],
+    defaultCurrency: 'GHS'
+  },
+  {
+    id: 'mapping-survey',
+    name: 'Mapping & Surveying',
+    description: 'High-precision drone mapping and surveying',
+    items: [
+      { title: 'Field survey operations', description: 'Ground control points, flight operations, data capture', quantity: 3, rate: 1200, unit: 'day', category: 'Field Work' },
+      { title: 'Data processing', description: 'Orthomosaic generation, DEM/DSM, contours, volume calculations', quantity: 1, rate: 2500, unit: 'project', category: 'Processing' },
+      { title: 'Deliverables and reporting', description: 'CAD files, GIS data, analytical reports, site maps', quantity: 1, rate: 800, unit: 'project', category: 'Reporting' }
+    ],
+    defaultCurrency: 'GHS'
+  },
+  {
+    id: 'inspection',
+    name: 'Infrastructure Inspection',
+    description: 'Detailed drone inspection services',
+    items: [
+      { title: 'Pre-inspection planning', description: 'Site assessment, safety protocols, flight authorization', quantity: 1, rate: 600, unit: 'project', category: 'Planning' },
+      { title: 'Inspection flight operations', description: 'Thermal imaging, high-res photography, structural assessment', quantity: 2, rate: 1800, unit: 'day', category: 'Operations' },
+      { title: 'Analysis and reporting', description: 'Defect identification, thermal analysis, comprehensive report', quantity: 1, rate: 1500, unit: 'project', category: 'Analysis' }
+    ],
+    defaultCurrency: 'GHS'
+  },
+  {
+    id: 'custom',
+    name: 'Custom Quote',
+    description: 'Start from scratch',
+    items: [],
+    defaultCurrency: 'GHS'
+  }
+];
 
 const buildLineItem = (overrides = {}) => ({
   id: Date.now() + Math.random(),
@@ -32,12 +101,19 @@ const buildLineItem = (overrides = {}) => ({
 });
 
 export default function QuotationGenerator() {
+  const [currentStep, setCurrentStep] = useState(1);
+  const [selectedTemplate, setSelectedTemplate] = useState(null);
+  const [companyLogo, setCompanyLogo] = useState(null);
+  const [showTemplateModal, setShowTemplateModal] = useState(true);
+  
   const [invoiceInfo, setInvoiceInfo] = useState({
     invoiceNumber: '',
     issueDate: new Date().toISOString().split('T')[0],
     dueDate: '',
+    validUntil: '',
     currency: 'GHS',
-    language: 'english'
+    language: 'english',
+    status: 'draft' // draft, sent, viewed, approved, rejected, paid
   });
 
   const [clientInfo, setClientInfo] = useState({
@@ -59,12 +135,26 @@ export default function QuotationGenerator() {
 
   const [billing, setBilling] = useState({
     taxRate: 5,
+    taxLabel: 'VAT',
     discountType: 'percent',
     discountValue: 0,
     deposit: 40,
+    depositType: 'percent', // percent or fixed
+    showCostPrice: false, // for profit margin tracking
     paymentTerms: 'Payment due within 10 working days after delivery.',
     validity: 'Quotation valid for 14 days from issue.',
-    notes: 'We combine flight safety, data quality, and quick delivery.'
+    notes: 'We combine flight safety, data quality, and quick delivery.',
+    paymentMethods: ['Bank Transfer', 'Mobile Money', 'Cash']
+  });
+
+  const [branding, setBranding] = useState({
+    primaryColor: '#3b82f6',
+    logoUrl: '',
+    companyName: 'Creative Approach',
+    companyAddress: 'Takoradi, Ghana',
+    companyPhone: '0241800716 / 0203885717',
+    companyEmail: 'aeroscoutdrone@gmail.com',
+    website: 'www.creativeapproach.com'
   });
 
   const [extras, setExtras] = useState({
@@ -78,6 +168,7 @@ export default function QuotationGenerator() {
       description: 'Flight crew, control points, safety supervision',
       quantity: 2,
       rate: 1200,
+      costPrice: 800, // for profit tracking
       unit: 'day',
       category: 'Operations'
     }),
@@ -86,10 +177,19 @@ export default function QuotationGenerator() {
       description: 'Orthomosaic, DEM, feature extraction, reporting',
       quantity: 1,
       rate: 2500,
+      costPrice: 1500,
       unit: 'project',
       category: 'Processing'
     })
   ]);
+
+  const [milestones, setMilestones] = useState([
+    { id: 1, name: 'Project kickoff', percentage: 40, dueDate: '', status: 'pending' },
+    { id: 2, name: 'Delivery', percentage: 60, dueDate: '', status: 'pending' }
+  ]);
+
+  const [savedClients, setSavedClients] = useState([]);
+  const [quoteHistory, setQuoteHistory] = useState([]);
 
   const [saving, setSaving] = useState(false);
   const [success, setSuccess] = useState(false);
