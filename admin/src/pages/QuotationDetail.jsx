@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
-import { motion } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
 import {
   ArrowLeft,
   Mail,
@@ -31,6 +31,8 @@ export const QuotationDetail = () => {
   const [quotation, setQuotation] = useState(null);
   const [loading, setLoading] = useState(true);
   const [updating, setUpdating] = useState(false);
+  const [showRejectModal, setShowRejectModal] = useState(false);
+  const [rejectionReason, setRejectionReason] = useState('');
 
   useEffect(() => {
     fetchQuotation();
@@ -59,6 +61,19 @@ export const QuotationDetail = () => {
   };
 
   const updateStatus = async (newStatus) => {
+    // Handle rejection - require reason
+    if (newStatus === 'rejected') {
+      setShowRejectModal(true);
+      return;
+    }
+
+    // Handle acceptance - send acceptance email
+    if (newStatus === 'accepted') {
+      if (!confirm('This will send an acceptance email to the client. Continue?')) {
+        return;
+      }
+    }
+
     try {
       setUpdating(true);
       const token = localStorage.getItem('adminToken');
@@ -75,6 +90,38 @@ export const QuotationDetail = () => {
     } catch (error) {
       console.error('Error updating status:', error);
       toast.error('Failed to update status');
+    } finally {
+      setUpdating(false);
+    }
+  };
+
+  const handleReject = async () => {
+    if (!rejectionReason.trim()) {
+      toast.error('Please provide a reason for rejection');
+      return;
+    }
+
+    try {
+      setUpdating(true);
+      const token = localStorage.getItem('adminToken');
+      const response = await axios.patch(
+        `${API_URL}/api/quotations/${id}/status`,
+        { 
+          status: 'rejected',
+          rejectionReason: rejectionReason.trim()
+        },
+        { headers: { Authorization: `Bearer ${token}` } }
+      );
+      
+      if (response.data.success || response.data) {
+        toast.success('Quotation rejected and client notified');
+        setShowRejectModal(false);
+        setRejectionReason('');
+        fetchQuotation();
+      }
+    } catch (error) {
+      console.error('Error rejecting quotation:', error);
+      toast.error('Failed to reject quotation');
     } finally {
       setUpdating(false);
     }
@@ -472,7 +519,7 @@ export const QuotationDetail = () => {
           >
             <h3 className="font-semibold text-gray-900 mb-4">Update Status</h3>
             <div className="space-y-2">
-              {['new', 'reviewed', 'quoted', 'accepted', 'rejected', 'completed'].map((status) => (
+              {['quoted', 'accepted', 'rejected'].map((status) => (
                 <button
                   key={status}
                   onClick={() => updateStatus(status)}
@@ -480,15 +527,16 @@ export const QuotationDetail = () => {
                   className={`w-full px-4 py-2 text-left rounded-lg transition-colors ${
                     quotation.status === status
                       ? 'bg-blue-600 text-white cursor-default'
+                      : status === 'accepted'
+                      ? 'bg-green-100 text-green-700 hover:bg-green-200 disabled:opacity-50'
+                      : status === 'rejected'
+                      ? 'bg-red-100 text-red-700 hover:bg-red-200 disabled:opacity-50'
                       : 'bg-gray-100 text-gray-700 hover:bg-gray-200 disabled:opacity-50'
                   }`}
                 >
-                  {status === 'new' && '🆕'} 
-                  {status === 'reviewed' && '👁️'} 
                   {status === 'quoted' && '💰'} 
                   {status === 'accepted' && '✅'} 
                   {status === 'rejected' && '❌'}
-                  {status === 'completed' && '🎉'}
                   {' '}
                   {status.charAt(0).toUpperCase() + status.slice(1)}
                 </button>
@@ -558,6 +606,61 @@ export const QuotationDetail = () => {
             </motion.div>
           )}
         </div>
+
+      {/* Rejection Modal */}
+      <AnimatePresence>
+        {showRejectModal && (
+          <>
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              className="fixed inset-0 bg-black/50 z-40"
+              onClick={() => setShowRejectModal(false)}
+            />
+            <motion.div
+              initial={{ opacity: 0, scale: 0.95 }}
+              animate={{ opacity: 1, scale: 1 }}
+              exit={{ opacity: 0, scale: 0.95 }}
+              className="fixed inset-0 z-50 flex items-center justify-center p-4"
+            >
+              <div className="bg-white rounded-lg shadow-xl max-w-md w-full p-6">
+                <h3 className="text-xl font-bold text-gray-900 mb-4">Reject Quotation</h3>
+                <p className="text-gray-600 mb-4">
+                  Please provide a reason for rejecting this quotation. This will be sent to the client.
+                </p>
+                <textarea
+                  value={rejectionReason}
+                  onChange={(e) => setRejectionReason(e.target.value)}
+                  placeholder="Enter rejection reason..."
+                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-transparent resize-none"
+                  rows={4}
+                  autoFocus
+                />
+                <div className="flex gap-3 mt-6">
+                  <button
+                    onClick={() => {
+                      setShowRejectModal(false);
+                      setRejectionReason('');
+                    }}
+                    className="flex-1 px-4 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition-colors"
+                    disabled={updating}
+                  >
+                    Cancel
+                  </button>
+                  <button
+                    onClick={handleReject}
+                    className="flex-1 px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors disabled:opacity-50"
+                    disabled={updating || !rejectionReason.trim()}
+                  >
+                    {updating ? 'Rejecting...' : 'Reject & Notify Client'}
+                  </button>
+                </div>
+              </div>
+            </motion.div>
+          </>
+        )}
+      </AnimatePresence>
       </div>
     </div>
   );
