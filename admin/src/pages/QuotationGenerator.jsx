@@ -8,7 +8,9 @@ import { jsPDF } from 'jspdf';
 import 'jspdf-autotable';
 import toast from 'react-hot-toast';
 
-const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000';
+const API_URL =
+  import.meta.env.VITE_API_URL ||
+  'https://creative-approach-backend.onrender.com';
 
 export default function QuotationGenerator() {
   const [step, setStep] = useState(1);
@@ -533,14 +535,14 @@ export default function QuotationGenerator() {
         body: JSON.stringify(quotationData)
       });
 
-      const data = await response.json();
+      const data = await response.json().catch(() => ({}));
 
       if (response.ok) {
         setSuccess(true);
         toast.success('Quotation saved to database successfully');
         setTimeout(() => setSuccess(false), 3000);
       } else {
-        toast.error(data.message || 'Failed to save quotation');
+        toast.error(data.message || `Failed to save quotation (status ${response.status})`);
       }
     } catch (error) {
       console.error('Error saving quotation:', error);

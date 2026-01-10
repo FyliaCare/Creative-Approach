@@ -22,7 +22,9 @@ import toast from 'react-hot-toast';
 import axios from 'axios';
 import { jsPDF } from 'jspdf';
 
-const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000';
+const API_URL =
+  import.meta.env.VITE_API_URL ||
+  'https://creative-approach-backend.onrender.com';
 
 export const QuotationDetail = () => {
   const { id } = useParams();
