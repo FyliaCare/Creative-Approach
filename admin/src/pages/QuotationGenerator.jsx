@@ -11,7 +11,7 @@ import {
   Loader2
 } from 'lucide-react';
 import jsPDF from 'jspdf';
-import autoTable from 'jspdf-autotable';
+import 'jspdf-autotable';
 import toast from 'react-hot-toast';
 
 const API_URL =
