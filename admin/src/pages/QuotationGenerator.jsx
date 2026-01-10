@@ -4,7 +4,7 @@ import {
   FileText, Download, Send, Eye, Calendar, DollarSign,
   Plus, Trash2, Save, Loader, CheckCircle
 } from 'lucide-react';
-import { jsPDF } from 'jspdf';
+import jsPDF from 'jspdf';
 import 'jspdf-autotable';
 import toast from 'react-hot-toast';
 
