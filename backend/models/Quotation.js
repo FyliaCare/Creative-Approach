@@ -105,6 +105,12 @@ const quotationSchema = new mongoose.Schema({
   quotePDF: {
     type: String
   },
+  rejectionReason: {
+    type: String
+  },
+  rejectedAt: {
+    type: Date
+  },
   
   // Tracking
   ipAddress: {

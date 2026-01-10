@@ -4,7 +4,7 @@ import Quotation from '../models/Quotation.js';
 import User from '../models/User.js';
 import { protect, authorize } from '../middleware/auth.js';
 import NotificationService from '../utils/notificationService.js';
-import { sendQuoteRequestEmails } from '../utils/emailService.js';
+import { sendQuoteRequestEmails, sendQuoteAcceptanceEmail, sendQuoteRejectionEmail } from '../utils/emailService.js';
 
 const router = express.Router();
 
@@ -149,6 +149,79 @@ router.get('/:id', protect, authorize('admin'), async (req, res, next) => {
         message: 'Quotation not found'
       });
     }
+    
+    res.json({
+      success: true,
+      data: quotation
+    });
+  } catch (error) {
+    next(error);
+  }
+});
+
+// @route   PATCH /api/quotations/:id/status
+// @desc    Update quotation status with email notifications
+// @access  Private/Admin
+router.patch('/:id/status', protect, authorize('admin'), async (req, res, next) => {
+  try {
+    const { status, rejectionReason } = req.body;
+
+    let quotation = await Quotation.findById(req.params.id);
+    
+    if (!quotation) {
+      return res.status(404).json({
+        success: false,
+        message: 'Quotation not found'
+      });
+    }
+
+    // Update status
+    quotation.status = status;
+    
+    // Handle status-specific logic and emails
+    if (status === 'accepted') {
+      // Send acceptance email to client
+      try {
+        await sendQuoteAcceptanceEmail({
+          name: quotation.name,
+          email: quotation.email,
+          service: quotation.service,
+          quotedAmount: quotation.quotedAmount
+        });
+        console.log('✅ Acceptance email sent to:', quotation.email);
+      } catch (emailError) {
+        console.error('❌ Failed to send acceptance email:', emailError.message);
+      }
+    } else if (status === 'rejected') {
+      // Require rejection reason
+      if (!rejectionReason) {
+        return res.status(400).json({
+          success: false,
+          message: 'Rejection reason is required'
+        });
+      }
+      
+      // Store rejection reason
+      quotation.rejectionReason = rejectionReason;
+      quotation.rejectedAt = new Date();
+      
+      // Send rejection email to client
+      try {
+        await sendQuoteRejectionEmail({
+          name: quotation.name,
+          email: quotation.email,
+          service: quotation.service,
+          reason: rejectionReason
+        });
+        console.log('✅ Rejection email sent to:', quotation.email);
+      } catch (emailError) {
+        console.error('❌ Failed to send rejection email:', emailError.message);
+      }
+    } else if (status === 'quoted') {
+      quotation.quotedAt = new Date();
+    }
+
+    await quotation.save();
     
     res.json({
       success: true,

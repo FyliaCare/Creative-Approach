@@ -388,7 +388,186 @@ export const sendQuoteRequestEmails = async (quoteData) => {
   }
 };
 
+// Send quote acceptance email to client
+export const sendQuoteAcceptanceEmail = async (quoteData) => {
+  let transporter;
+  try {
+    transporter = createTransporter();
+  } catch (error) {
+    console.error('❌ Failed to create email transporter:', error.message);
+    throw new Error('Email service configuration error');
+  }
+  
+  const { name, email, service, quotedAmount } = quoteData;
+
+  const clientEmail = {
+    from: `"CA Ghana" <${process.env.EMAIL_USER}>`,
+    to: email,
+    subject: '✅ Your Quotation Request Has Been Accepted!',
+    html: `
+      <!DOCTYPE html>
+      <html>
+      <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <style>
+          body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; line-height: 1.6; color: #333; background: #f4f7fa; margin: 0; padding: 20px; }
+          .container { max-width: 600px; margin: 0 auto; background: white; border-radius: 12px; overflow: hidden; box-shadow: 0 4px 20px rgba(0,0,0,0.1); }
+          .header { background: linear-gradient(135deg, #10b981 0%, #059669 100%); color: white; padding: 40px 30px; text-align: center; }
+          .header h1 { margin: 0; font-size: 28px; font-weight: 700; }
+          .header p { margin: 10px 0 0; font-size: 16px; opacity: 0.95; }
+          .content { padding: 40px 30px; }
+          .success-badge { background: #d1fae5; color: #065f46; padding: 12px 20px; border-radius: 8px; font-weight: 600; display: inline-block; margin: 20px 0; }
+          .info-box { background: #f0fdf4; border-left: 4px solid #10b981; padding: 20px; margin: 20px 0; border-radius: 4px; }
+          .info-box strong { color: #065f46; }
+          .cta-button { display: inline-block; background: #10b981; color: white; padding: 14px 32px; text-decoration: none; border-radius: 8px; font-weight: 600; margin: 20px 0; transition: background 0.3s; }
+          .cta-button:hover { background: #059669; }
+          .footer { background: #f9fafb; padding: 30px; text-align: center; color: #6b7280; font-size: 13px; border-top: 1px solid #e5e7eb; }
+        </style>
+      </head>
+      <body>
+        <div class="container">
+          <div class="header">
+            <h1>🎉 Great News, ${name}!</h1>
+            <p>Your quotation request has been accepted</p>
+          </div>
+          <div class="content">
+            <div class="success-badge">✅ Request Accepted</div>
+            
+            <p>We're excited to work with you on your <strong>${service}</strong> project!</p>
+            
+            <div class="info-box">
+              <p><strong>Next Steps:</strong></p>
+              <ul style="margin: 10px 0; padding-left: 20px;">
+                <li>Our team will contact you within 24 hours to discuss project details</li>
+                <li>We'll finalize the project scope and timeline</li>
+                ${quotedAmount ? `<li>Quoted Amount: <strong>GHS ${quotedAmount.toLocaleString()}</strong></li>` : ''}
+                <li>Schedule the project execution date</li>
+              </ul>
+            </div>
+            
+            <p style="margin-top: 25px;"><strong>Questions or need to discuss anything?</strong></p>
+            <p>Feel free to reach out:</p>
+            <ul style="list-style: none; padding: 0;">
+              <li>📧 Email: <a href="mailto:visuals@caghana.com">visuals@caghana.com</a></li>
+              <li>📱 Phone: <a href="tel:+233541500716">+233 541 500 716</a></li>
+            </ul>
+            
+            <a href="https://caghana.com/portfolio" class="cta-button">View Our Portfolio</a>
+          </div>
+          <div class="footer">
+            <p><strong>CA Ghana - Professional Drone Services</strong></p>
+            <p>📧 visuals@caghana.com | 📱 +233 541 500 716</p>
+            <p>Based in Takoradi, Serving All of Ghana</p>
+            <p style="margin-top: 10px; font-size: 11px;">GCAA Certified | 500+ Projects Completed</p>
+          </div>
+        </div>
+      </body>
+      </html>
+    `,
+  };
+
+  try {
+    await transporter.sendMail(clientEmail);
+    console.log('✅ Quote acceptance email sent to', email);
+    return { success: true, message: 'Acceptance email sent successfully' };
+  } catch (error) {
+    console.error('❌ Acceptance email sending error:', error.message);
+    throw new Error(`Failed to send acceptance email: ${error.message}`);
+  }
+};
+
+// Send quote rejection email to client
+export const sendQuoteRejectionEmail = async (quoteData) => {
+  let transporter;
+  try {
+    transporter = createTransporter();
+  } catch (error) {
+    console.error('❌ Failed to create email transporter:', error.message);
+    throw new Error('Email service configuration error');
+  }
+  
+  const { name, email, service, reason } = quoteData;
+
+  const clientEmail = {
+    from: `"CA Ghana" <${process.env.EMAIL_USER}>`,
+    to: email,
+    subject: 'Update on Your Quotation Request - CA Ghana',
+    html: `
+      <!DOCTYPE html>
+      <html>
+      <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <style>
+          body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; line-height: 1.6; color: #333; background: #f4f7fa; margin: 0; padding: 20px; }
+          .container { max-width: 600px; margin: 0 auto; background: white; border-radius: 12px; overflow: hidden; box-shadow: 0 4px 20px rgba(0,0,0,0.1); }
+          .header { background: linear-gradient(135deg, #6366f1 0%, #4f46e5 100%); color: white; padding: 40px 30px; text-align: center; }
+          .header h1 { margin: 0; font-size: 28px; font-weight: 700; }
+          .header p { margin: 10px 0 0; font-size: 16px; opacity: 0.95; }
+          .content { padding: 40px 30px; }
+          .info-box { background: #fef3c7; border-left: 4px solid #f59e0b; padding: 20px; margin: 20px 0; border-radius: 4px; }
+          .reason-box { background: #f9fafb; border: 1px solid #e5e7eb; padding: 20px; margin: 20px 0; border-radius: 8px; }
+          .reason-box strong { color: #1f2937; display: block; margin-bottom: 10px; }
+          .cta-button { display: inline-block; background: #6366f1; color: white; padding: 14px 32px; text-decoration: none; border-radius: 8px; font-weight: 600; margin: 20px 0; transition: background 0.3s; }
+          .cta-button:hover { background: #4f46e5; }
+          .footer { background: #f9fafb; padding: 30px; text-align: center; color: #6b7280; font-size: 13px; border-top: 1px solid #e5e7eb; }
+        </style>
+      </head>
+      <body>
+        <div class="container">
+          <div class="header">
+            <h1>Thank You, ${name}</h1>
+            <p>Update on your quotation request</p>
+          </div>
+          <div class="content">
+            <p>Thank you for your interest in our <strong>${service}</strong> services.</p>
+            
+            <p>After careful review, we regret to inform you that we're unable to proceed with your quotation request at this time.</p>
+            
+            <div class="reason-box">
+              <strong>Reason:</strong>
+              <p style="margin: 0; color: #4b5563;">${reason}</p>
+            </div>
+            
+            <div class="info-box">
+              <p style="margin: 0;"><strong>💡 We'd still love to work with you!</strong></p>
+              <p style="margin: 10px 0 0;">If circumstances change or you'd like to discuss alternative solutions, please don't hesitate to reach out.</p>
+            </div>
+            
+            <p style="margin-top: 25px;"><strong>Get in Touch:</strong></p>
+            <ul style="list-style: none; padding: 0;">
+              <li>📧 Email: <a href="mailto:visuals@caghana.com">visuals@caghana.com</a></li>
+              <li>📱 Phone: <a href="tel:+233541500716">+233 541 500 716</a></li>
+            </ul>
+            
+            <a href="https://caghana.com/services" class="cta-button">Explore Other Services</a>
+          </div>
+          <div class="footer">
+            <p><strong>CA Ghana - Professional Drone Services</strong></p>
+            <p>📧 visuals@caghana.com | 📱 +233 541 500 716</p>
+            <p>Based in Takoradi, Serving All of Ghana</p>
+            <p style="margin-top: 10px; font-size: 11px;">GCAA Certified | 500+ Projects Completed</p>
+          </div>
+        </div>
+      </body>
+      </html>
+    `,
+  };
+
+  try {
+    await transporter.sendMail(clientEmail);
+    console.log('✅ Quote rejection email sent to', email);
+    return { success: true, message: 'Rejection email sent successfully' };
+  } catch (error) {
+    console.error('❌ Rejection email sending error:', error.message);
+    throw new Error(`Failed to send rejection email: ${error.message}`);
+  }
+};
+
 export default {
   sendContactFormEmails,
   sendQuoteRequestEmails,
+  sendQuoteAcceptanceEmail,
+  sendQuoteRejectionEmail,
 };
