@@ -477,50 +477,98 @@ export default function QuotationGenerator() {
 
   const downloadPDF = () => {
     try {
+      console.log('Starting PDF generation...');
       const doc = generatePDF();
+      
       if (!doc) {
-        toast.error('Failed to generate PDF');
+        console.error('generatePDF returned null or undefined');
+        toast.error('Failed to generate PDF - doc is null');
         return;
       }
 
+      console.log('PDF generated successfully, attempting download...');
       const filename = `${language === 'french' ? 'Facture' : 'Invoice'}_${invoiceInfo.invoiceNumber || 'draft'}.pdf`;
+      console.log('Filename:', filename);
 
-      // Use jsPDF save, fallback to manual blob save if needed
+      // Try primary method
       try {
+        console.log('Attempting doc.save()...');
         doc.save(filename);
+        console.log('doc.save() succeeded');
         toast.success('PDF downloaded successfully');
+        return;
       } catch (saveErr) {
-        console.warn('jsPDF save fallback triggered:', saveErr);
-        const blob = doc.output('blob');
-        const url = URL.createObjectURL(blob);
-        const a = document.createElement('a');
-        a.href = url;
-        a.download = filename;
-        a.click();
-        URL.revokeObjectURL(url);
-        toast.success('PDF downloaded (fallback)');
+        console.error('doc.save() failed, using fallback:', saveErr);
+        
+        // Fallback: manual blob download
+        try {
+          console.log('Attempting fallback blob method...');
+          const blob = doc.output('blob');
+          console.log('Blob created, size:', blob.size);
+          
+          const url = URL.createObjectURL(blob);
+          console.log('Blob URL created:', url);
+          
+          const a = document.createElement('a');
+          a.href = url;
+          a.download = filename;
+          document.body.appendChild(a); // Append to body for some browsers
+          a.click();
+          document.body.removeChild(a); // Clean up
+          
+          setTimeout(() => URL.revokeObjectURL(url), 100);
+          console.log('Fallback download triggered');
+          toast.success('PDF downloaded (using fallback method)');
+          return;
+        } catch (fallbackErr) {
+          console.error('Fallback blob method also failed:', fallbackErr);
+          throw fallbackErr;
+        }
       }
     } catch (error) {
-      console.error('Error downloading PDF:', error);
-      toast.error('Failed to download PDF');
+      console.error('Complete download failure:', error);
+      console.error('Error stack:', error.stack);
+      toast.error(`Failed to download PDF: ${error.message || 'Unknown error'}`);
     }
   };
 
   const previewPDF = () => {
     try {
+      console.log('Starting PDF preview...');
       const doc = generatePDF();
+      
       if (!doc) {
-        toast.error('Failed to generate PDF');
+        console.error('generatePDF returned null for preview');
+        toast.error('Failed to generate PDF for preview');
         return;
       }
+
+      console.log('PDF generated, creating blob for preview...');
       const blob = doc.output('blob');
+      console.log('Blob created for preview, size:', blob.size);
+      
       const url = URL.createObjectURL(blob);
-      window.open(url, '_blank');
-      // Do not revoke immediately to allow loading; revoke after short delay
-      setTimeout(() => URL.revokeObjectURL(url), 1000);
+      console.log('Opening preview URL:', url);
+      
+      const newWindow = window.open(url, '_blank');
+      
+      if (!newWindow) {
+        toast.error('Popup blocked - please allow popups for this site');
+        URL.revokeObjectURL(url);
+        return;
+      }
+      
+      // Revoke URL after window loads
+      setTimeout(() => {
+        URL.revokeObjectURL(url);
+        console.log('Preview URL revoked');
+      }, 1000);
+      
+      toast.success('PDF preview opened in new tab');
     } catch (error) {
       console.error('Error previewing PDF:', error);
-      toast.error('Failed to preview PDF');
+      console.error('Error stack:', error.stack);
+      toast.error(`Failed to preview PDF: ${error.message || 'Unknown error'}`);
     }
   };
 
