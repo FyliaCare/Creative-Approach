@@ -1003,6 +1003,530 @@ export default function QuotationGeneratorAdvanced() {
     </motion.div>
   );
 
+  // Step 3: Line Items
+  const LineItemsStep = () => (
+    <motion.div
+      initial={{ opacity: 0, x: 20 }}
+      animate={{ opacity: 1, x: 0 }}
+      className="space-y-6"
+    >
+      <div className="rounded-xl border border-gray-200 bg-white p-6 shadow-sm">
+        <div className="mb-4 flex items-center justify-between">
+          <div className="flex items-center gap-2">
+            <FileText className="h-5 w-5 text-indigo-600" />
+            <h2 className="text-lg font-semibold text-gray-900">Line Items</h2>
+          </div>
+          <button
+            onClick={addLineItem}
+            className="inline-flex items-center gap-2 rounded-lg bg-indigo-600 px-4 py-2 text-sm font-semibold text-white transition hover:bg-indigo-700"
+          >
+            <Plus className="h-4 w-4" />
+            Add Item
+          </button>
+        </div>
+
+        {lineItems.length === 0 ? (
+          <div className="rounded-lg border-2 border-dashed border-gray-300 bg-gray-50 p-12 text-center">
+            <FileText className="mx-auto mb-3 h-12 w-12 text-gray-400" />
+            <p className="mb-4 text-gray-600">No line items yet</p>
+            <button
+              onClick={addLineItem}
+              className="inline-flex items-center gap-2 rounded-lg bg-indigo-600 px-4 py-2 text-sm font-semibold text-white transition hover:bg-indigo-700"
+            >
+              <Plus className="h-4 w-4" />
+              Add Your First Item
+            </button>
+          </div>
+        ) : (
+          <div className="space-y-4">
+            {lineItems.map((item) => (
+              <div
+                key={item.id}
+                className="rounded-lg border border-gray-200 bg-white p-4 shadow-sm transition hover:shadow-md"
+              >
+                <div className="mb-3 flex items-start justify-between">
+                  <div className="flex-1 grid grid-cols-1 gap-3 md:grid-cols-2">
+                    <div>
+                      <label className="mb-1 block text-xs font-medium text-gray-700">
+                        Title
+                      </label>
+                      <input
+                        className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-100"
+                        value={item.title}
+                        onChange={(e) => updateLineItem(item.id, 'title', e.target.value)}
+                        placeholder="Service name"
+                      />
+                    </div>
+                    <div>
+                      <label className="mb-1 block text-xs font-medium text-gray-700">
+                        Category
+                      </label>
+                      <input
+                        className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-100"
+                        value={item.category}
+                        onChange={(e) => updateLineItem(item.id, 'category', e.target.value)}
+                        placeholder="Operations"
+                      />
+                    </div>
+                  </div>
+                  <div className="ml-3 flex gap-2">
+                    <button
+                      onClick={() => duplicateLineItem(item.id)}
+                      className="rounded-lg p-2 text-gray-600 transition hover:bg-gray-100"
+                      title="Duplicate"
+                    >
+                      <Copy className="h-4 w-4" />
+                    </button>
+                    <button
+                      onClick={() => removeLineItem(item.id)}
+                      className="rounded-lg p-2 text-red-600 transition hover:bg-red-50"
+                      title="Remove"
+                    >
+                      <Trash2 className="h-4 w-4" />
+                    </button>
+                  </div>
+                </div>
+
+                <div className="mb-3">
+                  <label className="mb-1 block text-xs font-medium text-gray-700">
+                    Description
+                  </label>
+                  <textarea
+                    className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-100"
+                    rows={2}
+                    value={item.description}
+                    onChange={(e) => updateLineItem(item.id, 'description', e.target.value)}
+                    placeholder="Detailed description of the service..."
+                  />
+                </div>
+
+                <div className="grid grid-cols-2 gap-3 md:grid-cols-5">
+                  <div>
+                    <label className="mb-1 block text-xs font-medium text-gray-700">
+                      Quantity
+                    </label>
+                    <input
+                      type="number"
+                      min="0"
+                      step="0.01"
+                      className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-100"
+                      value={item.quantity}
+                      onChange={(e) => updateLineItem(item.id, 'quantity', Number(e.target.value))}
+                    />
+                  </div>
+                  <div>
+                    <label className="mb-1 block text-xs font-medium text-gray-700">
+                      Unit
+                    </label>
+                    <input
+                      className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-100"
+                      value={item.unit}
+                      onChange={(e) => updateLineItem(item.id, 'unit', e.target.value)}
+                      placeholder="day"
+                    />
+                  </div>
+                  <div>
+                    <label className="mb-1 block text-xs font-medium text-gray-700">
+                      Rate
+                    </label>
+                    <input
+                      type="number"
+                      min="0"
+                      step="0.01"
+                      className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-100"
+                      value={item.rate}
+                      onChange={(e) => updateLineItem(item.id, 'rate', Number(e.target.value))}
+                    />
+                  </div>
+                  {billing.showCostPrice && (
+                    <div>
+                      <label className="mb-1 block text-xs font-medium text-gray-700">
+                        Cost
+                      </label>
+                      <input
+                        type="number"
+                        min="0"
+                        step="0.01"
+                        className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-100"
+                        value={item.costPrice}
+                        onChange={(e) => updateLineItem(item.id, 'costPrice', Number(e.target.value))}
+                      />
+                    </div>
+                  )}
+                  <div>
+                    <label className="mb-1 block text-xs font-medium text-gray-700">
+                      Line Total
+                    </label>
+                    <div className="flex h-[38px] items-center rounded-lg border border-gray-200 bg-gray-50 px-3 text-sm font-semibold text-gray-900">
+                      {formatMoney((Number(item.quantity) || 0) * (Number(item.rate) || 0))}
+                    </div>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+        )}
+      </div>
+    </motion.div>
+  );
+
+  // Step 4: Financial Settings
+  const FinancialStep = () => (
+    <motion.div
+      initial={{ opacity: 0, x: 20 }}
+      animate={{ opacity: 1, x: 0 }}
+      className="space-y-6"
+    >
+      <div className="rounded-xl border border-gray-200 bg-white p-6 shadow-sm">
+        <div className="mb-4 flex items-center gap-2">
+          <DollarSign className="h-5 w-5 text-indigo-600" />
+          <h2 className="text-lg font-semibold text-gray-900">Financial Settings</h2>
+        </div>
+
+        <div className="space-y-6">
+          {/* Currency and Tax */}
+          <div>
+            <h3 className="mb-3 text-sm font-semibold text-gray-700">Currency & Tax</h3>
+            <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
+              <div>
+                <label className="mb-1 block text-xs font-medium text-gray-700">
+                  Currency
+                </label>
+                <select
+                  className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-100"
+                  value={invoiceInfo.currency}
+                  onChange={(e) => setInvoiceInfo({ ...invoiceInfo, currency: e.target.value })}
+                >
+                  {currencyOptions.map((cur) => (
+                    <option key={cur.code} value={cur.code}>
+                      {cur.symbol} {cur.name}
+                    </option>
+                  ))}
+                </select>
+              </div>
+              <div>
+                <label className="mb-1 block text-xs font-medium text-gray-700">
+                  Tax Rate (%)
+                </label>
+                <input
+                  type="number"
+                  min="0"
+                  step="0.1"
+                  className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-100"
+                  value={billing.taxRate}
+                  onChange={(e) => setBilling({ ...billing, taxRate: Number(e.target.value) })}
+                />
+              </div>
+              <div>
+                <label className="mb-1 block text-xs font-medium text-gray-700">
+                  Tax Label
+                </label>
+                <input
+                  className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-100"
+                  value={billing.taxLabel}
+                  onChange={(e) => setBilling({ ...billing, taxLabel: e.target.value })}
+                  placeholder="VAT"
+                />
+              </div>
+            </div>
+          </div>
+
+          {/* Discount */}
+          <div>
+            <h3 className="mb-3 text-sm font-semibold text-gray-700">Discount</h3>
+            <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+              <div>
+                <label className="mb-1 block text-xs font-medium text-gray-700">
+                  Discount Type
+                </label>
+                <select
+                  className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-100"
+                  value={billing.discountType}
+                  onChange={(e) => setBilling({ ...billing, discountType: e.target.value })}
+                >
+                  <option value="percent">Percentage (%)</option>
+                  <option value="flat">Fixed Amount</option>
+                </select>
+              </div>
+              <div>
+                <label className="mb-1 block text-xs font-medium text-gray-700">
+                  Discount Value
+                </label>
+                <input
+                  type="number"
+                  min="0"
+                  step="0.01"
+                  className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-100"
+                  value={billing.discountValue}
+                  onChange={(e) => setBilling({ ...billing, discountValue: Number(e.target.value) })}
+                />
+              </div>
+            </div>
+          </div>
+
+          {/* Extras */}
+          <div>
+            <h3 className="mb-3 text-sm font-semibold text-gray-700">Additional Fees</h3>
+            <div className="grid grid-cols-2 gap-4 md:grid-cols-4">
+              <div>
+                <label className="mb-1 block text-xs font-medium text-gray-700">
+                  Travel/Logistics
+                </label>
+                <input
+                  type="number"
+                  min="0"
+                  step="0.01"
+                  className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-100"
+                  value={extras.travel}
+                  onChange={(e) => setExtras({ ...extras, travel: Number(e.target.value) })}
+                />
+              </div>
+              <div>
+                <label className="mb-1 block text-xs font-medium text-gray-700">
+                  Insurance
+                </label>
+                <input
+                  type="number"
+                  min="0"
+                  step="0.01"
+                  className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-100"
+                  value={extras.insurance}
+                  onChange={(e) => setExtras({ ...extras, insurance: Number(e.target.value) })}
+                />
+              </div>
+              <div>
+                <label className="mb-1 block text-xs font-medium text-gray-700">
+                  Permits
+                </label>
+                <input
+                  type="number"
+                  min="0"
+                  step="0.01"
+                  className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-100"
+                  value={extras.permits}
+                  onChange={(e) => setExtras({ ...extras, permits: Number(e.target.value) })}
+                />
+              </div>
+              <div>
+                <label className="mb-1 block text-xs font-medium text-gray-700">
+                  Miscellaneous
+                </label>
+                <input
+                  type="number"
+                  min="0"
+                  step="0.01"
+                  className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-100"
+                  value={extras.misc}
+                  onChange={(e) => setExtras({ ...extras, misc: Number(e.target.value) })}
+                />
+              </div>
+            </div>
+          </div>
+
+          {/* Payment Terms */}
+          <div>
+            <h3 className="mb-3 text-sm font-semibold text-gray-700">Terms & Conditions</h3>
+            <div className="space-y-3">
+              <div>
+                <label className="mb-1 block text-xs font-medium text-gray-700">
+                  Payment Terms
+                </label>
+                <textarea
+                  className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-100"
+                  rows={2}
+                  value={billing.paymentTerms}
+                  onChange={(e) => setBilling({ ...billing, paymentTerms: e.target.value })}
+                />
+              </div>
+              <div>
+                <label className="mb-1 block text-xs font-medium text-gray-700">
+                  Validity Period
+                </label>
+                <textarea
+                  className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-100"
+                  rows={2}
+                  value={billing.validity}
+                  onChange={(e) => setBilling({ ...billing, validity: e.target.value })}
+                />
+              </div>
+              <div>
+                <label className="mb-1 block text-xs font-medium text-gray-700">
+                  Additional Notes
+                </label>
+                <textarea
+                  className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-100"
+                  rows={3}
+                  value={billing.notes}
+                  onChange={(e) => setBilling({ ...billing, notes: e.target.value })}
+                />
+              </div>
+            </div>
+          </div>
+
+          {/* Profit Tracking */}
+          <div className="rounded-lg border border-gray-200 bg-gray-50 p-4">
+            <label className="flex items-center gap-2">
+              <input
+                type="checkbox"
+                checked={billing.showCostPrice}
+                onChange={(e) => setBilling({ ...billing, showCostPrice: e.target.checked })}
+                className="h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-2 focus:ring-indigo-500"
+              />
+              <span className="text-sm font-medium text-gray-700">
+                Enable profit tracking (show cost prices)
+              </span>
+            </label>
+          </div>
+        </div>
+      </div>
+    </motion.div>
+  );
+
+  // Step 5: Review
+  const ReviewStep = () => (
+    <motion.div
+      initial={{ opacity: 0, x: 20 }}
+      animate={{ opacity: 1, x: 0 }}
+      className="space-y-6"
+    >
+      <div className="rounded-xl border border-gray-200 bg-white p-6 shadow-sm">
+        <div className="mb-4 flex items-center gap-2">
+          <CheckCircle2 className="h-5 w-5 text-emerald-600" />
+          <h2 className="text-lg font-semibold text-gray-900">Review & Finalize</h2>
+        </div>
+
+        <div className="space-y-6">
+          {/* Client Summary */}
+          <div>
+            <h3 className="mb-2 text-sm font-semibold text-gray-700">Client Information</h3>
+            <div className="rounded-lg bg-gray-50 p-4 text-sm">
+              <div className="font-semibold text-gray-900">{clientInfo.name}</div>
+              {clientInfo.company && <div className="text-gray-600">{clientInfo.company}</div>}
+              {clientInfo.email && <div className="text-gray-600">{clientInfo.email}</div>}
+              {clientInfo.phone && <div className="text-gray-600">{clientInfo.phone}</div>}
+              {clientInfo.address && <div className="text-gray-600">{clientInfo.address}</div>}
+            </div>
+          </div>
+
+          {/* Project Summary */}
+          {projectInfo.projectName && (
+            <div>
+              <h3 className="mb-2 text-sm font-semibold text-gray-700">Project Details</h3>
+              <div className="rounded-lg bg-gray-50 p-4 text-sm">
+                <div className="font-semibold text-gray-900">{projectInfo.projectName}</div>
+                {projectInfo.service && <div className="text-gray-600">Service: {projectInfo.service}</div>}
+                {projectInfo.location && <div className="text-gray-600">Location: {projectInfo.location}</div>}
+                {projectInfo.scope && <div className="mt-2 text-gray-600">{projectInfo.scope}</div>}
+              </div>
+            </div>
+          )}
+
+          {/* Line Items Summary */}
+          <div>
+            <h3 className="mb-2 text-sm font-semibold text-gray-700">
+              Line Items ({lineItems.length})
+            </h3>
+            <div className="space-y-2">
+              {lineItems.map((item) => (
+                <div
+                  key={item.id}
+                  className="flex items-center justify-between rounded-lg border border-gray-200 bg-white p-3 text-sm"
+                >
+                  <div className="flex-1">
+                    <div className="font-medium text-gray-900">{item.title}</div>
+                    <div className="text-xs text-gray-500">
+                      {item.quantity} {item.unit} × {formatMoney(item.rate)}
+                    </div>
+                  </div>
+                  <div className="font-semibold text-gray-900">
+                    {formatMoney((Number(item.quantity) || 0) * (Number(item.rate) || 0))}
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          {/* Financial Summary */}
+          <div>
+            <h3 className="mb-2 text-sm font-semibold text-gray-700">Financial Summary</h3>
+            <div className="space-y-2 rounded-lg border border-gray-200 bg-white p-4">
+              <div className="flex justify-between text-sm">
+                <span className="text-gray-600">Subtotal</span>
+                <span className="font-semibold">{formatMoney(calculations.subtotal)}</span>
+              </div>
+              {billing.discountValue > 0 && (
+                <div className="flex justify-between text-sm text-red-600">
+                  <span>Discount ({billing.discountType === 'percent' ? `${billing.discountValue}%` : 'Fixed'})</span>
+                  <span>- {formatMoney(calculations.discountAmount)}</span>
+                </div>
+              )}
+              <div className="flex justify-between text-sm">
+                <span className="text-gray-600">{billing.taxLabel} ({billing.taxRate}%)</span>
+                <span className="font-semibold">{formatMoney(calculations.taxAmount)}</span>
+              </div>
+              {calculations.extrasTotal > 0 && (
+                <div className="flex justify-between text-sm">
+                  <span className="text-gray-600">Additional Fees</span>
+                  <span className="font-semibold">{formatMoney(calculations.extrasTotal)}</span>
+                </div>
+              )}
+              <div className="border-t border-gray-200 pt-2">
+                <div className="flex justify-between text-base font-bold text-indigo-600">
+                  <span>TOTAL</span>
+                  <span>{formatMoney(calculations.total)}</span>
+                </div>
+              </div>
+              {billing.showCostPrice && (
+                <div className="border-t border-gray-200 pt-2">
+                  <div className="flex justify-between text-sm text-emerald-600">
+                    <span>Profit Margin</span>
+                    <span className="font-semibold">{calculations.profitMargin.toFixed(1)}%</span>
+                  </div>
+                </div>
+              )}
+            </div>
+          </div>
+
+          {/* Actions */}
+          <div className="flex flex-wrap gap-3">
+            <button
+              onClick={handlePreview}
+              className="flex-1 inline-flex items-center justify-center gap-2 rounded-lg bg-white px-4 py-3 text-sm font-semibold text-gray-700 shadow-sm ring-1 ring-gray-200 transition hover:bg-gray-50"
+            >
+              <Eye className="h-4 w-4" />
+              Preview PDF
+            </button>
+            <button
+              onClick={handleDownload}
+              className="flex-1 inline-flex items-center justify-center gap-2 rounded-lg bg-gray-900 px-4 py-3 text-sm font-semibold text-white shadow-sm transition hover:bg-gray-800"
+            >
+              <Download className="h-4 w-4" />
+              Download
+            </button>
+            <button
+              onClick={handleSave}
+              disabled={saving}
+              className="flex-1 inline-flex items-center justify-center gap-2 rounded-lg bg-indigo-600 px-4 py-3 text-sm font-semibold text-white shadow-sm transition hover:bg-indigo-700 disabled:opacity-70"
+            >
+              {saving ? <Loader2 className="h-4 w-4 animate-spin" /> : <Save className="h-4 w-4" />}
+              Save Quote
+            </button>
+            {clientInfo.email && (
+              <button
+                onClick={handleSendEmail}
+                disabled={sending}
+                className="flex-1 inline-flex items-center justify-center gap-2 rounded-lg bg-emerald-600 px-4 py-3 text-sm font-semibold text-white shadow-sm transition hover:bg-emerald-700"
+              >
+                {sending ? <Loader2 className="h-4 w-4 animate-spin" /> : <Send className="h-4 w-4" />}
+                Send to Client
+              </button>
+            )}
+          </div>
+        </div>
+      </div>
+    </motion.div>
+  );
+
   // Remaining steps would be similar... Let me continue with Line Items and Financial steps
 
   return (
@@ -1075,9 +1599,6 @@ export default function QuotationGeneratorAdvanced() {
         {/* Main Content */}
         <div className="grid grid-cols-1 gap-6 lg:grid-cols-3">
           <div className="lg:col-span-2">
-            {currentStep === 1 && <ClientStep />}
-            {currentStep === 2 && <ProjectStep />}
-            {/* Other steps would be rendered here */}
             {currentStep === 0 && (
               <div className="rounded-xl border border-gray-200 bg-white p-12 text-center shadow-sm">
                 <Package className="mx-auto mb-4 h-16 w-16 text-indigo-600" />
@@ -1092,6 +1613,11 @@ export default function QuotationGeneratorAdvanced() {
                 </button>
               </div>
             )}
+            {currentStep === 1 && <ClientStep />}
+            {currentStep === 2 && <ProjectStep />}
+            {currentStep === 3 && <LineItemsStep />}
+            {currentStep === 4 && <FinancialStep />}
+            {currentStep === 5 && <ReviewStep />}
           </div>
 
           {/* Summary Sidebar */}
