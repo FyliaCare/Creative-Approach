@@ -1,8 +1,14 @@
-import { useState, useEffect } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { motion } from 'framer-motion';
 import {
-  FileText, Download, Send, Eye, Calendar, DollarSign,
-  Plus, Trash2, Save, Loader, CheckCircle
+  Download,
+  Eye,
+  Save,
+  Plus,
+  Trash2,
+  FileText,
+  CheckCircle2,
+  Loader2
 } from 'lucide-react';
 import jsPDF from 'jspdf';
 import 'jspdf-autotable';
@@ -12,580 +18,300 @@ const API_URL =
   import.meta.env.VITE_API_URL ||
   'https://creative-approach-backend.onrender.com';
 
-export default function QuotationGenerator() {
-  const [step, setStep] = useState(1);
-  const [language, setLanguage] = useState('english'); // 'english' or 'french'
-  const [saving, setSaving] = useState(false);
-  const [success, setSuccess] = useState(false);
-  
-  // Client Details
-  const [clientInfo, setClientInfo] = useState({
-    name: '',
-    address: '',
-    email: '',
-    phone: '',
-    company: ''
-  });
+const currencyOptions = ['GHS', 'USD', 'EUR', 'XOF'];
 
-  // Invoice Details
+const buildLineItem = (overrides = {}) => ({
+  id: Date.now() + Math.random(),
+  title: 'New service',
+  description: '',
+  quantity: 1,
+  rate: 0,
+  unit: 'unit',
+  category: 'Service',
+  ...overrides
+});
+
+export default function QuotationGenerator() {
   const [invoiceInfo, setInvoiceInfo] = useState({
     invoiceNumber: '',
-    invoiceDate: new Date().toISOString().split('T')[0],
+    issueDate: new Date().toISOString().split('T')[0],
     dueDate: '',
-    currency: 'GHS'
+    currency: 'GHS',
+    language: 'english'
   });
 
-  // Line Items
-  const [items, setItems] = useState([
-    {
-      id: 1,
-      category: 'Equipment & Field Survey',
-      description: 'Drone Survey',
-      days: 1,
-      area: 130,
-      unitPrice: 100,
-      total: 13000
-    }
+  const [clientInfo, setClientInfo] = useState({
+    name: '',
+    company: '',
+    email: '',
+    phone: '',
+    address: ''
+  });
+
+  const [projectInfo, setProjectInfo] = useState({
+    projectName: 'Drone survey',
+    service: 'Mapping & Surveying',
+    scope: 'Flight planning, capture, processing, analytics',
+    location: '',
+    startDate: '',
+    dueDate: ''
+  });
+
+  const [billing, setBilling] = useState({
+    taxRate: 5,
+    discountType: 'percent',
+    discountValue: 0,
+    deposit: 40,
+    paymentTerms: 'Payment due within 10 working days after delivery.',
+    validity: 'Quotation valid for 14 days from issue.',
+    notes: 'We combine flight safety, data quality, and quick delivery.'
+  });
+
+  const [extras, setExtras] = useState({
+    travel: 0,
+    misc: 0
+  });
+
+  const [lineItems, setLineItems] = useState([
+    buildLineItem({
+      title: 'Field survey and flight operations',
+      description: 'Flight crew, control points, safety supervision',
+      quantity: 2,
+      rate: 1200,
+      unit: 'day',
+      category: 'Operations'
+    }),
+    buildLineItem({
+      title: 'Processing and analytics',
+      description: 'Orthomosaic, DEM, feature extraction, reporting',
+      quantity: 1,
+      rate: 2500,
+      unit: 'project',
+      category: 'Processing'
+    })
   ]);
 
-  // Additional Sections
-  const [imageProcessing, setImageProcessing] = useState({
-    description: 'Orthophotography, Digitalization of blocks and calculation of areas, Extraction of plots, surfaces and collectors and slabs, Production of location map',
-    price: 7738.80
-  });
-
-  const [transport, setTransport] = useState({
-    included: true,
-    price: 0
-  });
-
-  const [terms, setTerms] = useState({
-    payment: 'Payment is due within 10 working days from the date of the invoice.',
-    liability: 'Creative Approach will perform all services with reasonable care and skill. However, the AeroScout is not liable for any damages, losses, or expenses incurred by the Client as a result of the drone survey services, except in cases of gross negligence or willful misconduct.'
-  });
+  const [saving, setSaving] = useState(false);
+  const [success, setSuccess] = useState(false);
 
   useEffect(() => {
-    // Generate invoice number
-    const date = new Date();
-    const invoiceNum = `INV${date.getFullYear()}${String(date.getMonth() + 1).padStart(2, '0')}${String(date.getDate()).padStart(2, '0')}${Math.floor(Math.random() * 1000)}`;
-    setInvoiceInfo(prev => ({ ...prev, invoiceNumber: invoiceNum }));
+    const now = new Date();
+    const serial = `Q-${now.getFullYear()}${String(now.getMonth() + 1).padStart(2, '0')}${String(
+      now.getDate()
+    ).padStart(2, '0')}-${Math.floor(Math.random() * 900 + 100)}`;
+    setInvoiceInfo((prev) => ({ ...prev, invoiceNumber: serial }));
   }, []);
 
-  const addItem = () => {
-    const newItem = {
-      id: items.length + 1,
-      category: 'Equipment & Field Survey',
-      description: '',
-      days: 1,
-      area: 0,
-      unitPrice: 0,
-      total: 0
-    };
-    setItems([...items, newItem]);
+  const calculations = useMemo(() => {
+    const subtotal = lineItems.reduce(
+      (sum, item) => sum + (Number(item.quantity) || 0) * (Number(item.rate) || 0),
+      0
+    );
+
+    const discountAmount =
+      billing.discountType === 'percent'
+        ? (subtotal * (Number(billing.discountValue) || 0)) / 100
+        : Number(billing.discountValue) || 0;
+
+    const adjusted = Math.max(subtotal - discountAmount, 0);
+    const taxAmount = (adjusted * (Number(billing.taxRate) || 0)) / 100;
+    const extrasTotal = (Number(extras.travel) || 0) + (Number(extras.misc) || 0);
+    const total = adjusted + taxAmount + extrasTotal;
+    const depositDue = (total * (Number(billing.deposit) || 0)) / 100;
+
+    return { subtotal, discountAmount, adjusted, taxAmount, extrasTotal, total, depositDue };
+  }, [lineItems, billing, extras]);
+
+  const formatMoney = (value) => `${invoiceInfo.currency} ${Number(value || 0).toFixed(2)}`;
+
+  const updateLineItem = (id, field, value) => {
+    setLineItems((prev) =>
+      prev.map((item) => (item.id === id ? { ...item, [field]: value } : item))
+    );
   };
 
-  const removeItem = (id) => {
-    setItems(items.filter(item => item.id !== id));
+  const addLineItem = () => {
+    setLineItems((prev) => [...prev, buildLineItem()]);
   };
 
-  const updateItem = (id, field, value) => {
-    setItems(items.map(item => {
-      if (item.id === id) {
-        const updated = { ...item, [field]: value };
-        if (field === 'days' || field === 'area' || field === 'unitPrice') {
-          updated.total = (updated.days || 0) * (updated.area || 0) * (updated.unitPrice || 0);
-        }
-        return updated;
-      }
-      return item;
-    }));
+  const removeLineItem = (id) => {
+    setLineItems((prev) => prev.filter((item) => item.id !== id));
   };
 
-  const calculateSubtotal = () => {
-    return items.reduce((sum, item) => sum + (item.total || 0), 0);
+  const ensureValid = () => {
+    if (!clientInfo.name) {
+      toast.error('Client name is required');
+      return false;
+    }
+    if (!lineItems.length) {
+      toast.error('Add at least one line item');
+      return false;
+    }
+    return true;
   };
 
-  const calculateTotal = () => {
-    return calculateSubtotal() + (imageProcessing.price || 0) + (transport.price || 0);
-  };
+  const buildPdf = () => {
+    if (!ensureValid()) return null;
 
-  const generatePDF = () => {
-    const doc = new jsPDF();
-    const pageWidth = doc.internal.pageSize.width;
-    const pageHeight = doc.internal.pageSize.height;
-    
-    // Colors
-    const primaryColor = [41, 128, 185]; // Blue
-    const headerColor = [236, 240, 241]; // Light gray
-    const darkText = [44, 62, 80];
-    
-    if (language === 'english') {
-      // English Invoice Format
-      
-      // Header - Company Name
-      doc.setFontSize(14);
-      doc.setTextColor(...darkText);
-      doc.text('Creative Approach', 14, 20);
-      doc.setFontSize(9);
-      doc.text('Contact: 0241800716 / 0203885717', 14, 26);
-      
-      // Invoice Title
-      doc.setFontSize(20);
+    try {
+      const doc = new jsPDF();
+      const pageWidth = doc.internal.pageSize.getWidth();
+
       doc.setFont('helvetica', 'bold');
-      doc.text('INVOICE', pageWidth - 60, 20);
-      
-      // AeroScout Logo Text (right side)
-      doc.setFontSize(16);
-      doc.text('AeroScout', pageWidth - 60, 30);
-      
-      // Invoice Details (right side)
-      doc.setFontSize(10);
+      doc.setFontSize(18);
+      doc.text('Creative Approach', 14, 16);
+
       doc.setFont('helvetica', 'normal');
-      doc.text(`Invoice No:`, pageWidth - 60, 40);
-      doc.text(`${invoiceInfo.invoiceNumber}`, pageWidth - 60, 46);
-      doc.text(`Invoice Date:`, pageWidth - 60, 52);
-      doc.text(`${new Date(invoiceInfo.invoiceDate).toLocaleDateString()}`, pageWidth - 60, 58);
-      doc.text(`Due Date:`, pageWidth - 60, 64);
-      doc.text(`${invoiceInfo.dueDate ? new Date(invoiceInfo.dueDate).toLocaleDateString() : 'Upon Receipt'}`, pageWidth - 60, 70);
-      
-      // Bill To Section
-      doc.setFont('helvetica', 'bold');
-      doc.text('BILL TO', 14, 45);
-      doc.setFont('helvetica', 'normal');
-      doc.text(clientInfo.name || 'CLIENT CST Limited', 14, 52);
-      doc.setFontSize(9);
-      doc.text(`ADDRESS: ${clientInfo.address || 'SW-36 Bank Rd, Abora Gomoa Off, Springs Rd, Accra'}`, 14, 58);
-      
-      // Invoice Title/Description
-      doc.setFillColor(...headerColor);
-      doc.rect(14, 75, pageWidth - 28, 8, 'F');
-      doc.setFont('helvetica', 'bold');
       doc.setFontSize(10);
-      doc.text(`INVOICE FOR DRONE SURVEY OF ${items[0]?.area || '130'} ACRES LAND`, pageWidth / 2, 80, { align: 'center' });
-      
-      // Equipment & Field Survey Section
-      doc.setFillColor(...headerColor);
-      doc.rect(14, 90, pageWidth - 28, 6, 'F');
-      doc.setFont('helvetica', 'bold');
-      doc.text('EQUIPMENT, FACILITIES AND FIELD SURVEY', 16, 94);
-      
-      // Table for items
-      const itemsData = items.map(item => [
-        item.description,
-        item.days?.toString() || '1',
-        item.area?.toString() || '',
-        `${invoiceInfo.currency}`,
-        item.unitPrice?.toFixed(2) || '0.00',
-        `${invoiceInfo.currency}`,
-        item.total?.toFixed(2) || '0.00'
-      ]);
-      
+      doc.text('Quotation', pageWidth - 14, 16, { align: 'right' });
+      doc.text(`Quote #: ${invoiceInfo.invoiceNumber || 'Draft'}`, pageWidth - 14, 22, {
+        align: 'right'
+      });
+      doc.text(`Issue: ${invoiceInfo.issueDate}`, pageWidth - 14, 28, { align: 'right' });
+      doc.text(`Due: ${invoiceInfo.dueDate || 'On approval'}`, pageWidth - 14, 34, {
+        align: 'right'
+      });
+
+      doc.setFontSize(12);
+      doc.text('Client', 14, 34);
+      doc.setFontSize(10);
+      const clientLines = [
+        clientInfo.name,
+        clientInfo.company,
+        clientInfo.email,
+        clientInfo.phone,
+        clientInfo.address
+      ].filter(Boolean);
+      doc.text(clientLines, 14, 42);
+
+      doc.setFontSize(12);
+      doc.text('Project', pageWidth / 2 + 10, 34);
+      doc.setFontSize(10);
+      const projectLines = [
+        projectInfo.projectName || 'Project',
+        projectInfo.service,
+        projectInfo.location,
+        projectInfo.scope
+      ].filter(Boolean);
+      doc.text(projectLines, pageWidth / 2 + 10, 42);
+
+      const startY = 64;
+      doc.setFontSize(12);
+      doc.text('Line items', 14, startY);
+
       doc.autoTable({
-        startY: 100,
-        head: [['DESCRIPTION', 'No. of Days', 'No. Acres', '', 'UNIT PRICE', '', 'TOTAL']],
-        body: itemsData,
-        theme: 'grid',
-        headStyles: { fillColor: [41, 128, 185], fontSize: 9, halign: 'center' },
-        bodyStyles: { fontSize: 9 },
+        startY: startY + 4,
+        head: [['Item', 'Qty', 'Rate', 'Line total']],
+        body: lineItems.map((item) => [
+          `${item.title}${item.category ? ` (${item.category})` : ''}\n${item.description || ''}`,
+          item.quantity || 0,
+          formatMoney(item.rate || 0),
+          formatMoney((Number(item.quantity) || 0) * (Number(item.rate) || 0))
+        ]),
+        theme: 'striped',
+        styles: { fontSize: 9, cellPadding: 3 },
+        headStyles: { fillColor: [59, 130, 246], textColor: 255 },
         columnStyles: {
-          0: { cellWidth: 60 },
-          1: { cellWidth: 20, halign: 'center' },
-          2: { cellWidth: 20, halign: 'center' },
-          3: { cellWidth: 15, halign: 'center' },
-          4: { cellWidth: 25, halign: 'right' },
-          5: { cellWidth: 15, halign: 'center' },
-          6: { cellWidth: 25, halign: 'right' }
-        },
-        didDrawPage: (data) => {
-          // Subtotal
-          doc.setFont('helvetica', 'bold');
-          doc.text('SUBTOTAL:', pageWidth - 70, data.cursor.y + 8);
-          doc.text(`${invoiceInfo.currency}`, pageWidth - 40, data.cursor.y + 8);
-          doc.text(calculateSubtotal().toFixed(2), pageWidth - 15, data.cursor.y + 8, { align: 'right' });
+          1: { halign: 'right', cellWidth: 20 },
+          2: { halign: 'right', cellWidth: 32 },
+          3: { halign: 'right', cellWidth: 32 }
         }
       });
-      
-      let currentY = doc.lastAutoTable.finalY + 15;
-      
-      // Image Processing Section
-      doc.setFillColor(...headerColor);
-      doc.rect(14, currentY, pageWidth - 28, 6, 'F');
+
+      let yCursor = doc.lastAutoTable.finalY + 6;
+
+      doc.setFontSize(11);
       doc.setFont('helvetica', 'bold');
-      doc.text('IMAGE PROCESSING AND GEOREFERENCING', 16, currentY + 4);
-      
+      doc.text('Financial summary', 14, yCursor);
+
       doc.autoTable({
-        startY: currentY + 8,
-        body: [[
-          imageProcessing.description,
-          '',
-          '',
-          `${invoiceInfo.currency}`,
-          imageProcessing.price.toFixed(2),
-          `${invoiceInfo.currency}`,
-          imageProcessing.price.toFixed(2)
-        ]],
-        theme: 'grid',
-        bodyStyles: { fontSize: 8 },
-        columnStyles: {
-          0: { cellWidth: 60 },
-          1: { cellWidth: 20 },
-          2: { cellWidth: 20 },
-          3: { cellWidth: 15, halign: 'center' },
-          4: { cellWidth: 25, halign: 'right' },
-          5: { cellWidth: 15, halign: 'center' },
-          6: { cellWidth: 25, halign: 'right' }
-        },
-        didDrawPage: (data) => {
-          doc.setFont('helvetica', 'bold');
-          doc.text('SUBTOTAL:', pageWidth - 70, data.cursor.y + 6);
-          doc.text(`${invoiceInfo.currency}`, pageWidth - 40, data.cursor.y + 6);
-          doc.text(imageProcessing.price.toFixed(2), pageWidth - 15, data.cursor.y + 6, { align: 'right' });
-        }
+        startY: yCursor + 2,
+        theme: 'plain',
+        styles: { fontSize: 10, cellPadding: 2 },
+        columnStyles: { 0: { fontStyle: 'bold' }, 1: { halign: 'right' } },
+        body: [
+          ['Subtotal', formatMoney(calculations.subtotal)],
+          [
+            `Discount (${billing.discountType === 'percent' ? `${billing.discountValue || 0}%` : ''})`,
+            `- ${formatMoney(calculations.discountAmount)}`
+          ],
+          [`Tax ${billing.taxRate || 0}%`, formatMoney(calculations.taxAmount)],
+          ['Extras', formatMoney(calculations.extrasTotal)],
+          ['Total', formatMoney(calculations.total)],
+          [`Deposit ${billing.deposit || 0}%`, formatMoney(calculations.depositDue)]
+        ]
       });
-      
-      // Grand Total
-      currentY = doc.lastAutoTable.finalY + 12;
-      doc.setFillColor(...primaryColor);
-      doc.setTextColor(255, 255, 255);
-      doc.rect(pageWidth - 90, currentY, 76, 8, 'F');
+
+      yCursor = doc.lastAutoTable.finalY + 8;
       doc.setFont('helvetica', 'bold');
       doc.setFontSize(11);
-      doc.text('GRAND TOTAL', pageWidth - 85, currentY + 5.5);
-      doc.text(`${invoiceInfo.currency} ${calculateTotal().toFixed(2)}`, pageWidth - 15, currentY + 5.5, { align: 'right' });
-      
-      // Bank Details
-      currentY += 18;
-      doc.setTextColor(...darkText);
-      doc.setFont('helvetica', 'bold');
-      doc.setFontSize(10);
-      doc.text('BANK DETAILS', 14, currentY);
+      doc.text('Terms and notes', 14, yCursor);
       doc.setFont('helvetica', 'normal');
       doc.setFontSize(9);
-      doc.text('Bank Name: Absa Bank', 14, currentY + 6);
-      doc.text('Account Name: Creative Approach', 14, currentY + 11);
-      doc.text('Account Number: 032 1108 180', 14, currentY + 16);
-      doc.text('Branch: Takoradi Liberation Road', 14, currentY + 21);
-      
-      // Payment Terms
-      currentY += 28;
+
+      const termsText = doc.splitTextToSize(
+        `${billing.paymentTerms} ${billing.validity}`,
+        pageWidth - 28
+      );
+      doc.text(termsText, 14, yCursor + 6);
+
+      let notesStart = yCursor + 6 + termsText.length * 4;
+      if (billing.notes) {
+        const notes = doc.splitTextToSize(billing.notes, pageWidth - 28);
+        doc.text(notes, 14, notesStart + 4);
+        notesStart += notes.length * 4 + 4;
+      }
+
       doc.setFont('helvetica', 'italic');
-      doc.setFontSize(8);
-      const paymentText = doc.splitTextToSize(terms.payment, pageWidth - 28);
-      doc.text(paymentText, 14, currentY);
-      
-      // Terms and Conditions
-      currentY += paymentText.length * 4 + 5;
-      doc.setFillColor(...headerColor);
-      doc.rect(14, currentY, pageWidth - 28, 6, 'F');
-      doc.setFont('helvetica', 'bold');
-      doc.setFontSize(9);
-      doc.text('TERMS AND CONDITIONS AND LIABILITIES', pageWidth / 2, currentY + 4, { align: 'center' });
-      
-      currentY += 8;
-      doc.setFont('helvetica', 'normal');
-      doc.setFontSize(7.5);
-      const termsText = doc.splitTextToSize(terms.liability, pageWidth - 28);
-      doc.text(termsText, 14, currentY);
-      
-      // Footer
-      currentY += termsText.length * 3 + 8;
-      if (currentY > pageHeight - 20) {
-        doc.addPage();
-        currentY = 20;
-      }
-      doc.setFontSize(9);
-      doc.setFont('helvetica', 'bold');
-      doc.text('For enquiries and bookings: aeroscoutdrone@gmail.com', pageWidth / 2, currentY, { align: 'center' });
-      
-    } else {
-      // French Invoice Format
-      
-      // Header
-      doc.setFontSize(20);
-      doc.setFont('helvetica', 'bold');
-      doc.text('FACTURE', pageWidth - 70, 20);
-      
-      // Company Branding
-      doc.setFontSize(18);
-      doc.text('creative|approach', pageWidth - 70, 30);
-      
-      // Invoice Details
-      doc.setFontSize(10);
-      doc.setFont('helvetica', 'normal');
-      doc.text(`N° de facture :`, pageWidth - 70, 42);
-      doc.text(`${invoiceInfo.invoiceNumber}`, pageWidth - 70, 48);
-      doc.text(`Date de la facture :`, pageWidth - 70, 54);
-      doc.text(`${new Date(invoiceInfo.invoiceDate).toLocaleDateString('fr-FR')}`, pageWidth - 70, 60);
-      doc.text(`Échéance`, pageWidth - 70, 66);
-      
-      // Client Info
-      doc.setFont('helvetica', 'bold');
-      doc.setFontSize(10);
-      doc.text('FACTURE A', 14, 45);
-      doc.setFont('helvetica', 'normal');
-      doc.text(`CLIENT: ${clientInfo.name || 'Banael Ahondo'}`, 14, 52);
-      doc.text(`Adresse: ${clientInfo.address || '26BP 742 Abidjan 26'}`, 14, 58);
-      
-      // Invoice Title
-      doc.setFillColor(...headerColor);
-      doc.rect(14, 72, pageWidth - 28, 10, 'F');
-      doc.setFont('helvetica', 'bold');
-      doc.setTextColor(...darkText);
-      doc.text(`FACTURE POUR L'ÉTUDE PAR DRONE DE ${items[0]?.area || '660'} HA DE PLANTATION`, pageWidth / 2, 78, { align: 'center' });
-      
-      // Equipment Section
-      doc.setFillColor(...headerColor);
-      doc.rect(14, 88, pageWidth - 28, 6, 'F');
-      doc.text('ÉQUIPEMENTS, INSTALLATIONS ET ÉTUDE DE TERRAIN', 16, 92);
-      
-      // Items Table
-      const frenchItemsData = items.map(item => [
-        item.description,
-        item.days?.toString() || '5',
-        item.area?.toString() || '660',
-        `${item.unitPrice?.toFixed(2) || '4.127'} XOF`,
-        `${item.total?.toFixed(2) || '2,723,820'} XOF`
-      ]);
-      
-      doc.autoTable({
-        startY: 96,
-        head: [['DESCRIPTION', 'Nombre de jours', 'Nom. Ha', 'Prix / (ha)', 'TOTAL']],
-        body: frenchItemsData,
-        theme: 'grid',
-        headStyles: { fillColor: [41, 128, 185], fontSize: 9, halign: 'center' },
-        bodyStyles: { fontSize: 9 },
-        columnStyles: {
-          0: { cellWidth: 70 },
-          1: { cellWidth: 30, halign: 'center' },
-          2: { cellWidth: 25, halign: 'center' },
-          3: { cellWidth: 30, halign: 'right' },
-          4: { cellWidth: 35, halign: 'right' }
-        },
-        didDrawPage: (data) => {
-          doc.setFont('helvetica', 'bold');
-          doc.text('SOUS-TOTAL', pageWidth - 70, data.cursor.y + 8);
-          doc.text(`${calculateSubtotal().toFixed(2)} XOF`, pageWidth - 15, data.cursor.y + 8, { align: 'right' });
-        }
-      });
-      
-      let currentY = doc.lastAutoTable.finalY + 15;
-      
-      // Image Processing
-      doc.setFillColor(...headerColor);
-      doc.rect(14, currentY, pageWidth - 28, 6, 'F');
-      doc.text('TRAITEMENT D\'IMAGES ET GÉORÉFÉRENCEMENT', 16, currentY + 4);
-      
-      doc.autoTable({
-        startY: currentY + 8,
-        body: [[
-          imageProcessing.description,
-          '',
-          '',
-          `${imageProcessing.price.toFixed(2)} XOF`,
-          `${imageProcessing.price.toFixed(2)} XOF`
-        ]],
-        theme: 'grid',
-        bodyStyles: { fontSize: 8 },
-        columnStyles: {
-          0: { cellWidth: 70 },
-          1: { cellWidth: 30 },
-          2: { cellWidth: 25 },
-          3: { cellWidth: 30, halign: 'right' },
-          4: { cellWidth: 35, halign: 'right' }
-        },
-        didDrawPage: (data) => {
-          doc.setFont('helvetica', 'bold');
-          doc.text('SOUS-TOTAL', pageWidth - 70, data.cursor.y + 6);
-          doc.text(`${imageProcessing.price.toFixed(2)} XOF`, pageWidth - 15, data.cursor.y + 6, { align: 'right' });
-        }
-      });
-      
-      // Transport Section
-      currentY = doc.lastAutoTable.finalY + 12;
-      doc.setFillColor(...headerColor);
-      doc.rect(14, currentY, pageWidth - 28, 6, 'F');
-      doc.text('TRANSPORT ET LOGISTIQUE', 16, currentY + 4);
-      
-      doc.autoTable({
-        startY: currentY + 8,
-        body: [['Transport', '', '', `${transport.price.toFixed(2)} XOF`, `${transport.price.toFixed(2)} XOF`]],
-        theme: 'grid',
-        bodyStyles: { fontSize: 9 },
-        columnStyles: {
-          0: { cellWidth: 70 },
-          1: { cellWidth: 30 },
-          2: { cellWidth: 25 },
-          3: { cellWidth: 30, halign: 'right' },
-          4: { cellWidth: 35, halign: 'right' }
-        },
-        didDrawPage: (data) => {
-          doc.setFont('helvetica', 'bold');
-          doc.text('TOTAL GÉNÉRAL', pageWidth - 70, data.cursor.y + 8);
-          doc.text(`${calculateTotal().toFixed(2)} XOF`, pageWidth - 15, data.cursor.y + 8, { align: 'right' });
-        }
-      });
-      
-      // Bank Details
-      currentY = doc.lastAutoTable.finalY + 18;
-      doc.setFillColor(...headerColor);
-      doc.rect(14, currentY, pageWidth - 28, 6, 'F');
-      doc.text('COORDONNÉES BANCAIRES', 16, currentY + 4);
-      
-      currentY += 10;
-      doc.setFont('helvetica', 'normal');
-      doc.text('Nom de la banque : Absa Bank', 14, currentY);
-      doc.text('Nom du compte : Creative Approach', 14, currentY + 5);
-      doc.text('Numéro de compte : 032 1108 180', 14, currentY + 10);
-      doc.text('Succursale : Takoradi Liberation Road, Ghana.', 14, currentY + 15);
-      
-      // Payment Terms
-      currentY += 22;
-      doc.setFont('helvetica', 'italic');
-      doc.setFontSize(8);
-      const frenchPaymentText = doc.splitTextToSize('Le paiement est dû dans les 10 jours ouvrables à compter de la date de la facture. Le Client est responsable de toutes les taxes applicables.', pageWidth - 28);
-      doc.text(frenchPaymentText, 14, currentY);
-      
-      // Terms
-      currentY += frenchPaymentText.length * 4 + 5;
-      doc.setFillColor(...headerColor);
-      doc.rect(14, currentY, pageWidth - 28, 6, 'F');
-      doc.setFont('helvetica', 'bold');
-      doc.setFontSize(9);
-      doc.text('TERMES ET CONDITIONS ET RESPONSABILITÉS', pageWidth / 2, currentY + 4, { align: 'center' });
-      
-      currentY += 8;
-      doc.setFont('helvetica', 'normal');
-      doc.setFontSize(7.5);
-      const frenchTermsText = doc.splitTextToSize("L'approche créative effectuera tous les services avec soin et une compétence raisonnables. Toutefois, l'Approche Créative n'est pas responsable des dommages, pertes ou dépenses encourus par le Client à la suite des services de relevé par drone, sauf en cas de négligence grave ou de faute intentionnelle. Sauf accord contraire, le client est responsable de l'obtention des autorisations et permis nécessaires pour le relevé par drone.", pageWidth - 28);
-      doc.text(frenchTermsText, 14, currentY);
-      
-      // Footer
-      currentY += frenchTermsText.length * 3 + 10;
-      if (currentY > pageHeight - 20) {
-        doc.addPage();
-        currentY = 20;
-      }
-      doc.setFontSize(9);
-      doc.setFont('helvetica', 'bold');
-      doc.text('Pour toute demande de renseignements et réservations : benjyemp@gmail.com', pageWidth / 2, currentY, { align: 'center' });
-      doc.setFontSize(8);
-      doc.text('Contact : +233 (0) 541800716 / (0) 203885717', pageWidth / 2, currentY + 5, { align: 'center' });
-    }
-    
-    return doc;
-  };
+      doc.text(
+        `Prepared for ${clientInfo.name || 'client'} | Currency: ${invoiceInfo.currency}`,
+        14,
+        notesStart + 6
+      );
 
-  const downloadPDF = () => {
-    try {
-      console.log('Starting PDF generation...');
-      const doc = generatePDF();
-      
-      if (!doc) {
-        console.error('generatePDF returned null or undefined');
-        toast.error('Failed to generate PDF - doc is null');
-        return;
-      }
-
-      console.log('PDF generated successfully, attempting download...');
-      const filename = `${language === 'french' ? 'Facture' : 'Invoice'}_${invoiceInfo.invoiceNumber || 'draft'}.pdf`;
-      console.log('Filename:', filename);
-
-      // Try primary method
-      try {
-        console.log('Attempting doc.save()...');
-        doc.save(filename);
-        console.log('doc.save() succeeded');
-        toast.success('PDF downloaded successfully');
-        return;
-      } catch (saveErr) {
-        console.error('doc.save() failed, using fallback:', saveErr);
-        
-        // Fallback: manual blob download
-        try {
-          console.log('Attempting fallback blob method...');
-          const blob = doc.output('blob');
-          console.log('Blob created, size:', blob.size);
-          
-          const url = URL.createObjectURL(blob);
-          console.log('Blob URL created:', url);
-          
-          const a = document.createElement('a');
-          a.href = url;
-          a.download = filename;
-          document.body.appendChild(a); // Append to body for some browsers
-          a.click();
-          document.body.removeChild(a); // Clean up
-          
-          setTimeout(() => URL.revokeObjectURL(url), 100);
-          console.log('Fallback download triggered');
-          toast.success('PDF downloaded (using fallback method)');
-          return;
-        } catch (fallbackErr) {
-          console.error('Fallback blob method also failed:', fallbackErr);
-          throw fallbackErr;
-        }
-      }
+      return doc;
     } catch (error) {
-      console.error('Complete download failure:', error);
-      console.error('Error stack:', error.stack);
-      toast.error(`Failed to download PDF: ${error.message || 'Unknown error'}`);
+      console.error('Error building PDF', error);
+      toast.error('Failed to build PDF');
+      return null;
     }
   };
 
-  const previewPDF = () => {
-    try {
-      console.log('Starting PDF preview...');
-      const doc = generatePDF();
-      
-      if (!doc) {
-        console.error('generatePDF returned null for preview');
-        toast.error('Failed to generate PDF for preview');
-        return;
-      }
+  const handlePreview = () => {
+    const doc = buildPdf();
+    if (!doc) return;
 
-      console.log('PDF generated, creating blob for preview...');
-      const blob = doc.output('blob');
-      console.log('Blob created for preview, size:', blob.size);
-      
-      const url = URL.createObjectURL(blob);
-      console.log('Opening preview URL:', url);
-      
-      const newWindow = window.open(url, '_blank');
-      
-      if (!newWindow) {
-        toast.error('Popup blocked - please allow popups for this site');
-        URL.revokeObjectURL(url);
-        return;
-      }
-      
-      // Revoke URL after window loads
-      setTimeout(() => {
-        URL.revokeObjectURL(url);
-        console.log('Preview URL revoked');
-      }, 1000);
-      
-      toast.success('PDF preview opened in new tab');
-    } catch (error) {
-      console.error('Error previewing PDF:', error);
-      console.error('Error stack:', error.stack);
-      toast.error(`Failed to preview PDF: ${error.message || 'Unknown error'}`);
+    const blob = doc.output('blob');
+    const url = URL.createObjectURL(blob);
+    const newWindow = window.open(url, '_blank');
+
+    if (!newWindow) {
+      toast.error('Popup blocked - allow popups to preview');
+      URL.revokeObjectURL(url);
+      return;
     }
+
+    setTimeout(() => URL.revokeObjectURL(url), 60_000);
+    toast.success('Preview opened in new tab');
   };
 
-  const saveQuotation = async () => {
+  const handleDownload = () => {
+    const doc = buildPdf();
+    if (!doc) return;
+
+    const filename = `Quotation_${invoiceInfo.invoiceNumber || 'draft'}.pdf`;
+    doc.save(filename);
+  };
+
+  const handleSave = async () => {
+    const doc = buildPdf();
+    if (!doc) return;
+
     setSaving(true);
     try {
       const token = localStorage.getItem('adminToken');
       if (!token) {
-        toast.error('Please login to save quotations');
-        setSaving(false);
-        return;
-      }
-
-      // Generate PDF for storage
-      const doc = generatePDF();
-      if (!doc) {
-        toast.error('Failed to generate PDF');
+        toast.error('Login required to save quotations');
         setSaving(false);
         return;
       }
@@ -595,587 +321,496 @@ export default function QuotationGenerator() {
       const binaryString = Array.from(uint8Array, (byte) => String.fromCharCode(byte)).join('');
       const pdfBase64 = btoa(binaryString);
 
-      const filename = `${language === 'french' ? 'Facture' : 'Invoice'}_${invoiceInfo.invoiceNumber || 'draft'}.pdf`;
-
-      const quotationData = {
+      const payload = {
         clientInfo,
         invoiceInfo,
-        items,
-        imageProcessing,
-        transport,
-        terms,
-        language,
-        subtotal: calculateSubtotal(),
-        total: calculateTotal(),
+        items: lineItems.map((item) => ({
+          ...item,
+          total: (Number(item.quantity) || 0) * (Number(item.rate) || 0)
+        })),
+        imageProcessing: { description: 'Extras', price: calculations.extrasTotal },
+        transport: { included: Number(extras.travel) > 0, price: Number(extras.travel) || 0 },
+        terms: {
+          payment: billing.paymentTerms,
+          liability: billing.validity,
+          notes: billing.notes
+        },
+        language: invoiceInfo.language,
+        subtotal: calculations.subtotal,
+        total: calculations.total,
         pdfData: pdfBase64,
-        filename
+        filename: `Quotation_${invoiceInfo.invoiceNumber || 'draft'}.pdf`
       };
 
       const response = await fetch(`${API_URL}/api/quotations/save-detailed`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}`
+          Authorization: `Bearer ${token}`
         },
-        body: JSON.stringify(quotationData)
+        body: JSON.stringify(payload)
       });
 
       const data = await response.json().catch(() => ({}));
 
       if (response.ok && data?.success) {
         setSuccess(true);
-        toast.success('Quotation saved to database successfully');
-        setTimeout(() => setSuccess(false), 3000);
+        toast.success('Quotation saved and stored');
+        setTimeout(() => setSuccess(false), 2500);
       } else {
-        toast.error(data.message || `Failed to save quotation (status ${response.status})`);
+        toast.error(data?.message || 'Save failed');
       }
     } catch (error) {
-      console.error('Error saving quotation:', error);
-      toast.error('Failed to save quotation to database');
+      console.error('Error saving quotation', error);
+      toast.error('Unable to save quotation');
     } finally {
       setSaving(false);
     }
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 py-8">
+    <div className="min-h-screen bg-slate-50 py-8">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        {/* Header */}
-        <div className="mb-8">
-          <h1 className="text-3xl font-bold text-gray-900 mb-2">
-            Professional Quotation Generator
-          </h1>
-          <p className="text-gray-600">
-            Create detailed invoices for drone services with automatic calculations
-          </p>
-        </div>
-
-        {/* Language Toggle */}
-        <div className="bg-white rounded-xl shadow-sm p-4 mb-6">
-          <label className="block text-sm font-medium text-gray-700 mb-2">
-            Invoice Language
-          </label>
-          <div className="flex gap-4">
+        <div className="mb-8 flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
+          <div>
+            <h1 className="text-3xl font-bold text-slate-900">Advanced Quotation Builder</h1>
+            <p className="text-slate-600">Create, preview, download, and persist detailed quotes.</p>
+          </div>
+          <div className="flex flex-wrap gap-3">
             <button
-              onClick={() => setLanguage('english')}
-              className={`px-6 py-3 rounded-lg font-medium transition-colors ${
-                language === 'english'
-                  ? 'bg-blue-600 text-white'
-                  : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
-              }`}
+              onClick={handlePreview}
+              className="inline-flex items-center gap-2 rounded-lg bg-white px-4 py-2 text-sm font-semibold text-slate-700 shadow-sm ring-1 ring-slate-200 transition hover:bg-slate-50"
             >
-              English (GHS)
+              <Eye className="h-4 w-4" />
+              Preview PDF
             </button>
             <button
-              onClick={() => setLanguage('french')}
-              className={`px-6 py-3 rounded-lg font-medium transition-colors ${
-                language === 'french'
-                  ? 'bg-blue-600 text-white'
-                  : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
-              }`}
+              onClick={handleDownload}
+              className="inline-flex items-center gap-2 rounded-lg bg-slate-900 px-4 py-2 text-sm font-semibold text-white shadow-sm transition hover:bg-slate-800"
             >
-              French (XOF)
+              <Download className="h-4 w-4" />
+              Download
             </button>
+            <button
+              onClick={handleSave}
+              disabled={saving}
+              className="inline-flex items-center gap-2 rounded-lg bg-indigo-600 px-4 py-2 text-sm font-semibold text-white shadow-sm transition hover:bg-indigo-700 disabled:cursor-not-allowed disabled:opacity-70"
+            >
+              {saving ? <Loader2 className="h-4 w-4 animate-spin" /> : <Save className="h-4 w-4" />}
+              Save to CRM
+            </button>
+            {success && (
+              <span className="inline-flex items-center gap-2 rounded-full bg-emerald-100 px-3 py-1 text-sm font-semibold text-emerald-700">
+                <CheckCircle2 className="h-4 w-4" /> Saved
+              </span>
+            )}
           </div>
         </div>
 
-        {/* Form Sections */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-          {/* Left Column - Form Inputs */}
-          <div className="space-y-6">
-            {/* Client Information */}
+        <div className="grid grid-cols-1 gap-6 lg:grid-cols-3">
+          {/* Left column */}
+          <div className="lg:col-span-2 space-y-6">
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
-              className="bg-white rounded-xl shadow-sm p-6"
+              className="rounded-xl border border-slate-200 bg-white p-6 shadow-sm"
             >
-              <h2 className="text-xl font-semibold text-gray-900 mb-4 flex items-center gap-2">
-                <FileText className="w-5 h-5 text-blue-600" />
-                Client Information
-              </h2>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div className="mb-4 flex items-center justify-between">
+                <div className="flex items-center gap-2">
+                  <FileText className="h-5 w-5 text-indigo-600" />
+                  <h2 className="text-lg font-semibold text-slate-900">Client & Project</h2>
+                </div>
+                <div className="text-xs font-semibold text-slate-500">
+                  Quote #{invoiceInfo.invoiceNumber || 'Draft'}
+                </div>
+              </div>
+              <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
-                    Client Name *
-                  </label>
+                  <label className="text-sm font-medium text-slate-700">Client name</label>
                   <input
-                    type="text"
+                    className="mt-1 w-full rounded-lg border border-slate-200 px-3 py-2 text-sm focus:border-indigo-500 focus:outline-none focus:ring"
+                    placeholder="Client name"
                     value={clientInfo.name}
                     onChange={(e) => setClientInfo({ ...clientInfo, name: e.target.value })}
-                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                    placeholder="CLIENT CST Limited"
                   />
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
-                    Company
-                  </label>
+                  <label className="text-sm font-medium text-slate-700">Company</label>
                   <input
-                    type="text"
+                    className="mt-1 w-full rounded-lg border border-slate-200 px-3 py-2 text-sm focus:border-indigo-500 focus:outline-none focus:ring"
+                    placeholder="Optional"
                     value={clientInfo.company}
                     onChange={(e) => setClientInfo({ ...clientInfo, company: e.target.value })}
-                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                    placeholder="Optional"
+                  />
+                </div>
+                <div>
+                  <label className="text-sm font-medium text-slate-700">Email</label>
+                  <input
+                    type="email"
+                    className="mt-1 w-full rounded-lg border border-slate-200 px-3 py-2 text-sm focus:border-indigo-500 focus:outline-none focus:ring"
+                    placeholder="client@example.com"
+                    value={clientInfo.email}
+                    onChange={(e) => setClientInfo({ ...clientInfo, email: e.target.value })}
+                  />
+                </div>
+                <div>
+                  <label className="text-sm font-medium text-slate-700">Phone</label>
+                  <input
+                    className="mt-1 w-full rounded-lg border border-slate-200 px-3 py-2 text-sm focus:border-indigo-500 focus:outline-none focus:ring"
+                    placeholder="+233..."
+                    value={clientInfo.phone}
+                    onChange={(e) => setClientInfo({ ...clientInfo, phone: e.target.value })}
                   />
                 </div>
                 <div className="md:col-span-2">
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
-                    Address *
-                  </label>
+                  <label className="text-sm font-medium text-slate-700">Address</label>
                   <input
-                    type="text"
+                    className="mt-1 w-full rounded-lg border border-slate-200 px-3 py-2 text-sm focus:border-indigo-500 focus:outline-none focus:ring"
+                    placeholder="Street, city"
                     value={clientInfo.address}
                     onChange={(e) => setClientInfo({ ...clientInfo, address: e.target.value })}
-                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                    placeholder="SW-36 Bank Rd, Abora Gomoa Off, Springs Rd, Accra"
                   />
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
-                    Email
-                  </label>
+                  <label className="text-sm font-medium text-slate-700">Project</label>
                   <input
-                    type="email"
-                    value={clientInfo.email}
-                    onChange={(e) => setClientInfo({ ...clientInfo, email: e.target.value })}
-                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                    placeholder="client@example.com"
+                    className="mt-1 w-full rounded-lg border border-slate-200 px-3 py-2 text-sm focus:border-indigo-500 focus:outline-none focus:ring"
+                    placeholder="Project name"
+                    value={projectInfo.projectName}
+                    onChange={(e) => setProjectInfo({ ...projectInfo, projectName: e.target.value })}
                   />
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
-                    Phone
-                  </label>
+                  <label className="text-sm font-medium text-slate-700">Service type</label>
                   <input
-                    type="tel"
-                    value={clientInfo.phone}
-                    onChange={(e) => setClientInfo({ ...clientInfo, phone: e.target.value })}
-                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                    placeholder="+233 XX XXX XXXX"
+                    className="mt-1 w-full rounded-lg border border-slate-200 px-3 py-2 text-sm focus:border-indigo-500 focus:outline-none focus:ring"
+                    placeholder="Mapping & Surveying"
+                    value={projectInfo.service}
+                    onChange={(e) => setProjectInfo({ ...projectInfo, service: e.target.value })}
+                  />
+                </div>
+                <div>
+                  <label className="text-sm font-medium text-slate-700">Location</label>
+                  <input
+                    className="mt-1 w-full rounded-lg border border-slate-200 px-3 py-2 text-sm focus:border-indigo-500 focus:outline-none focus:ring"
+                    placeholder="Site location"
+                    value={projectInfo.location}
+                    onChange={(e) => setProjectInfo({ ...projectInfo, location: e.target.value })}
+                  />
+                </div>
+                <div>
+                  <label className="text-sm font-medium text-slate-700">Scope</label>
+                  <input
+                    className="mt-1 w-full rounded-lg border border-slate-200 px-3 py-2 text-sm focus:border-indigo-500 focus:outline-none focus:ring"
+                    placeholder="Capture, processing, analytics"
+                    value={projectInfo.scope}
+                    onChange={(e) => setProjectInfo({ ...projectInfo, scope: e.target.value })}
                   />
                 </div>
               </div>
             </motion.div>
 
-            {/* Invoice Details */}
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.1 }}
-              className="bg-white rounded-xl shadow-sm p-6"
+              className="rounded-xl border border-slate-200 bg-white p-6 shadow-sm"
             >
-              <h2 className="text-xl font-semibold text-gray-900 mb-4 flex items-center gap-2">
-                <Calendar className="w-5 h-5 text-blue-600" />
-                Invoice Details
-              </h2>
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+              <div className="mb-4 flex items-center justify-between">
+                <div className="flex items-center gap-2">
+                  <FileText className="h-5 w-5 text-indigo-600" />
+                  <h2 className="text-lg font-semibold text-slate-900">Financial controls</h2>
+                </div>
+                <div className="flex items-center gap-3 text-xs text-slate-500">
+                  <div className="flex items-center gap-1">
+                    <span className="h-2 w-2 rounded-full bg-emerald-500" />
+                    Live totals
+                  </div>
+                </div>
+              </div>
+              <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
-                    Invoice Number
-                  </label>
+                  <label className="text-sm font-medium text-slate-700">Currency</label>
+                  <select
+                    className="mt-1 w-full rounded-lg border border-slate-200 px-3 py-2 text-sm focus:border-indigo-500 focus:outline-none focus:ring"
+                    value={invoiceInfo.currency}
+                    onChange={(e) => setInvoiceInfo({ ...invoiceInfo, currency: e.target.value })}
+                  >
+                    {currencyOptions.map((cur) => (
+                      <option key={cur} value={cur}>
+                        {cur}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+                <div>
+                  <label className="text-sm font-medium text-slate-700">Tax %</label>
                   <input
-                    type="text"
-                    value={invoiceInfo.invoiceNumber}
-                    onChange={(e) => setInvoiceInfo({ ...invoiceInfo, invoiceNumber: e.target.value })}
-                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                    type="number"
+                    className="mt-1 w-full rounded-lg border border-slate-200 px-3 py-2 text-sm focus:border-indigo-500 focus:outline-none focus:ring"
+                    value={billing.taxRate}
+                    onChange={(e) => setBilling({ ...billing, taxRate: Number(e.target.value) })}
                   />
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
-                    Invoice Date
-                  </label>
+                  <label className="text-sm font-medium text-slate-700">Deposit %</label>
                   <input
-                    type="date"
-                    value={invoiceInfo.invoiceDate}
-                    onChange={(e) => setInvoiceInfo({ ...invoiceInfo, invoiceDate: e.target.value })}
-                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                    type="number"
+                    className="mt-1 w-full rounded-lg border border-slate-200 px-3 py-2 text-sm focus:border-indigo-500 focus:outline-none focus:ring"
+                    value={billing.deposit}
+                    onChange={(e) => setBilling({ ...billing, deposit: Number(e.target.value) })}
                   />
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
-                    Due Date
-                  </label>
+                  <label className="text-sm font-medium text-slate-700">Discount</label>
+                  <div className="mt-1 flex gap-2">
+                    <select
+                      className="w-32 rounded-lg border border-slate-200 px-3 py-2 text-sm focus:border-indigo-500 focus:outline-none focus:ring"
+                      value={billing.discountType}
+                      onChange={(e) => setBilling({ ...billing, discountType: e.target.value })}
+                    >
+                      <option value="percent">Percent</option>
+                      <option value="flat">Flat</option>
+                    </select>
+                    <input
+                      type="number"
+                      className="flex-1 rounded-lg border border-slate-200 px-3 py-2 text-sm focus:border-indigo-500 focus:outline-none focus:ring"
+                      value={billing.discountValue}
+                      onChange={(e) => setBilling({ ...billing, discountValue: Number(e.target.value) })}
+                    />
+                  </div>
+                </div>
+                <div>
+                  <label className="text-sm font-medium text-slate-700">Travel / logistics</label>
                   <input
-                    type="date"
-                    value={invoiceInfo.dueDate}
-                    onChange={(e) => setInvoiceInfo({ ...invoiceInfo, dueDate: e.target.value })}
-                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                    type="number"
+                    className="mt-1 w-full rounded-lg border border-slate-200 px-3 py-2 text-sm focus:border-indigo-500 focus:outline-none focus:ring"
+                    value={extras.travel}
+                    onChange={(e) => setExtras({ ...extras, travel: Number(e.target.value) })}
+                  />
+                </div>
+                <div>
+                  <label className="text-sm font-medium text-slate-700">Misc fees</label>
+                  <input
+                    type="number"
+                    className="mt-1 w-full rounded-lg border border-slate-200 px-3 py-2 text-sm focus:border-indigo-500 focus:outline-none focus:ring"
+                    value={extras.misc}
+                    onChange={(e) => setExtras({ ...extras, misc: Number(e.target.value) })}
+                  />
+                </div>
+                <div className="md:col-span-3 grid grid-cols-1 gap-3 md:grid-cols-3">
+                  <div>
+                    <label className="text-sm font-medium text-slate-700">Issue date</label>
+                    <input
+                      type="date"
+                      className="mt-1 w-full rounded-lg border border-slate-200 px-3 py-2 text-sm focus:border-indigo-500 focus:outline-none focus:ring"
+                      value={invoiceInfo.issueDate}
+                      onChange={(e) => setInvoiceInfo({ ...invoiceInfo, issueDate: e.target.value })}
+                    />
+                  </div>
+                  <div>
+                    <label className="text-sm font-medium text-slate-700">Due date</label>
+                    <input
+                      type="date"
+                      className="mt-1 w-full rounded-lg border border-slate-200 px-3 py-2 text-sm focus:border-indigo-500 focus:outline-none focus:ring"
+                      value={invoiceInfo.dueDate}
+                      onChange={(e) => setInvoiceInfo({ ...invoiceInfo, dueDate: e.target.value })}
+                    />
+                  </div>
+                  <div>
+                    <label className="text-sm font-medium text-slate-700">Language</label>
+                    <select
+                      className="mt-1 w-full rounded-lg border border-slate-200 px-3 py-2 text-sm focus:border-indigo-500 focus:outline-none focus:ring"
+                      value={invoiceInfo.language}
+                      onChange={(e) => setInvoiceInfo({ ...invoiceInfo, language: e.target.value })}
+                    >
+                      <option value="english">English</option>
+                      <option value="french">French</option>
+                    </select>
+                  </div>
+                </div>
+                <div className="md:col-span-3">
+                  <label className="text-sm font-medium text-slate-700">Payment terms</label>
+                  <textarea
+                    className="mt-1 w-full rounded-lg border border-slate-200 px-3 py-2 text-sm focus:border-indigo-500 focus:outline-none focus:ring"
+                    rows={2}
+                    value={billing.paymentTerms}
+                    onChange={(e) => setBilling({ ...billing, paymentTerms: e.target.value })}
+                  />
+                </div>
+                <div className="md:col-span-3">
+                  <label className="text-sm font-medium text-slate-700">Validity</label>
+                  <textarea
+                    className="mt-1 w-full rounded-lg border border-slate-200 px-3 py-2 text-sm focus:border-indigo-500 focus:outline-none focus:ring"
+                    rows={2}
+                    value={billing.validity}
+                    onChange={(e) => setBilling({ ...billing, validity: e.target.value })}
+                  />
+                </div>
+                <div className="md:col-span-3">
+                  <label className="text-sm font-medium text-slate-700">Notes</label>
+                  <textarea
+                    className="mt-1 w-full rounded-lg border border-slate-200 px-3 py-2 text-sm focus:border-indigo-500 focus:outline-none focus:ring"
+                    rows={2}
+                    value={billing.notes}
+                    onChange={(e) => setBilling({ ...billing, notes: e.target.value })}
                   />
                 </div>
               </div>
             </motion.div>
 
-            {/* Line Items */}
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.2 }}
-              className="bg-white rounded-xl shadow-sm p-6"
+              className="rounded-xl border border-slate-200 bg-white p-6 shadow-sm"
             >
-              <div className="flex items-center justify-between mb-4">
-                <h2 className="text-xl font-semibold text-gray-900 flex items-center gap-2">
-                  <DollarSign className="w-5 h-5 text-blue-600" />
-                  Equipment & Field Survey Items
-                </h2>
+              <div className="mb-4 flex items-center justify-between">
+                <div className="flex items-center gap-2">
+                  <FileText className="h-5 w-5 text-indigo-600" />
+                  <h2 className="text-lg font-semibold text-slate-900">Line items</h2>
+                </div>
                 <button
-                  onClick={addItem}
-                  className="flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
+                  onClick={addLineItem}
+                  className="inline-flex items-center gap-2 rounded-lg bg-indigo-50 px-3 py-2 text-sm font-semibold text-indigo-700 transition hover:bg-indigo-100"
                 >
-                  <Plus className="w-4 h-4" />
-                  Add Item
+                  <Plus className="h-4 w-4" /> Add item
                 </button>
               </div>
 
               <div className="space-y-4">
-                {items.map((item) => (
-                  <div key={item.id} className="border border-gray-200 rounded-lg p-4">
-                    <div className="grid grid-cols-1 md:grid-cols-6 gap-3">
+                {lineItems.map((item) => (
+                  <div
+                    key={item.id}
+                    className="rounded-lg border border-slate-200 p-4 shadow-sm hover:border-indigo-200"
+                  >
+                    <div className="grid grid-cols-1 gap-3 md:grid-cols-3">
                       <div className="md:col-span-2">
-                        <label className="block text-xs font-medium text-gray-700 mb-1">
-                          Description
-                        </label>
+                        <label className="text-sm font-medium text-slate-700">Title</label>
                         <input
-                          type="text"
+                          className="mt-1 w-full rounded-lg border border-slate-200 px-3 py-2 text-sm focus:border-indigo-500 focus:outline-none focus:ring"
+                          value={item.title}
+                          onChange={(e) => updateLineItem(item.id, 'title', e.target.value)}
+                        />
+                      </div>
+                      <div>
+                        <label className="text-sm font-medium text-slate-700">Category</label>
+                        <input
+                          className="mt-1 w-full rounded-lg border border-slate-200 px-3 py-2 text-sm focus:border-indigo-500 focus:outline-none focus:ring"
+                          value={item.category}
+                          onChange={(e) => updateLineItem(item.id, 'category', e.target.value)}
+                        />
+                      </div>
+                      <div className="md:col-span-3">
+                        <label className="text-sm font-medium text-slate-700">Description</label>
+                        <input
+                          className="mt-1 w-full rounded-lg border border-slate-200 px-3 py-2 text-sm focus:border-indigo-500 focus:outline-none focus:ring"
                           value={item.description}
-                          onChange={(e) => updateItem(item.id, 'description', e.target.value)}
-                          className="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                          placeholder="Drone Survey"
+                          onChange={(e) => updateLineItem(item.id, 'description', e.target.value)}
                         />
                       </div>
                       <div>
-                        <label className="block text-xs font-medium text-gray-700 mb-1">
-                          Days
-                        </label>
+                        <label className="text-sm font-medium text-slate-700">Quantity</label>
                         <input
                           type="number"
-                          value={item.days}
-                          onChange={(e) => updateItem(item.id, 'days', parseFloat(e.target.value) || 0)}
-                          className="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                          className="mt-1 w-full rounded-lg border border-slate-200 px-3 py-2 text-sm focus:border-indigo-500 focus:outline-none focus:ring"
+                          value={item.quantity}
+                          onChange={(e) => updateLineItem(item.id, 'quantity', Number(e.target.value))}
                         />
                       </div>
                       <div>
-                        <label className="block text-xs font-medium text-gray-700 mb-1">
-                          Area ({language === 'french' ? 'Ha' : 'Acres'})
-                        </label>
+                        <label className="text-sm font-medium text-slate-700">Rate</label>
                         <input
                           type="number"
-                          value={item.area}
-                          onChange={(e) => updateItem(item.id, 'area', parseFloat(e.target.value) || 0)}
-                          className="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                          className="mt-1 w-full rounded-lg border border-slate-200 px-3 py-2 text-sm focus:border-indigo-500 focus:outline-none focus:ring"
+                          value={item.rate}
+                          onChange={(e) => updateLineItem(item.id, 'rate', Number(e.target.value))}
                         />
                       </div>
                       <div>
-                        <label className="block text-xs font-medium text-gray-700 mb-1">
-                          Unit Price
-                        </label>
+                        <label className="text-sm font-medium text-slate-700">Unit</label>
                         <input
-                          type="number"
-                          value={item.unitPrice}
-                          onChange={(e) => updateItem(item.id, 'unitPrice', parseFloat(e.target.value) || 0)}
-                          className="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                          className="mt-1 w-full rounded-lg border border-slate-200 px-3 py-2 text-sm focus:border-indigo-500 focus:outline-none focus:ring"
+                          value={item.unit}
+                          onChange={(e) => updateLineItem(item.id, 'unit', e.target.value)}
                         />
                       </div>
-                      <div className="flex items-end gap-2">
-                        <div className="flex-1">
-                          <label className="block text-xs font-medium text-gray-700 mb-1">
-                            Total
-                          </label>
-                          <input
-                            type="text"
-                            value={item.total.toFixed(2)}
-                            readOnly
-                            className="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg bg-gray-50"
-                          />
+                      <div>
+                        <label className="text-sm font-medium text-slate-700">Line total</label>
+                        <div className="mt-1 rounded-lg border border-slate-200 bg-slate-50 px-3 py-2 text-sm font-semibold text-slate-900">
+                          {formatMoney((Number(item.quantity) || 0) * (Number(item.rate) || 0))}
                         </div>
+                      </div>
+                      <div className="md:col-span-2 flex items-center justify-end">
                         <button
-                          onClick={() => removeItem(item.id)}
-                          className="p-2 text-red-600 hover:bg-red-50 rounded-lg transition-colors"
+                          onClick={() => removeLineItem(item.id)}
+                          className="inline-flex items-center gap-2 rounded-lg px-3 py-2 text-sm font-semibold text-rose-600 transition hover:bg-rose-50"
                         >
-                          <Trash2 className="w-4 h-4" />
+                          <Trash2 className="h-4 w-4" /> Remove
                         </button>
                       </div>
                     </div>
                   </div>
                 ))}
               </div>
-
-              <div className="mt-4 p-4 bg-gray-50 rounded-lg">
-                <div className="flex justify-between items-center">
-                  <span className="font-semibold text-gray-900">Subtotal:</span>
-                  <span className="text-xl font-bold text-gray-900">
-                    {invoiceInfo.currency} {calculateSubtotal().toFixed(2)}
-                  </span>
-                </div>
-              </div>
-            </motion.div>
-
-            {/* Image Processing */}
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.3 }}
-              className="bg-white rounded-xl shadow-sm p-6"
-            >
-              <h2 className="text-xl font-semibold text-gray-900 mb-4">
-                Image Processing & Georeferencing
-              </h2>
-              <div className="space-y-4">
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
-                    Description
-                  </label>
-                  <textarea
-                    value={imageProcessing.description}
-                    onChange={(e) => setImageProcessing({ ...imageProcessing, description: e.target.value })}
-                    rows={3}
-                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                  />
-                </div>
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
-                    Price
-                  </label>
-                  <input
-                    type="number"
-                    value={imageProcessing.price}
-                    onChange={(e) => setImageProcessing({ ...imageProcessing, price: parseFloat(e.target.value) || 0 })}
-                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                  />
-                </div>
-              </div>
-            </motion.div>
-
-            {/* Transport */}
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.4 }}
-              className="bg-white rounded-xl shadow-sm p-6"
-            >
-              <h2 className="text-xl font-semibold text-gray-900 mb-4">
-                Transport & Logistics
-              </h2>
-              <div className="space-y-4">
-                <div className="flex items-center gap-3">
-                  <input
-                    type="checkbox"
-                    checked={transport.included}
-                    onChange={(e) => setTransport({ ...transport, included: e.target.checked })}
-                    className="w-4 h-4 text-blue-600 rounded focus:ring-2 focus:ring-blue-500"
-                  />
-                  <label className="text-sm font-medium text-gray-700">
-                    Include transport costs
-                  </label>
-                </div>
-                {transport.included && (
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">
-                      Transport Price
-                    </label>
-                    <input
-                      type="number"
-                      value={transport.price}
-                      onChange={(e) => setTransport({ ...transport, price: parseFloat(e.target.value) || 0 })}
-                      className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                    />
-                  </div>
-                )}
-              </div>
             </motion.div>
           </div>
 
-          {/* Right Column - Live Preview & Actions */}
-          <div className="lg:col-span-1">
-            <div className="sticky top-8 space-y-6">
-              {/* Live Preview */}
-              <motion.div
-                initial={{ opacity: 0, x: 20 }}
-                animate={{ opacity: 1, x: 0 }}
-                className="bg-gradient-to-br from-gray-900 via-gray-800 to-black text-white rounded-xl shadow-lg border border-gray-700 p-6 max-h-[600px] overflow-y-auto"
-              >
-                <div className="flex items-center justify-between mb-4">
-                  <div>
-                    <p className="text-xs uppercase tracking-widest text-gray-400">Live Preview</p>
-                    <h3 className="text-xl font-bold">{language === 'french' ? 'Facture' : 'Invoice'}</h3>
-                  </div>
-                  <div className="text-right">
-                    <p className="text-xs text-gray-400">Invoice #</p>
-                    <p className="text-sm font-mono">{invoiceInfo.invoiceNumber || 'AUTO'}</p>
-                  </div>
+          {/* Right column */}
+          <div className="space-y-6">
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              className="rounded-xl border border-slate-200 bg-white p-6 shadow-sm"
+            >
+              <h3 className="text-lg font-semibold text-slate-900">Live summary</h3>
+              <div className="mt-4 space-y-3">
+                <div className="flex items-center justify-between rounded-lg bg-slate-50 px-3 py-2 text-sm font-semibold text-slate-900">
+                  <span>Subtotal</span>
+                  <span>{formatMoney(calculations.subtotal)}</span>
                 </div>
-
-                {/* Company Branding */}
-                <div className="mb-4 pb-4 border-b border-white/10">
-                  <p className="text-lg font-bold">Creative Approach</p>
-                  <p className="text-xs text-gray-300">Professional Drone Services</p>
-                  <p className="text-xs text-gray-400 mt-1">
-                    {new Date(invoiceInfo.invoiceDate).toLocaleDateString()}
-                  </p>
+                <div className="flex items-center justify-between rounded-lg bg-slate-50 px-3 py-2 text-sm text-slate-700">
+                  <span>Discount</span>
+                  <span>- {formatMoney(calculations.discountAmount)}</span>
                 </div>
-
-                {/* Client Info */}
-                <div className="mb-4 bg-white/5 border border-white/10 rounded-lg p-3">
-                  <p className="text-xs text-gray-400 mb-1">{language === 'french' ? 'FACTURE À' : 'BILL TO'}</p>
-                  <p className="text-sm font-semibold">{clientInfo.name || 'Client Name'}</p>
-                  {clientInfo.company && (
-                    <p className="text-xs text-gray-300">{clientInfo.company}</p>
-                  )}
-                  <p className="text-xs text-gray-300">{clientInfo.address || 'Address not specified'}</p>
-                  {clientInfo.email && (
-                    <p className="text-xs text-gray-400">{clientInfo.email}</p>
-                  )}
+                <div className="flex items-center justify-between rounded-lg bg-slate-50 px-3 py-2 text-sm text-slate-700">
+                  <span>Tax ({billing.taxRate || 0}%)</span>
+                  <span>{formatMoney(calculations.taxAmount)}</span>
                 </div>
-
-                {/* Items Preview */}
-                <div className="mb-4">
-                  <p className="text-xs uppercase text-gray-400 mb-2">
-                    {language === 'french' ? 'Articles' : 'Line Items'}
-                  </p>
-                  <div className="space-y-2">
-                    {items.map((item, index) => (
-                      <div key={item.id} className="bg-white/5 border border-white/10 rounded p-2">
-                        <div className="flex justify-between items-start">
-                          <div className="flex-1">
-                            <p className="text-xs font-medium">{item.description || `Item ${index + 1}`}</p>
-                            <p className="text-xs text-gray-400">
-                              {item.days} {language === 'french' ? 'jours' : 'days'} × {item.area} {language === 'french' ? 'Ha' : 'acres'} × {invoiceInfo.currency} {item.unitPrice}
-                            </p>
-                          </div>
-                          <p className="text-xs font-semibold">{invoiceInfo.currency} {item.total.toFixed(2)}</p>
-                        </div>
-                      </div>
-                    ))}
-                  </div>
+                <div className="flex items-center justify-between rounded-lg bg-slate-50 px-3 py-2 text-sm text-slate-700">
+                  <span>Extras</span>
+                  <span>{formatMoney(calculations.extrasTotal)}</span>
                 </div>
-
-                {/* Processing & Transport */}
-                {(imageProcessing.price > 0 || transport.price > 0) && (
-                  <div className="mb-4 space-y-2">
-                    {imageProcessing.price > 0 && (
-                      <div className="bg-white/5 border border-white/10 rounded p-2">
-                        <div className="flex justify-between">
-                          <p className="text-xs">{language === 'french' ? 'Traitement d\'images' : 'Image Processing'}</p>
-                          <p className="text-xs font-semibold">{invoiceInfo.currency} {imageProcessing.price.toFixed(2)}</p>
-                        </div>
-                      </div>
-                    )}
-                    {transport.included && transport.price > 0 && (
-                      <div className="bg-white/5 border border-white/10 rounded p-2">
-                        <div className="flex justify-between">
-                          <p className="text-xs">Transport</p>
-                          <p className="text-xs font-semibold">{invoiceInfo.currency} {transport.price.toFixed(2)}</p>
-                        </div>
-                      </div>
-                    )}
-                  </div>
-                )}
-
-                {/* Total */}
-                <div className="mt-4 pt-4 border-t border-white/20">
-                  <div className="bg-emerald-500/20 border border-emerald-400/30 rounded-lg p-3">
-                    <div className="flex justify-between items-center">
-                      <p className="text-xs text-emerald-200">{language === 'french' ? 'TOTAL GÉNÉRAL' : 'GRAND TOTAL'}</p>
-                      <p className="text-xl font-bold text-emerald-100">{invoiceInfo.currency} {calculateTotal().toFixed(2)}</p>
-                    </div>
-                  </div>
+                <div className="flex items-center justify-between rounded-lg bg-indigo-50 px-3 py-3 text-base font-semibold text-indigo-900">
+                  <span>Total</span>
+                  <span>{formatMoney(calculations.total)}</span>
                 </div>
-
-                <p className="text-xs text-gray-500 mt-3 text-center italic">
-                  Updates in real-time as you type
-                </p>
-              </motion.div>
-
-              {/* Summary */}
-              <motion.div
-                initial={{ opacity: 0, x: 20 }}
-                animate={{ opacity: 1, x: 0 }}
-                className="bg-white rounded-xl shadow-sm p-6"
-              >
-                <h3 className="text-lg font-semibold text-gray-900 mb-4">
-                  Invoice Summary
-                </h3>
-                <div className="space-y-3">
-                  <div className="flex justify-between text-sm">
-                    <span className="text-gray-600">Field Survey:</span>
-                    <span className="font-medium">{invoiceInfo.currency} {calculateSubtotal().toFixed(2)}</span>
-                  </div>
-                  <div className="flex justify-between text-sm">
-                    <span className="text-gray-600">Image Processing:</span>
-                    <span className="font-medium">{invoiceInfo.currency} {imageProcessing.price.toFixed(2)}</span>
-                  </div>
-                  {transport.included && (
-                    <div className="flex justify-between text-sm">
-                      <span className="text-gray-600">Transport:</span>
-                      <span className="font-medium">{invoiceInfo.currency} {transport.price.toFixed(2)}</span>
-                    </div>
-                  )}
-                  <div className="border-t pt-3 mt-3">
-                    <div className="flex justify-between">
-                      <span className="font-semibold text-gray-900">Grand Total:</span>
-                      <span className="text-2xl font-bold text-blue-600">
-                        {invoiceInfo.currency} {calculateTotal().toFixed(2)}
-                      </span>
-                    </div>
-                  </div>
+                <div className="flex items-center justify-between rounded-lg bg-emerald-50 px-3 py-2 text-sm font-semibold text-emerald-800">
+                  <span>Deposit due ({billing.deposit || 0}%)</span>
+                  <span>{formatMoney(calculations.depositDue)}</span>
                 </div>
-              </motion.div>
+              </div>
+            </motion.div>
 
-              {/* Actions */}
-              <motion.div
-                initial={{ opacity: 0, x: 20 }}
-                animate={{ opacity: 1, x: 0 }}
-                transition={{ delay: 0.1 }}
-                className="bg-white rounded-xl shadow-sm p-6 space-y-3"
-              >
-                <button
-                  onClick={previewPDF}
-                  className="w-full flex items-center justify-center gap-2 px-4 py-3 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition-colors"
-                >
-                  <Eye className="w-5 h-5" />
-                  Preview PDF
-                </button>
-                <button
-                  onClick={downloadPDF}
-                  className="w-full flex items-center justify-center gap-2 px-4 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
-                >
-                  <Download className="w-5 h-5" />
-                  Download PDF
-                </button>
-                <button
-                  onClick={saveQuotation}
-                  disabled={saving}
-                  className="w-full flex items-center justify-center gap-2 px-4 py-3 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors disabled:opacity-50"
-                >
-                  {saving ? (
-                    <Loader className="w-5 h-5 animate-spin" />
-                  ) : success ? (
-                    <CheckCircle className="w-5 h-5" />
-                  ) : (
-                    <Save className="w-5 h-5" />
-                  )}
-                  {saving ? 'Saving...' : success ? 'Saved!' : 'Save to Database'}
-                </button>
-              </motion.div>
-
-              {/* Info */}
-              <motion.div
-                initial={{ opacity: 0, x: 20 }}
-                animate={{ opacity: 1, x: 0 }}
-                transition={{ delay: 0.2 }}
-                className="bg-blue-50 rounded-xl p-6"
-              >
-                <h3 className="text-sm font-semibold text-blue-900 mb-2">
-                  💡 Quick Tips
-                </h3>
-                <ul className="text-xs text-blue-800 space-y-1">
-                  <li>• Fill all required client information</li>
-                  <li>• Add multiple line items as needed</li>
-                  <li>• Toggle between English/French formats</li>
-                  <li>• Preview before downloading</li>
-                  <li>• Save to database for record keeping</li>
-                </ul>
-              </motion.div>
-            </div>
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              className="rounded-xl border border-slate-200 bg-white p-6 shadow-sm"
+            >
+              <h3 className="text-lg font-semibold text-slate-900">Quick checklist</h3>
+              <ul className="mt-3 space-y-2 text-sm text-slate-700">
+                <li className="flex items-start gap-2">
+                  <span className="mt-1 h-2 w-2 rounded-full bg-emerald-500" />
+                  Verify client contact and project scope.
+                </li>
+                <li className="flex items-start gap-2">
+                  <span className="mt-1 h-2 w-2 rounded-full bg-emerald-500" />
+                  Confirm currency, tax, and deposit rules.
+                </li>
+                <li className="flex items-start gap-2">
+                  <span className="mt-1 h-2 w-2 rounded-full bg-emerald-500" />
+                  Review totals before sending or saving.
+                </li>
+              </ul>
+            </motion.div>
           </div>
         </div>
       </div>
