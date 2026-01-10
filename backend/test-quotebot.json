@@ -1,0 +1,12 @@
+{
+  "name": "Jay Monty Test",
+  "email": "test@example.com",
+  "phone": "+233 541 500 716",
+  "company": "Test Company Ltd",
+  "location": "Accra, Ghana",
+  "service": "Aerial Photography & Videography",
+  "projectDetails": "Need aerial photography for real estate project. Multiple properties to photograph.",
+  "budget": "$1000 - $5000",
+  "timeline": "Within 2 weeks",
+  "additionalInfo": "Prefer morning shoots for best lighting"
+}

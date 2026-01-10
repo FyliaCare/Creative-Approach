@@ -44,12 +44,11 @@ router.post('/', async (req, res) => {
         command: emailError.command
       });
       
-      // Still save the contact request even if email fails
-      // Return success to user but log the email failure
-      return res.status(200).json({
-        success: true,
-        message: 'Thank you! Your message has been received. We\'ll respond within 2 hours.',
-        warning: 'Email notification may be delayed'
+      // Return error to user when email fails
+      return res.status(500).json({
+        success: false,
+        message: 'We\'re experiencing technical difficulties with our email system. Please contact us directly at visuals@caghana.com or call +233 541 500 716.',
+        error: 'Email service unavailable'
       });
     }
 

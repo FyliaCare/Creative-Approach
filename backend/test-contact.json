@@ -1,0 +1,8 @@
+{
+  "name": "Test User - Jay",
+  "email": "jaymonty@example.com",
+  "phone": "+233 123 456 789",
+  "location": "Accra, Ghana",
+  "service": "Aerial Photography",
+  "message": "Test message to verify the email system is working on production. Please confirm receipt at visuals@caghana.com"
+}

@@ -29,7 +29,14 @@ const createTransporter = () => {
 
 // Contact form email templates
 export const sendContactFormEmails = async (formData) => {
-  const transporter = createTransporter();
+  let transporter;
+  try {
+    transporter = createTransporter();
+  } catch (error) {
+    console.error('❌ Failed to create email transporter:', error.message);
+    throw new Error('Email service configuration error. Please check EMAIL_USER and EMAIL_PASSWORD in .env file.');
+  }
+  
   const { name, email, phone, location, service, message } = formData;
 
   // Email to visuals@caghana.com
@@ -163,16 +170,34 @@ export const sendContactFormEmails = async (formData) => {
       transporter.sendMail(clientEmail),
     ]);
     
+    console.log('✅ Both emails sent successfully - notification to visuals@caghana.com and confirmation to', email);
     return { success: true, message: 'Emails sent successfully' };
   } catch (error) {
-    console.error('Email sending error:', error);
-    throw new Error(`Failed to send emails: ${error.message}`);
+    console.error('❌ Email sending error:', error.message);
+    
+    // Provide specific error messages based on error type
+    if (error.code === 'EAUTH') {
+      throw new Error('Email authentication failed. Please check EMAIL_USER and EMAIL_PASSWORD in .env file. Gmail requires an App Password, not your regular password. See EMAIL_SETUP_GUIDE.md for instructions.');
+    } else if (error.code === 'ESOCKET' || error.code === 'ECONNECTION') {
+      throw new Error('Cannot connect to email server. Please check your internet connection and EMAIL_HOST/EMAIL_PORT settings.');
+    } else if (error.code === 'ETIMEDOUT') {
+      throw new Error('Email server connection timeout. Check firewall settings or try a different SMTP provider.');
+    } else {
+      throw new Error(`Failed to send emails: ${error.message}`);
+    }
   }
 };
 
 // Quote request email templates
 export const sendQuoteRequestEmails = async (quoteData) => {
-  const transporter = createTransporter();
+  let transporter;
+  try {
+    transporter = createTransporter();
+  } catch (error) {
+    console.error('❌ Failed to create email transporter:', error.message);
+    throw new Error('Email service configuration error. Please check EMAIL_USER and EMAIL_PASSWORD in .env file.');
+  }
+  
   const { 
     name, 
     email, 
@@ -345,10 +370,21 @@ export const sendQuoteRequestEmails = async (quoteData) => {
       transporter.sendMail(clientEmail),
     ]);
     
+    console.log('✅ Quote request emails sent successfully - notification to visuals@caghana.com and confirmation to', email);
     return { success: true, message: 'Quote request emails sent successfully' };
   } catch (error) {
-    console.error('Email sending error:', error);
-    throw new Error(`Failed to send quote emails: ${error.message}`);
+    console.error('❌ Quote email sending error:', error.message);
+    
+    // Provide specific error messages based on error type
+    if (error.code === 'EAUTH') {
+      throw new Error('Email authentication failed. Please check EMAIL_USER and EMAIL_PASSWORD in .env file.');
+    } else if (error.code === 'ESOCKET' || error.code === 'ECONNECTION') {
+      throw new Error('Cannot connect to email server. Please check your internet connection.');
+    } else if (error.code === 'ETIMEDOUT') {
+      throw new Error('Email server connection timeout. Please try again.');
+    } else {
+      throw new Error(`Failed to send quote emails: ${error.message}`);
+    }
   }
 };
 
