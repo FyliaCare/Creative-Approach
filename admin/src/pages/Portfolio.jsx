@@ -21,6 +21,7 @@ export const Portfolio = () => {
     date: '',
     category: '',
     featured: false,
+    status: 'published',
     images: [],
   });
   const [imageFiles, setImageFiles] = useState([]);
@@ -126,6 +127,7 @@ export const Portfolio = () => {
         date: project.date ? new Date(project.date).toISOString().split('T')[0] : '',
         category: project.category || '',
         featured: project.featured || false,
+        status: project.status || 'published',
         images: project.images || [],
       });
       setImagePreviews(project.images || []);
@@ -139,6 +141,7 @@ export const Portfolio = () => {
         date: '',
         category: '',
         featured: false,
+        status: 'published',
         images: [],
       });
       setImagePreviews([]);

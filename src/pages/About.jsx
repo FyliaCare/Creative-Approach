@@ -154,7 +154,6 @@ export default function About() {
 
   const certifications = [
     { name: 'GCAA Certified', icon: '✓', color: 'text-green-600' },
-    { name: 'ISO 9001:2015', icon: '📋', color: 'text-blue-600' },
     { name: 'Insurance Coverage', icon: '🛡️', color: 'text-purple-600' },
     { name: 'Safety Compliance', icon: '🔒', color: 'text-orange-600' }
   ];

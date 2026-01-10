@@ -25,22 +25,17 @@ router.post('/', async (req, res) => {
       });
     }
 
-    // Send emails
-    try {
-      await sendContactFormEmails({
-        name,
-        email,
-        phone,
-        location,
-        service,
-        message,
-      });
-      console.log('✅ Contact form emails sent successfully to:', email);
-    } catch (err) {
-      console.error('❌ Failed to send contact form emails:', err.message);
-      // Log the error but don't fail the request - better UX
-      // Admin should monitor logs and configure email service
-    }
+    // Send emails - this is required for contact form to work
+    await sendContactFormEmails({
+      name,
+      email,
+      phone,
+      location,
+      service,
+      message,
+    });
+
+    console.log('✅ Contact form emails sent successfully to:', email);
 
     res.status(200).json({
       success: true,

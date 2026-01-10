@@ -143,9 +143,43 @@ router.post('/', protect, authorize('admin'), [
 });
 
 // @route   PUT /api/blog/:id
-// @desc    Update blog post
+// @desc    Update blog post (full update)
 // @access  Private/Admin
 router.put('/:id', protect, authorize('admin'), async (req, res, next) => {
+  try {
+    let post = await Blog.findById(req.params.id);
+    
+    if (!post) {
+      return res.status(404).json({
+        success: false,
+        message: 'Blog post not found'
+      });
+    }
+    
+    // If changing to published and not already published, set publishedAt
+    if (req.body.status === 'published' && post.status !== 'published') {
+      req.body.publishedAt = new Date();
+    }
+    
+    post = await Blog.findByIdAndUpdate(
+      req.params.id,
+      req.body,
+      { new: true, runValidators: true }
+    ).populate('author', 'name email avatar');
+    
+    res.json({
+      success: true,
+      data: post
+    });
+  } catch (error) {
+    next(error);
+  }
+});
+
+// @route   PATCH /api/blog/:id
+// @desc    Update blog post (partial update)
+// @access  Private/Admin
+router.patch('/:id', protect, authorize('admin'), async (req, res, next) => {
   try {
     let post = await Blog.findById(req.params.id);
     
