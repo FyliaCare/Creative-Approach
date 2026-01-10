@@ -441,6 +441,20 @@ router.post('/save-detailed', protect, authorize('admin'), async (req, res, next
         total: req.body.total
       }
     };
+
+    // Optional PDF persistence
+    if (req.body.pdfData) {
+      const uploadDir = path.join(process.cwd(), 'uploads', 'quotations');
+      fs.mkdirSync(uploadDir, { recursive: true });
+
+      const safeName = (req.body.filename || `quotation-${Date.now()}.pdf`).replace(/[^a-zA-Z0-9._-]/g, '');
+      const filePath = path.join(uploadDir, safeName);
+
+      const buffer = Buffer.from(req.body.pdfData, 'base64');
+      fs.writeFileSync(filePath, buffer);
+
+      quotationData.quotePDF = `/uploads/quotations/${safeName}`;
+    }
     
     const quotation = await Quotation.create(quotationData);
     

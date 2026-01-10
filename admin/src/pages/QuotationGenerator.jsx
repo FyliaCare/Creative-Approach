@@ -482,8 +482,24 @@ export default function QuotationGenerator() {
         toast.error('Failed to generate PDF');
         return;
       }
-      doc.save(`${language === 'french' ? 'Facture' : 'Invoice'}_${invoiceInfo.invoiceNumber}.pdf`);
-      toast.success('PDF downloaded successfully');
+
+      const filename = `${language === 'french' ? 'Facture' : 'Invoice'}_${invoiceInfo.invoiceNumber || 'draft'}.pdf`;
+
+      // Use jsPDF save, fallback to manual blob save if needed
+      try {
+        doc.save(filename);
+        toast.success('PDF downloaded successfully');
+      } catch (saveErr) {
+        console.warn('jsPDF save fallback triggered:', saveErr);
+        const blob = doc.output('blob');
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = filename;
+        a.click();
+        URL.revokeObjectURL(url);
+        toast.success('PDF downloaded (fallback)');
+      }
     } catch (error) {
       console.error('Error downloading PDF:', error);
       toast.error('Failed to download PDF');
@@ -497,7 +513,11 @@ export default function QuotationGenerator() {
         toast.error('Failed to generate PDF');
         return;
       }
-      window.open(doc.output('bloburl'), '_blank');
+      const blob = doc.output('blob');
+      const url = URL.createObjectURL(blob);
+      window.open(url, '_blank');
+      // Do not revoke immediately to allow loading; revoke after short delay
+      setTimeout(() => URL.revokeObjectURL(url), 1000);
     } catch (error) {
       console.error('Error previewing PDF:', error);
       toast.error('Failed to preview PDF');
@@ -507,6 +527,28 @@ export default function QuotationGenerator() {
   const saveQuotation = async () => {
     setSaving(true);
     try {
+      const token = localStorage.getItem('adminToken');
+      if (!token) {
+        toast.error('Please login to save quotations');
+        setSaving(false);
+        return;
+      }
+
+      // Generate PDF for storage
+      const doc = generatePDF();
+      if (!doc) {
+        toast.error('Failed to generate PDF');
+        setSaving(false);
+        return;
+      }
+
+      const arrayBuffer = await doc.output('arraybuffer');
+      const uint8Array = new Uint8Array(arrayBuffer);
+      const binaryString = Array.from(uint8Array, (byte) => String.fromCharCode(byte)).join('');
+      const pdfBase64 = btoa(binaryString);
+
+      const filename = `${language === 'french' ? 'Facture' : 'Invoice'}_${invoiceInfo.invoiceNumber || 'draft'}.pdf`;
+
       const quotationData = {
         clientInfo,
         invoiceInfo,
@@ -516,15 +558,10 @@ export default function QuotationGenerator() {
         terms,
         language,
         subtotal: calculateSubtotal(),
-        total: calculateTotal()
+        total: calculateTotal(),
+        pdfData: pdfBase64,
+        filename
       };
-
-      const token = localStorage.getItem('adminToken');
-      if (!token) {
-        toast.error('Please login to save quotations');
-        setSaving(false);
-        return;
-      }
 
       const response = await fetch(`${API_URL}/api/quotations/save-detailed`, {
         method: 'POST',
@@ -537,7 +574,7 @@ export default function QuotationGenerator() {
 
       const data = await response.json().catch(() => ({}));
 
-      if (response.ok) {
+      if (response.ok && data?.success) {
         setSuccess(true);
         toast.success('Quotation saved to database successfully');
         setTimeout(() => setSuccess(false), 3000);
