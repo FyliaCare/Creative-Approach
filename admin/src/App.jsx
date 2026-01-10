@@ -17,6 +17,7 @@ const QuotationDetail = lazy(() => import('./pages/QuotationDetail').then(m => (
 const PortfolioAdvanced = lazy(() => import('./pages/PortfolioAdvanced').then(m => ({ default: m.PortfolioAdvanced })));
 const AdvancedAdminChat = lazy(() => import('./pages/AdvancedAdminChat'));
 const QuotationGenerator = lazy(() => import('./pages/QuotationGenerator'));
+const Contacts = lazy(() => import('./pages/Contacts').then(m => ({ default: m.Contacts })));
 const Settings = lazy(() => import('./pages/Settings').then(m => ({ default: m.Settings })));
 
 // Loading component
@@ -145,6 +146,16 @@ function App() {
                 <ProtectedRoute>
                   <DashboardLayout>
                     <AdvancedAdminChat />
+                  </DashboardLayout>
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/contacts"
+              element={
+                <ProtectedRoute>
+                  <DashboardLayout>
+                    <Contacts />
                   </DashboardLayout>
                 </ProtectedRoute>
               }

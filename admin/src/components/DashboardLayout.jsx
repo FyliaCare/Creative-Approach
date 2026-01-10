@@ -16,6 +16,7 @@ import {
   Briefcase,
   FileEdit,
   List,
+  Mail,
 } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 import { NotificationPanel } from './NotificationPanel';
@@ -25,6 +26,7 @@ import io from 'socket.io-client';
 const navigation = [
   { name: 'Dashboard', href: '/', icon: LayoutDashboard },
   { name: 'Analytics', href: '/analytics', icon: BarChart3 },
+  { name: 'Contacts', href: '/contacts', icon: Mail },
   { name: 'Newsletter', href: '/newsletter', icon: Users },
   { name: 'Blog Posts', href: '/blog', icon: FileText },
   { name: 'Portfolio', href: '/portfolio', icon: Briefcase },

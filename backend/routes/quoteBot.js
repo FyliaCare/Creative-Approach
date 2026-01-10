@@ -1,6 +1,8 @@
 import express from 'express';
 import { sendQuoteRequestEmails } from '../utils/emailService.js';
 import Quotation from '../models/Quotation.js';
+import User from '../models/User.js';
+import NotificationService from '../utils/notificationService.js';
 
 const router = express.Router();
 
@@ -82,6 +84,32 @@ router.post('/', async (req, res) => {
       status: 'new',
       priority: 'high', // Quote bot leads are high priority
     });
+
+    // Create notification for all admin users
+    try {
+      const admins = await User.find({ role: 'admin' });
+      for (const admin of admins) {
+        await NotificationService.createNotification({
+          recipient: admin._id,
+          type: 'new_quotation',
+          title: '🎯 New Quote Request',
+          message: `${name} requested a quote for ${service}${location ? ` in ${location}` : ''}`,
+          link: `/quotations/${quotation._id}`,
+          icon: 'ClipboardList',
+          priority: 'high',
+          metadata: {
+            quotationId: quotation._id,
+            service,
+            name,
+            email,
+            company
+          }
+        });
+      }
+    } catch (notifError) {
+      console.error('❌ Failed to create notification:', notifError);
+      // Continue even if notification fails
+    }
 
     // Send emails to sales and client
     try {

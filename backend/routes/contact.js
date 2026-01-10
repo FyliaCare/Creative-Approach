@@ -1,5 +1,8 @@
 import express from 'express';
 import { sendContactFormEmails } from '../utils/emailService.js';
+import ContactMessage from '../models/ContactMessage.js';
+import User from '../models/User.js';
+import NotificationService from '../utils/notificationService.js';
 
 const router = express.Router();
 
@@ -23,6 +26,46 @@ router.post('/', async (req, res) => {
         success: false, 
         message: 'Please provide a valid email address' 
       });
+    }
+
+    // Save contact message to database
+    const contactMessage = await ContactMessage.create({
+      name,
+      email,
+      phone,
+      location,
+      service,
+      message,
+      source: 'website_contact_form',
+      ipAddress: req.ip || req.connection.remoteAddress,
+      userAgent: req.get('user-agent'),
+      status: 'new',
+      priority: 'high'
+    });
+
+    // Create notification for all admin users
+    try {
+      const admins = await User.find({ role: 'admin' });
+      for (const admin of admins) {
+        await NotificationService.createNotification({
+          recipient: admin._id,
+          type: 'contact_message',
+          title: 'New Contact Form Submission',
+          message: `${name} sent a message about ${service || 'General Inquiry'}`,
+          link: `/contacts/${contactMessage._id}`,
+          icon: 'Mail',
+          priority: 'high',
+          metadata: {
+            contactId: contactMessage._id,
+            email,
+            name,
+            service
+          }
+        });
+      }
+    } catch (notifError) {
+      console.error('❌ Failed to create notification:', notifError);
+      // Continue even if notification fails
     }
 
     // Send emails
