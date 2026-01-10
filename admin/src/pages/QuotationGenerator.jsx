@@ -11,7 +11,7 @@ import {
   Loader2
 } from 'lucide-react';
 import jsPDF from 'jspdf';
-import 'jspdf-autotable';
+import autoTable from 'jspdf-autotable';
 import toast from 'react-hot-toast';
 
 const API_URL =
@@ -154,8 +154,10 @@ export default function QuotationGenerator() {
     if (!ensureValid()) return null;
 
     try {
+      console.log('Building PDF document...');
       const doc = new jsPDF();
       const pageWidth = doc.internal.pageSize.getWidth();
+      console.log('jsPDF instance created, pageWidth:', pageWidth);
 
       doc.setFont('helvetica', 'bold');
       doc.setFontSize(18);
@@ -199,6 +201,7 @@ export default function QuotationGenerator() {
       doc.setFontSize(12);
       doc.text('Line items', 14, startY);
 
+      console.log('Adding line items table, count:', lineItems.length);
       doc.autoTable({
         startY: startY + 4,
         head: [['Item', 'Qty', 'Rate', 'Line total']],
@@ -269,38 +272,62 @@ export default function QuotationGenerator() {
         notesStart + 6
       );
 
+      console.log('PDF built successfully');
       return doc;
     } catch (error) {
       console.error('Error building PDF', error);
-      toast.error('Failed to build PDF');
+      console.error('Error stack:', error.stack);
+      toast.error(`Failed to build PDF: ${error.message}`);
       return null;
     }
   };
 
   const handlePreview = () => {
-    const doc = buildPdf();
-    if (!doc) return;
+    try {
+      console.log('Starting PDF preview...');
+      const doc = buildPdf();
+      if (!doc) {
+        console.error('buildPdf returned null for preview');
+        return;
+      }
 
-    const blob = doc.output('blob');
-    const url = URL.createObjectURL(blob);
-    const newWindow = window.open(url, '_blank');
+      console.log('Creating blob...');
+      const blob = doc.output('blob');
+      console.log('Blob created, size:', blob.size);
+      const url = URL.createObjectURL(blob);
+      const newWindow = window.open(url, '_blank');
 
-    if (!newWindow) {
-      toast.error('Popup blocked - allow popups to preview');
-      URL.revokeObjectURL(url);
-      return;
+      if (!newWindow) {
+        toast.error('Popup blocked - allow popups to preview');
+        URL.revokeObjectURL(url);
+        return;
+      }
+
+      setTimeout(() => URL.revokeObjectURL(url), 60_000);
+      toast.success('Preview opened in new tab');
+    } catch (error) {
+      console.error('Preview error:', error);
+      toast.error(`Failed to preview PDF: ${error.message}`);
     }
-
-    setTimeout(() => URL.revokeObjectURL(url), 60_000);
-    toast.success('Preview opened in new tab');
   };
 
   const handleDownload = () => {
-    const doc = buildPdf();
-    if (!doc) return;
+    try {
+      console.log('Starting PDF download...');
+      const doc = buildPdf();
+      if (!doc) {
+        console.error('buildPdf returned null');
+        return;
+      }
 
-    const filename = `Quotation_${invoiceInfo.invoiceNumber || 'draft'}.pdf`;
-    doc.save(filename);
+      const filename = `Quotation_${invoiceInfo.invoiceNumber || 'draft'}.pdf`;
+      console.log('Saving PDF with filename:', filename);
+      doc.save(filename);
+      toast.success('PDF downloaded successfully');
+    } catch (error) {
+      console.error('Download error:', error);
+      toast.error(`Failed to download PDF: ${error.message}`);
+    }
   };
 
   const handleSave = async () => {
