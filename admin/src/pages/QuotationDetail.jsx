@@ -16,7 +16,6 @@ import {
   Edit,
   Trash2,
   Download,
-  Eye,
   User
 } from 'lucide-react';
 import toast from 'react-hot-toast';
@@ -33,6 +32,7 @@ export const QuotationDetail = () => {
   const [updating, setUpdating] = useState(false);
   const [showRejectModal, setShowRejectModal] = useState(false);
   const [rejectionReason, setRejectionReason] = useState('');
+  const [pdfSaving, setPdfSaving] = useState(false);
 
   useEffect(() => {
     fetchQuotation();
@@ -252,10 +252,41 @@ export const QuotationDetail = () => {
     }
   };
 
-  const previewPDF = () => {
-    const doc = generatePDF();
-    if (doc) {
-      window.open(doc.output('bloburl'), '_blank');
+  const savePDFToDatabase = async () => {
+    if (!quotation) return;
+
+    try {
+      setPdfSaving(true);
+      const doc = generatePDF();
+      if (!doc) return;
+
+      const pdfBlob = doc.output('blob');
+      const arrayBuffer = await pdfBlob.arrayBuffer();
+      const uint8Array = new Uint8Array(arrayBuffer);
+      const binaryString = Array.from(uint8Array, (byte) => String.fromCharCode(byte)).join('');
+      const pdfBase64 = btoa(binaryString);
+
+      const token = localStorage.getItem('adminToken');
+      const response = await axios.patch(
+        `${API_URL}/api/quotations/${id}/pdf`,
+        {
+          filename: `Quotation_${quotation.name}_${Date.now()}.pdf`,
+          pdfData: pdfBase64
+        },
+        {
+          headers: { Authorization: `Bearer ${token}` }
+        }
+      );
+
+      if (response.data?.success) {
+        toast.success('PDF saved to database');
+        fetchQuotation();
+      }
+    } catch (error) {
+      console.error('Error saving PDF:', error);
+      toast.error('Failed to save PDF');
+    } finally {
+      setPdfSaving(false);
     }
   };
 
@@ -338,18 +369,18 @@ export const QuotationDetail = () => {
           
           <div className="flex gap-2">
             <button
-              onClick={previewPDF}
-              className="flex items-center gap-2 px-4 py-2 bg-gray-600 text-white rounded-lg hover:bg-gray-700 transition-colors"
-            >
-              <Eye className="w-4 h-4" />
-              Preview PDF
-            </button>
-            <button
               onClick={downloadPDF}
               className="flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
             >
               <Download className="w-4 h-4" />
               Download PDF
+            </button>
+            <button
+              onClick={savePDFToDatabase}
+              disabled={pdfSaving}
+              className="flex items-center gap-2 px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition-colors disabled:opacity-60"
+            >
+              {pdfSaving ? 'Saving…' : 'Save to Database'}
             </button>
             <button
               onClick={deleteQuotation}
@@ -487,6 +518,76 @@ export const QuotationDetail = () => {
             )}
           </motion.div>
 
+          {/* Live Preview (in-app view instead of PDF preview) */}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.15 }}
+            className="bg-gradient-to-br from-gray-900 via-gray-800 to-black text-white rounded-xl shadow-lg border border-gray-800 p-6"
+          >
+            <div className="flex items-center justify-between mb-4">
+              <div>
+                <p className="text-xs uppercase tracking-widest text-gray-400">Live Preview</p>
+                <h3 className="text-2xl font-bold">Quotation</h3>
+              </div>
+              <span className="px-3 py-1 text-xs font-semibold bg-white/10 rounded-full border border-white/10">
+                {new Date(quotation.createdAt).toLocaleDateString()}
+              </span>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div className="bg-white/5 border border-white/10 rounded-lg p-4">
+                <p className="text-xs text-gray-400">Client</p>
+                <p className="text-lg font-semibold">{quotation.name}</p>
+                <p className="text-sm text-gray-300">{quotation.email}</p>
+                <p className="text-sm text-gray-300">{quotation.phone}</p>
+              </div>
+              <div className="bg-white/5 border border-white/10 rounded-lg p-4">
+                <p className="text-xs text-gray-400">Project</p>
+                <p className="text-lg font-semibold">{quotation.service}</p>
+                {quotation.projectType && (
+                  <p className="text-sm text-gray-300">Type: {quotation.projectType}</p>
+                )}
+                {quotation.location && (
+                  <p className="text-sm text-gray-300">Location: {quotation.location}</p>
+                )}
+              </div>
+            </div>
+
+            <div className="mt-4 grid grid-cols-1 md:grid-cols-3 gap-4">
+              {quotation.budget && (
+                <div className="bg-white/5 border border-white/10 rounded-lg p-4">
+                  <p className="text-xs text-gray-400">Budget</p>
+                  <p className="text-lg font-semibold">{quotation.budget}</p>
+                </div>
+              )}
+              {quotation.timeline && (
+                <div className="bg-white/5 border border-white/10 rounded-lg p-4">
+                  <p className="text-xs text-gray-400">Timeline</p>
+                  <p className="text-lg font-semibold">{quotation.timeline}</p>
+                </div>
+              )}
+              <div className="bg-white/5 border border-white/10 rounded-lg p-4">
+                <p className="text-xs text-gray-400">Status</p>
+                <p className="text-lg font-semibold capitalize">{quotation.status}</p>
+              </div>
+            </div>
+
+            {quotation.message && (
+              <div className="mt-4 bg-white/5 border border-white/10 rounded-lg p-4">
+                <p className="text-xs text-gray-400 mb-2">Project Description</p>
+                <p className="text-sm text-gray-100 whitespace-pre-wrap">{quotation.message}</p>
+              </div>
+            )}
+
+            {quotation.quotedAmount && (
+              <div className="mt-4 bg-emerald-500/10 border border-emerald-400/30 rounded-lg p-4">
+                <p className="text-xs text-emerald-200 mb-1">Quoted Amount</p>
+                <p className="text-2xl font-bold text-emerald-100">GHS {quotation.quotedAmount.toLocaleString()}</p>
+              </div>
+            )}
+          </motion.div>
+
           {/* Quoted Amount (if any) */}
           {quotation.quotedAmount && (
             <motion.div
@@ -574,6 +675,17 @@ export const QuotationDetail = () => {
                 <Download className="w-4 h-4" />
                 Download PDF
               </button>
+              {quotation.quotePDF && (
+                <a
+                  href={`${API_URL}${quotation.quotePDF}`}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="flex items-center gap-2 w-full px-4 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition-colors"
+                >
+                  <FileText className="w-4 h-4" />
+                  View Saved PDF
+                </a>
+              )}
             </div>
           </motion.div>
 
