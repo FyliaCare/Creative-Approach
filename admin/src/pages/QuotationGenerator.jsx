@@ -6,6 +6,7 @@ import {
 } from 'lucide-react';
 import { jsPDF } from 'jspdf';
 import 'jspdf-autotable';
+import toast from 'react-hot-toast';
 
 const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000';
 
@@ -473,13 +474,32 @@ export default function QuotationGenerator() {
   };
 
   const downloadPDF = () => {
-    const doc = generatePDF();
-    doc.save(`${language === 'french' ? 'Facture' : 'Invoice'}_${invoiceInfo.invoiceNumber}.pdf`);
+    try {
+      const doc = generatePDF();
+      if (!doc) {
+        toast.error('Failed to generate PDF');
+        return;
+      }
+      doc.save(`${language === 'french' ? 'Facture' : 'Invoice'}_${invoiceInfo.invoiceNumber}.pdf`);
+      toast.success('PDF downloaded successfully');
+    } catch (error) {
+      console.error('Error downloading PDF:', error);
+      toast.error('Failed to download PDF');
+    }
   };
 
   const previewPDF = () => {
-    const doc = generatePDF();
-    window.open(doc.output('bloburl'), '_blank');
+    try {
+      const doc = generatePDF();
+      if (!doc) {
+        toast.error('Failed to generate PDF');
+        return;
+      }
+      window.open(doc.output('bloburl'), '_blank');
+    } catch (error) {
+      console.error('Error previewing PDF:', error);
+      toast.error('Failed to preview PDF');
+    }
   };
 
   const saveQuotation = async () => {
@@ -497,21 +517,34 @@ export default function QuotationGenerator() {
         total: calculateTotal()
       };
 
+      const token = localStorage.getItem('adminToken');
+      if (!token) {
+        toast.error('Please login to save quotations');
+        setSaving(false);
+        return;
+      }
+
       const response = await fetch(`${API_URL}/api/quotations/save-detailed`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': `Bearer ${localStorage.getItem('token')}`
+          'Authorization': `Bearer ${token}`
         },
         body: JSON.stringify(quotationData)
       });
 
+      const data = await response.json();
+
       if (response.ok) {
         setSuccess(true);
+        toast.success('Quotation saved to database successfully');
         setTimeout(() => setSuccess(false), 3000);
+      } else {
+        toast.error(data.message || 'Failed to save quotation');
       }
     } catch (error) {
       console.error('Error saving quotation:', error);
+      toast.error('Failed to save quotation to database');
     } finally {
       setSaving(false);
     }
