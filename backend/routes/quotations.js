@@ -1,5 +1,7 @@
 import express from 'express';
 import { body, validationResult } from 'express-validator';
+import fs from 'fs';
+import path from 'path';
 import Quotation from '../models/Quotation.js';
 import User from '../models/User.js';
 import { protect, authorize } from '../middleware/auth.js';
@@ -226,6 +228,52 @@ router.patch('/:id/status', protect, authorize('admin'), async (req, res, next) 
     res.json({
       success: true,
       data: quotation
+    });
+  } catch (error) {
+    next(error);
+  }
+});
+
+// @route   PATCH /api/quotations/:id/pdf
+// @desc    Save generated PDF and store path on quotation
+// @access  Private/Admin
+router.patch('/:id/pdf', protect, authorize('admin'), async (req, res, next) => {
+  try {
+    const { pdfData, filename } = req.body;
+
+    if (!pdfData) {
+      return res.status(400).json({
+        success: false,
+        message: 'pdfData is required'
+      });
+    }
+
+    let quotation = await Quotation.findById(req.params.id);
+
+    if (!quotation) {
+      return res.status(404).json({
+        success: false,
+        message: 'Quotation not found'
+      });
+    }
+
+    const uploadDir = path.join(process.cwd(), 'uploads', 'quotations');
+    fs.mkdirSync(uploadDir, { recursive: true });
+
+    const safeName = filename?.replace(/[^a-zA-Z0-9._-]/g, '') || `quotation-${quotation._id}-${Date.now()}.pdf`;
+    const filePath = path.join(uploadDir, safeName);
+
+    const buffer = Buffer.from(pdfData, 'base64');
+    fs.writeFileSync(filePath, buffer);
+
+    quotation.quotePDF = `/uploads/quotations/${safeName}`;
+    await quotation.save();
+
+    res.json({
+      success: true,
+      data: {
+        url: quotation.quotePDF
+      }
     });
   } catch (error) {
     next(error);
