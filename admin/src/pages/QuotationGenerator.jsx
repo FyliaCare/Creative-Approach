@@ -560,9 +560,9 @@ export default function QuotationGenerator() {
         </div>
 
         {/* Form Sections */}
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
           {/* Left Column - Form Inputs */}
-          <div className="lg:col-span-2 space-y-6">
+          <div className="space-y-6">
             {/* Client Information */}
             <motion.div
               initial={{ opacity: 0, y: 20 }}
@@ -864,9 +864,107 @@ export default function QuotationGenerator() {
             </motion.div>
           </div>
 
-          {/* Right Column - Summary & Actions */}
+          {/* Right Column - Live Preview & Actions */}
           <div className="lg:col-span-1">
             <div className="sticky top-8 space-y-6">
+              {/* Live Preview */}
+              <motion.div
+                initial={{ opacity: 0, x: 20 }}
+                animate={{ opacity: 1, x: 0 }}
+                className="bg-gradient-to-br from-gray-900 via-gray-800 to-black text-white rounded-xl shadow-lg border border-gray-700 p-6 max-h-[600px] overflow-y-auto"
+              >
+                <div className="flex items-center justify-between mb-4">
+                  <div>
+                    <p className="text-xs uppercase tracking-widest text-gray-400">Live Preview</p>
+                    <h3 className="text-xl font-bold">{language === 'french' ? 'Facture' : 'Invoice'}</h3>
+                  </div>
+                  <div className="text-right">
+                    <p className="text-xs text-gray-400">Invoice #</p>
+                    <p className="text-sm font-mono">{invoiceInfo.invoiceNumber || 'AUTO'}</p>
+                  </div>
+                </div>
+
+                {/* Company Branding */}
+                <div className="mb-4 pb-4 border-b border-white/10">
+                  <p className="text-lg font-bold">Creative Approach</p>
+                  <p className="text-xs text-gray-300">Professional Drone Services</p>
+                  <p className="text-xs text-gray-400 mt-1">
+                    {new Date(invoiceInfo.invoiceDate).toLocaleDateString()}
+                  </p>
+                </div>
+
+                {/* Client Info */}
+                <div className="mb-4 bg-white/5 border border-white/10 rounded-lg p-3">
+                  <p className="text-xs text-gray-400 mb-1">{language === 'french' ? 'FACTURE À' : 'BILL TO'}</p>
+                  <p className="text-sm font-semibold">{clientInfo.name || 'Client Name'}</p>
+                  {clientInfo.company && (
+                    <p className="text-xs text-gray-300">{clientInfo.company}</p>
+                  )}
+                  <p className="text-xs text-gray-300">{clientInfo.address || 'Address not specified'}</p>
+                  {clientInfo.email && (
+                    <p className="text-xs text-gray-400">{clientInfo.email}</p>
+                  )}
+                </div>
+
+                {/* Items Preview */}
+                <div className="mb-4">
+                  <p className="text-xs uppercase text-gray-400 mb-2">
+                    {language === 'french' ? 'Articles' : 'Line Items'}
+                  </p>
+                  <div className="space-y-2">
+                    {items.map((item, index) => (
+                      <div key={item.id} className="bg-white/5 border border-white/10 rounded p-2">
+                        <div className="flex justify-between items-start">
+                          <div className="flex-1">
+                            <p className="text-xs font-medium">{item.description || `Item ${index + 1}`}</p>
+                            <p className="text-xs text-gray-400">
+                              {item.days} {language === 'french' ? 'jours' : 'days'} × {item.area} {language === 'french' ? 'Ha' : 'acres'} × {invoiceInfo.currency} {item.unitPrice}
+                            </p>
+                          </div>
+                          <p className="text-xs font-semibold">{invoiceInfo.currency} {item.total.toFixed(2)}</p>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Processing & Transport */}
+                {(imageProcessing.price > 0 || transport.price > 0) && (
+                  <div className="mb-4 space-y-2">
+                    {imageProcessing.price > 0 && (
+                      <div className="bg-white/5 border border-white/10 rounded p-2">
+                        <div className="flex justify-between">
+                          <p className="text-xs">{language === 'french' ? 'Traitement d\'images' : 'Image Processing'}</p>
+                          <p className="text-xs font-semibold">{invoiceInfo.currency} {imageProcessing.price.toFixed(2)}</p>
+                        </div>
+                      </div>
+                    )}
+                    {transport.included && transport.price > 0 && (
+                      <div className="bg-white/5 border border-white/10 rounded p-2">
+                        <div className="flex justify-between">
+                          <p className="text-xs">Transport</p>
+                          <p className="text-xs font-semibold">{invoiceInfo.currency} {transport.price.toFixed(2)}</p>
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                )}
+
+                {/* Total */}
+                <div className="mt-4 pt-4 border-t border-white/20">
+                  <div className="bg-emerald-500/20 border border-emerald-400/30 rounded-lg p-3">
+                    <div className="flex justify-between items-center">
+                      <p className="text-xs text-emerald-200">{language === 'french' ? 'TOTAL GÉNÉRAL' : 'GRAND TOTAL'}</p>
+                      <p className="text-xl font-bold text-emerald-100">{invoiceInfo.currency} {calculateTotal().toFixed(2)}</p>
+                    </div>
+                  </div>
+                </div>
+
+                <p className="text-xs text-gray-500 mt-3 text-center italic">
+                  Updates in real-time as you type
+                </p>
+              </motion.div>
+
               {/* Summary */}
               <motion.div
                 initial={{ opacity: 0, x: 20 }}
