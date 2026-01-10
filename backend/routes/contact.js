@@ -25,17 +25,33 @@ router.post('/', async (req, res) => {
       });
     }
 
-    // Send emails - this is required for contact form to work
-    await sendContactFormEmails({
-      name,
-      email,
-      phone,
-      location,
-      service,
-      message,
-    });
-
-    console.log('✅ Contact form emails sent successfully to:', email);
+    // Send emails
+    try {
+      await sendContactFormEmails({
+        name,
+        email,
+        phone,
+        location,
+        service,
+        message,
+      });
+      console.log('✅ Contact form emails sent successfully to:', email);
+    } catch (emailError) {
+      console.error('❌ Failed to send contact form emails:', emailError);
+      console.error('Email error details:', {
+        message: emailError.message,
+        code: emailError.code,
+        command: emailError.command
+      });
+      
+      // Still save the contact request even if email fails
+      // Return success to user but log the email failure
+      return res.status(200).json({
+        success: true,
+        message: 'Thank you! Your message has been received. We\'ll respond within 2 hours.',
+        warning: 'Email notification may be delayed'
+      });
+    }
 
     res.status(200).json({
       success: true,
@@ -46,7 +62,7 @@ router.post('/', async (req, res) => {
     console.error('Contact form error:', error);
     res.status(500).json({
       success: false,
-      message: 'Failed to send message. Please try again or contact us directly at visuals@caghana.com',
+      message: 'Failed to process your message. Please try again or contact us directly at visuals@caghana.com',
     });
   }
 });

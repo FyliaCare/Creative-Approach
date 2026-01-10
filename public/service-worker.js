@@ -129,14 +129,19 @@ async function cacheFirstStrategy(request, cacheName) {
 // Stale while revalidate strategy
 async function staleWhileRevalidate(request, cacheName) {
   const cachedResponse = await caches.match(request);
-  
-  const fetchPromise = fetch(request).then((response) => {
-    if (response.status === 200) {
-      const cache = caches.open(cacheName);
-      cache.then(c => c.put(request, response.clone()));
+
+  const fetchPromise = (async () => {
+    const response = await fetch(request);
+
+    // Only cache successful responses and clone before body is consumed
+    if (response && response.status === 200) {
+      const cache = await caches.open(cacheName);
+      const responseClone = response.clone();
+      await cache.put(request, responseClone);
     }
+
     return response;
-  });
+  })();
 
   return cachedResponse || fetchPromise;
 }
